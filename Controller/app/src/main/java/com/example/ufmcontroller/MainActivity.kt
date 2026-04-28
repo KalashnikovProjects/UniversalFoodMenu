@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,37 +13,56 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.rememberNavController
+import com.example.ufmcontroller.data.local.FoodAPIDataSource
+import com.example.ufmcontroller.data.repository.FoodRepositoryImpl
+import com.example.ufmcontroller.domain.repository.FoodRepository
+import com.example.ufmcontroller.domain.usecase.AddFoodItemUseCase
+import com.example.ufmcontroller.domain.usecase.EditFoodItemUseCase
+import com.example.ufmcontroller.domain.usecase.GetFoodItemsUseCase
+import com.example.ufmcontroller.domain.usecase.ToggleFoodItemUseCase
+import com.example.ufmcontroller.presentation.navigation.AppNavGraph
+import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
 import com.example.ufmcontroller.ui.theme.UFMControllerTheme
+import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            UFMControllerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+    private val viewModel: MainViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val repository = FoodRepositoryImpl(FoodAPIDataSource(applicationContext))
+                return MainViewModel(
+                    GetFoodItemsUseCase(repository),
+                    ToggleFoodItemUseCase(repository),
+                    AddFoodItemUseCase(repository),
+                    EditFoodItemUseCase(repository),
+                ) as T
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    UFMControllerTheme {
-        Greeting("Android")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val navController = rememberNavController()
+            UFMControllerTheme {
+                Scaffold(
+                ) { paddingValues ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+                        AppNavGraph(
+                            navController = navController,
+                            viewModel = viewModel
+                        )
+                    }
+                }
+            }
+        }
     }
 }
