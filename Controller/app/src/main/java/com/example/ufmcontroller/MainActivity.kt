@@ -8,9 +8,13 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
@@ -24,8 +28,10 @@ import com.example.ufmcontroller.domain.usecase.EditFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.GetFoodItemsUseCase
 import com.example.ufmcontroller.domain.usecase.ToggleFoodItemUseCase
 import com.example.ufmcontroller.presentation.navigation.AppNavGraph
+import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
+import com.example.ufmcontroller.presentation.ui.component.AppNavigationDrawer
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
-import com.example.ufmcontroller.ui.theme.UFMControllerTheme
+import kotlinx.coroutines.launch
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
@@ -48,18 +54,41 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            val scope = rememberCoroutineScope()
+
+
             UFMControllerTheme {
-                Scaffold(
-                ) { paddingValues ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues)
-                    ) {
-                        AppNavGraph(
-                            navController = navController,
-                            viewModel = viewModel
-                        )
+                AppNavigationDrawer(
+                    navigate={
+                        route ->
+                        navController.navigate(route)
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
+                    drawerState=drawerState,
+                ) {
+                    Scaffold { paddingValues ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues)
+                        ) {
+                            AppNavGraph(
+                                navController = navController,
+                                viewModel = viewModel,
+                                onToggleDrawer={
+                                    scope.launch {
+                                        if (drawerState.isClosed) {
+                                            drawerState.open()
+                                        } else {
+                                            drawerState.close()
+                                        }
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }

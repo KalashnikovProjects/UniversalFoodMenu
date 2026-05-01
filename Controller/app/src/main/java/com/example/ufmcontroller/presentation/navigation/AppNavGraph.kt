@@ -9,20 +9,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
+import com.example.ufmcontroller.presentation.ui.screen.AboutAppScreen
 import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
 
 @Composable
-fun AppNavGraph(navController: NavHostController, viewModel: MainViewModel) {
-    val foodItems by viewModel.foodItems.collectAsStateWithLifecycle()
+fun AppNavGraph(navController: NavHostController, viewModel: MainViewModel, onToggleDrawer: () -> Unit) {
+    val filteredFoodItems by viewModel.filteredFoodItems.collectAsStateWithLifecycle()
     NavHost(navController = navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
             HomeScreen(
-                foodItems = foodItems,
-                onFoodItemToggle = viewModel::toggleFoodItem
+                filteredFoodItems = filteredFoodItems,
+                onFoodItemToggle = viewModel::toggleFoodItem,
+                searchState = viewModel.searchState,
+                onToggleDrawer=onToggleDrawer,
             )
         }
-
+        composable<AboutAppRoute> {
+            AboutAppScreen(
+                onToggleDrawer=onToggleDrawer,
+            )
+        }
 //        composable<ItemRoute> { backStackEntry ->
 //            val route: ItemRoute = backStackEntry.toRoute()
 //

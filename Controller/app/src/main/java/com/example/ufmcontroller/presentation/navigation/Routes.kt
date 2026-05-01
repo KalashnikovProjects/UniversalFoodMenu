@@ -4,8 +4,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 object HomeRoute
 
-//@Serializable
-//data class ItemRoute(val id: Int)
+@Serializable
+object MenuEditRoute
+
+@Serializable
+object VisualConfigurationRoute
+
+@Serializable
+object SettingsRoute
+
+@Serializable
+object AboutAppRoute
 
 // TODO: следующие экраны:
 //  0. LoginScreen - вход в аккаунт: Название заведения, пароль (регистрация). Всегда показывается при первом входе.
