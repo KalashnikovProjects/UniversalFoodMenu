@@ -3,4 +3,7 @@ package com.kalashnikovprojects.ufmserver.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface ResponseDesignItem
+data class NoIdUserHashedPassword(
+    val username: String,
+    val hashedPassword: String
+)

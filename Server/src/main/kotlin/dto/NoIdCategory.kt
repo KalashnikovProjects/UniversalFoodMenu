@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("category")
-class InputCategory(
+class NoIdCategory(
     val name: Int,
-) : InputDesignItem
+)

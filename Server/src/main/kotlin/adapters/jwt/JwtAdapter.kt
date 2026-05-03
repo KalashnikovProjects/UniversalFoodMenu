@@ -16,7 +16,7 @@ class JwtAdapter(
             .withIssuer(jwtConfig.jwtDomain)
             .withClaim("id", userId)
             .withClaim("username", username)
-            .withExpiresAt(Date(System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000)) // 30 дней жизни токена
+            // .withExpiresAt(Date(System.currentTimeMillis() + 90 * 24 * 60 * 60 * 1000)) // 90 дней жизни токена
             .sign(Algorithm.HMAC256(jwtConfig.jwtSecret))
     }
 }

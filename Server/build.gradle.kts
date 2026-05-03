@@ -18,6 +18,7 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:3.5.3")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.postgresql:r2dbc-postgresql:1.1.1.RELEASE")
+    implementation("io.ktor:ktor-server-websockets:2.3.5")
     implementation(ktorLibs.serialization.kotlinx.json)
     implementation(ktorLibs.server.auth)
     implementation(ktorLibs.server.auth.jwt)
@@ -27,7 +28,6 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.r2dbc)
     implementation(libs.logback.classic)
-
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
 }

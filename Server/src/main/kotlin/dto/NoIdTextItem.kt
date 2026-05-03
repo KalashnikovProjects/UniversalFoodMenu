@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("text")
-class ResponseTextItem(
-    val id: Int,
+class NoIdTextItem(
     val text: String,
-) : ResponseDesignItem
+)

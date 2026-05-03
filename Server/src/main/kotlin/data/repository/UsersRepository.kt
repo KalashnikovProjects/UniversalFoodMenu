@@ -1,8 +1,8 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.Users
-import com.kalashnikovprojects.ufmserver.dto.InputUserHashedPassword
-import com.kalashnikovprojects.ufmserver.dto.ResponseUserHashedPassword
+import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
+import com.kalashnikovprojects.ufmserver.dto.UserHashedPassword
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.*
@@ -19,7 +19,7 @@ class UsersRepository(val database: R2dbcDatabase) {
         }
     }
 
-    suspend fun create(user: InputUserHashedPassword): Int = suspendTransaction(database) {
+    suspend fun create(user: NoIdUserHashedPassword): Int = suspendTransaction(database) {
         try {
             val newRecord = Users.insert {
                 it[username] = user.username
@@ -35,11 +35,19 @@ class UsersRepository(val database: R2dbcDatabase) {
 
     }
 
-    suspend fun getByUsername(username: String): ResponseUserHashedPassword? {
+    suspend fun getByUsername(username: String): UserHashedPassword? {
         return suspendTransaction(database) {
             Users.selectAll()
                 .where { Users.username eq username }
-                .map { ResponseUserHashedPassword(it[Users.id].value.toInt(), it[Users.username], it[Users.passwordHash]) }
+                .map { UserHashedPassword(it[Users.id].value.toInt(), it[Users.username], it[Users.passwordHash]) }
+                .singleOrNull()
+        }
+    }
+    suspend fun getById(id: Int): UserHashedPassword? {
+        return suspendTransaction(database) {
+            Users.selectAll()
+                .where { Users.id eq id.toUInt() }
+                .map { UserHashedPassword(it[Users.id].value.toInt(), it[Users.username], it[Users.passwordHash]) }
                 .singleOrNull()
         }
     }

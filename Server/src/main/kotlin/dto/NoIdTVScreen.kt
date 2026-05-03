@@ -3,4 +3,8 @@ package com.kalashnikovprojects.ufmserver.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface InputDesignItem
+data class NoIdTVScreen(
+    val name: String,
+    val width: Int,
+    val height: Int,
+)

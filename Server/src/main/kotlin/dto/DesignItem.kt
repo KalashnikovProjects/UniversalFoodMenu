@@ -3,8 +3,13 @@ package com.kalashnikovprojects.ufmserver.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ResponseDesign(
+data class DesignItem(
     val id: Int,
-    val elements: List<ResponseDesignItem>,
+    val element: Designable,
     val style: String,
+)
+
+fun DesignItem.toNoIdDesign() = NoIdDesign(
+    element = element,
+    style = style,
 )

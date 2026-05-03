@@ -3,8 +3,8 @@ package com.kalashnikovprojects.ufmserver.routes
 import com.kalashnikovprojects.ufmserver.adapters.hashing.HashingAdapter
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.UsersRepository
-import com.kalashnikovprojects.ufmserver.dto.InputUserRawPassword
-import com.kalashnikovprojects.ufmserver.dto.InputUserHashedPassword
+import com.kalashnikovprojects.ufmserver.dto.NoIdUserRawPassword
+import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
 import io.ktor.server.request.*
@@ -17,11 +17,11 @@ fun Route.authorizationRoutes() {
     val jwtAdapter by inject<JwtAdapter>()
 
     post("/register") {
-        val request = call.receive<InputUserRawPassword>()
+        val request = call.receive<NoIdUserRawPassword>()
         val passwordHash = hashingAdapter.hashPassword(request.rawPassword)
         try {
             val id = userRepository.create(
-                InputUserHashedPassword(request.username, passwordHash)
+                NoIdUserHashedPassword(request.username, passwordHash)
             )
             val token = jwtAdapter.generateJwtToken(id, request.username)
             call.respondText(
@@ -42,7 +42,7 @@ fun Route.authorizationRoutes() {
     }
 
     post("/login") {
-        val request = call.receive<InputUserRawPassword>()
+        val request = call.receive<NoIdUserRawPassword>()
         val user = userRepository.getByUsername(request.username)
         if (user == null ||
             hashingAdapter.checkPassword(request.rawPassword, user.hashedPassword)) {
@@ -53,19 +53,3 @@ fun Route.authorizationRoutes() {
         call.respondText(token, status=HttpStatusCode.OK)
     }
 }
-
-//fun Route.webSocketRouting() {
-//    authenticate {
-//        webSocket("/ws") {
-//            for (frame in incoming) {
-//                when (frame) {
-//                    is Frame.Text -> {
-//                        val text = frame.readText()
-//                        send("Received: $text")
-//                    }
-//                    else -> Unit
-//                }
-//            }
-//        }
-//    }
-//}

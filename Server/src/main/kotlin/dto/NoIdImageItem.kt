@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("image")
-class ResponseImageItem(
+class NoIdImageItem(
+    @Transient
     val imageURI: String,
-) : InputDesignItem
+)

@@ -7,6 +7,7 @@ import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtConfig
 import com.kalashnikovprojects.ufmserver.data.DbConfig
 import com.kalashnikovprojects.ufmserver.data.repository.UsersRepository
 import com.kalashnikovprojects.ufmserver.data.connectDb
+import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
 import org.koin.dsl.module
 
 
@@ -34,5 +35,8 @@ fun getAppModule(
     }
     single {
         UsersRepository(get())
+    }
+    single {
+        ScreensRepository(get())
     }
 }

@@ -5,7 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("image")
-class InputImageItem(
-    @Transient
+class ImageItem(
     val imageURI: String,
-) : InputDesignItem
+) : Designable
+
+fun ImageItem.toNoIdImageItem() = NoIdImageItem(
+    imageURI = imageURI,
+)

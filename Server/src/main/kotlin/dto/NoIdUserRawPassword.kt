@@ -3,8 +3,7 @@ package com.kalashnikovprojects.ufmserver.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseUserHashedPassword(
-    val id: Int,
+data class NoIdUserRawPassword(
     val username: String,
-    val hashedPassword: String
+    val rawPassword: String
 )

@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("food")
-data class ResponseFoodItem(
-    val id: Int,
+data class NoIdFoodItem(
     val name: String,
     val price: Float,
-    val imageUri: String,
     val inStock: Boolean,
-) : InputDesignItem
+    @Transient
+    val imageURI: String,
+)
