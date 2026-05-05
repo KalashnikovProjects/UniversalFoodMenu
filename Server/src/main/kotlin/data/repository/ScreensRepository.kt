@@ -9,6 +9,8 @@ import com.kalashnikovprojects.ufmserver.dto.UserHashedPassword
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
@@ -35,20 +37,34 @@ class ScreensRepository(val database: R2dbcDatabase) {
     }
 
     suspend fun getAllByUserId(userId: Int): List<TVScreen> = suspendTransaction(database) {
-            (Screens innerJoin Users)
+            Screens
                 .selectAll()
-                .where { Screens.user_id eq userId.toUInt() }
+                .where { Screens.user_id eq userId.toUInt() and (Screens.user_id eq userId.toUInt()) }
                 .map { row ->
-                    val screenId = row[Screens.id]
-                    val screenName = row[Screens.name]
-                    val screenWidth = row[Screens.width]
-                    val screenHeight = row[Screens.height]
-                    TVScreen(
-                        screenId.value.toInt(),
-                        screenName,
-                        screenWidth,
-                        screenHeight,
-                    )
+                    rowToTVScreen(row)
                 }.toList()
         }
+
+    suspend fun getById(userId: Int, id: Int): TVScreen? = suspendTransaction(database) {
+        Screens
+            .selectAll()
+            .where { Screens.id eq id.toUInt() and (Screens.user_id eq userId.toUInt()) }
+            .map { row ->
+                rowToTVScreen(row)
+            }.singleOrNull()
+    }
+}
+
+
+fun rowToTVScreen(row: ResultRow): TVScreen {
+    val screenId = row[Screens.id]
+    val screenName = row[Screens.name]
+    val screenWidth = row[Screens.width]
+    val screenHeight = row[Screens.height]
+    return TVScreen(
+        screenId.value.toInt(),
+        screenName,
+        screenWidth,
+        screenHeight,
+    )
 }

@@ -15,3 +15,17 @@ fun TVScreen.toNoIdTVScreen() = NoIdTVScreen(
     width = width,
     height = height,
 )
+
+@Serializable
+data class NoIdTVScreen(
+    val name: String,
+    val width: Int,
+    val height: Int,
+)
+
+fun NoIdTVScreen.toTVScreen(id: Int) = TVScreen(
+    id = id,
+    name = name,
+    width = width,
+    height = height,
+)

@@ -9,7 +9,19 @@ data class DesignItem(
     val style: String,
 )
 
-fun DesignItem.toNoIdDesign() = NoIdDesign(
+fun DesignItem.toNoIdDesignItem() = NoIdDesignItem(
+    element = element,
+    style = style,
+)
+
+@Serializable
+data class NoIdDesignItem(
+    val element: Designable,
+    val style: String,
+)
+
+fun NoIdDesignItem.toDesignItem(id: Int) = DesignItem(
+    id=id,
     element = element,
     style = style,
 )

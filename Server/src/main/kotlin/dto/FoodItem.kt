@@ -17,6 +17,23 @@ data class FoodItem(
 fun FoodItem.toNoIdFoodItem() = NoIdFoodItem(
     name = name,
     price=price,
-    imageURI = imageUri,
+    imageUri = imageUri,
+    inStock = inStock,
+)
+
+
+@Serializable
+data class NoIdFoodItem(
+    val name: String,
+    val price: Float,
+    var imageUri: String,
+    val inStock: Boolean,
+) : Designable
+
+fun NoIdFoodItem.toFoodItem(id: Int) = FoodItem(
+    id=id,
+    name = name,
+    price=price,
+    imageUri = imageUri,
     inStock = inStock,
 )

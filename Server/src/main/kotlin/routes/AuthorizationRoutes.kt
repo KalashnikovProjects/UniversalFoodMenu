@@ -3,7 +3,7 @@ package com.kalashnikovprojects.ufmserver.routes
 import com.kalashnikovprojects.ufmserver.adapters.hashing.HashingAdapter
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.UsersRepository
-import com.kalashnikovprojects.ufmserver.dto.NoIdUserRawPassword
+import com.kalashnikovprojects.ufmserver.dto.UserRawPassword
 import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
@@ -17,7 +17,7 @@ fun Route.authorizationRoutes() {
     val jwtAdapter by inject<JwtAdapter>()
 
     post("/register") {
-        val request = call.receive<NoIdUserRawPassword>()
+        val request = call.receive<UserRawPassword>()
         val passwordHash = hashingAdapter.hashPassword(request.rawPassword)
         try {
             val id = userRepository.create(
@@ -28,12 +28,12 @@ fun Route.authorizationRoutes() {
                 token,
                 status=HttpStatusCode.Created
             )
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             call.respond(
                 HttpStatusCode.Conflict,
                 "User with username '${request.username}' already exists"
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             call.respond(
                 HttpStatusCode.InternalServerError,
                 "Unknown error"
@@ -42,7 +42,7 @@ fun Route.authorizationRoutes() {
     }
 
     post("/login") {
-        val request = call.receive<NoIdUserRawPassword>()
+        val request = call.receive<UserRawPassword>()
         val user = userRepository.getByUsername(request.username)
         if (user == null ||
             hashingAdapter.checkPassword(request.rawPassword, user.hashedPassword)) {

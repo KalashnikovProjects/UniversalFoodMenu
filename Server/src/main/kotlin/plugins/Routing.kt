@@ -11,6 +11,14 @@ fun Application.configureRouting() {
         route("/api") {
             authorizationRoutes()
             tvAuthorizationRoutes()
+            websocketListenersRoutes()
+            categoryRoutes()
+            foodItemsRoutes()
+            categorizedFoodItemsRoutes()
+            imageItemsRoutes()
+            textItemsRoutes()
+            imageItemsRoutes()
+            designItemsRoutes()
         }
         staticResources("/static", "static")
     }
