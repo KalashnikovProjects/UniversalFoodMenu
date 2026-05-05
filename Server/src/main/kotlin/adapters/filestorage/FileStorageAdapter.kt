@@ -4,7 +4,7 @@ import java.io.File
 import java.util.UUID
 
 class FileStorageAdapter(
-    val host: String,
+    val baseUrl: String,
 ) {
     init {
         listOf<String>(
@@ -26,7 +26,7 @@ class FileStorageAdapter(
         file.parentFile?.mkdirs()
         file.writeBytes(fileBytes)
 
-        return "$host/static/images/$folder/$filename"
+        return "$baseUrl/static/images/$folder/$filename"
     }
 
     suspend fun saveImageItemImage(fileBytes: ByteArray, extension: String): String {

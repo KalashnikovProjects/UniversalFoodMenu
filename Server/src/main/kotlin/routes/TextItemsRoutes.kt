@@ -2,7 +2,7 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.TextItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.Event
+import com.kalashnikovprojects.ufmserver.dto.Events
 import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
 import com.kalashnikovprojects.ufmserver.dto.toTextItem
 import io.ktor.http.HttpStatusCode
@@ -54,7 +54,7 @@ fun Route.textItemsRoutes() {
             val request = call.receive<NoIdTextItem>()
             try {
                 val createdId = textItemsRepository.create(userId, request)
-                eventBus.getFlow(userId).emit(Event.AddTextEvent(
+                eventBus.getFlow(userId).emit(Events.AddTextEvent(
                     element = request.toTextItem(createdId)
                 ))
                 call.respond(HttpStatusCode.Created, request.toTextItem(createdId))
@@ -77,7 +77,7 @@ fun Route.textItemsRoutes() {
             val isUpdated = textItemsRepository.updateById(userId, id, request)
 
             if (isUpdated) {
-                eventBus.getFlow(userId).emit(Event.ChangeTextEvent(
+                eventBus.getFlow(userId).emit(Events.ChangeTextEvent(
                     id,
                     element = request.toTextItem(id)
                 ))
@@ -99,7 +99,7 @@ fun Route.textItemsRoutes() {
 
             val isDeleted = textItemsRepository.deleteById(userId, id)
             if (isDeleted) {
-                eventBus.getFlow(userId).emit(Event.DeleteTextEvent(
+                eventBus.getFlow(userId).emit(Events.DeleteTextEvent(
                     id,
                 ))
                 call.respond(HttpStatusCode.OK)

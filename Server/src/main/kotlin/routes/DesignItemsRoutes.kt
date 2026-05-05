@@ -2,9 +2,11 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.DesignItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.Event
+import com.kalashnikovprojects.ufmserver.dto.Events
 import com.kalashnikovprojects.ufmserver.dto.NoIdDesignItem
 import com.kalashnikovprojects.ufmserver.dto.toDesignItem
+import com.kalashnikovprojects.ufmserver.models.DesignsByScreen
+import com.kalashnikovprojects.ufmserver.models.toDesignItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -21,6 +23,22 @@ fun Route.designItemsRoutes() {
     val eventBus by inject<EventBus>()
 
     authenticate {
+        get("/design-items") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("id").asInt()
+
+
+            val items = designItemsRepository.getAllByUserId(userId)
+                .groupBy { it.screenId }.map {
+                    DesignsByScreen(
+                        it.key,
+                        it.value.map { designItem -> designItem.toDesignItem() },
+                    )
+                }
+
+            call.respond(HttpStatusCode.OK, items)
+        }
+
         get("/screen/{screen_id}/design-items") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
@@ -66,7 +84,7 @@ fun Route.designItemsRoutes() {
             val request = call.receive<NoIdDesignItem>()
             try {
                 val createdId = designItemsRepository.create(userId, screenId, request)
-                eventBus.getFlow(userId).emit(Event.AddDesignEvent(
+                eventBus.getFlow(userId).emit(Events.AddDesignEvent(
                     element = request.toDesignItem(createdId)
                 ))
                 call.respond(HttpStatusCode.Created, request.toDesignItem(createdId))
@@ -89,7 +107,7 @@ fun Route.designItemsRoutes() {
             val isUpdated = designItemsRepository.updateById(userId, id, request)
 
             if (isUpdated) {
-                eventBus.getFlow(userId).emit(Event.ChangeDesignEvent(
+                eventBus.getFlow(userId).emit(Events.ChangeDesignEvent(
                     id,
                     element = request.toDesignItem(id)
                 ))
@@ -111,7 +129,7 @@ fun Route.designItemsRoutes() {
 
             val isDeleted = designItemsRepository.deleteById(userId, id)
             if (isDeleted) {
-                eventBus.getFlow(userId).emit(Event.DeleteDesignEvent(
+                eventBus.getFlow(userId).emit(Events.DeleteDesignEvent(
                     id,
                 ))
                 call.respond(HttpStatusCode.OK)

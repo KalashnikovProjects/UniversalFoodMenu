@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmserver.dto
 
+import com.kalashnikovprojects.ufmserver.models.DesignItemWithScreenId
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,6 +13,14 @@ data class DesignItem(
 fun DesignItem.toNoIdDesignItem() = NoIdDesignItem(
     element = element,
     style = style,
+)
+
+
+fun DesignItem.toDesignItemWithScreenId(screenId: Int) = DesignItemWithScreenId(
+    id=id,
+    element = element,
+    style = style,
+    screenId = screenId,
 )
 
 @Serializable

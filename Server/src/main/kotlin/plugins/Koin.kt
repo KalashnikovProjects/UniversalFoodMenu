@@ -8,7 +8,7 @@ import org.koin.ktor.plugin.Koin
 
 fun Application.configureKoin() {
     install(Koin) {
-        val host = environment.config.property("server.host").getString()
+        val baseUrl = environment.config.property("server.base_url").getString()
 
         val dbHost = environment.config.property("db.host").getString()
         val dbName = environment.config.property("db.name").getString()
@@ -19,7 +19,7 @@ fun Application.configureKoin() {
         val jwtRealm = environment.config.property("jwt.realm").getString()
         val jwtSecret = environment.config.property("jwt.secret").getString()
         modules(getAppModule(
-            host,
+            baseUrl,
             DbConfig(dbHost, dbName, dbUser, dbPassword),
             JwtConfig(jwtDomain, jwtRealm, jwtSecret),
         ))

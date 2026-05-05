@@ -6,7 +6,7 @@ import com.kalashnikovprojects.ufmserver.dto.toImageItem
 
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
-import com.kalashnikovprojects.ufmserver.dto.Event
+import com.kalashnikovprojects.ufmserver.dto.Events
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
@@ -76,7 +76,7 @@ fun Route.imageItemsRoutes() {
                 val image = NoIdImageItem(imageUrl)
 
                 val createdId = imageItemsRepository.create(userId, image)
-                eventBus.getFlow(userId).emit(Event.AddImageEvent(
+                eventBus.getFlow(userId).emit(Events.AddImageEvent(
                     element = image.toImageItem(createdId)
                 ))
                 call.respond(HttpStatusCode.Created, image.toImageItem(createdId))
@@ -97,7 +97,7 @@ fun Route.imageItemsRoutes() {
 
             val isDeleted = imageItemsRepository.deleteById(userId, id)
             if (isDeleted) {
-                eventBus.getFlow(userId).emit(Event.DeleteImageEvent(
+                eventBus.getFlow(userId).emit(Events.DeleteImageEvent(
                     id,
                 ))
                 call.respond(HttpStatusCode.OK)

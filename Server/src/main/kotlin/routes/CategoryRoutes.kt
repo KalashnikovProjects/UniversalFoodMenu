@@ -3,7 +3,7 @@ package com.kalashnikovprojects.ufmserver.routes
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.dto.Event
+import com.kalashnikovprojects.ufmserver.dto.Events
 import com.kalashnikovprojects.ufmserver.dto.FoodItem
 import com.kalashnikovprojects.ufmserver.dto.NoIdCategory
 import com.kalashnikovprojects.ufmserver.dto.toCategory
@@ -82,7 +82,7 @@ fun Route.categoryRoutes() {
                     id,
                     request.map { it.id }
                 )
-                eventBus.getFlow(userId).emit(Event.SetCategoryItems(
+                eventBus.getFlow(userId).emit(Events.SetCategoryItems(
                     id,
                     request
                 ))
@@ -100,7 +100,7 @@ fun Route.categoryRoutes() {
 
             try {
                 val createdId = categoriesRepository.create(userId, request)
-                eventBus.getFlow(userId).emit(Event.AddCategoryEvent(
+                eventBus.getFlow(userId).emit(Events.AddCategoryEvent(
                     element = request.toCategory(createdId)
                 ))
                 call.respond(HttpStatusCode.Created, createdId)
@@ -124,7 +124,7 @@ fun Route.categoryRoutes() {
 
             if (isUpdated) {
                 eventBus.getFlow(userId).emit(
-                    Event.ChangeCategoryEvent(
+                    Events.ChangeCategoryEvent(
                         id,
                         element = request.toCategory(id)
                     )
@@ -147,7 +147,7 @@ fun Route.categoryRoutes() {
 
             val isDeleted = categoriesRepository.deleteById(userId, id)
             if (isDeleted) {
-                Event.DeleteCategoryEvent(id)
+                Events.DeleteCategoryEvent(id)
                 call.respond(HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound)

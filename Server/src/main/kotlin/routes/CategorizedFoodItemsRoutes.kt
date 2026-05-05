@@ -2,7 +2,7 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.dto.CategorizedResponse
+import com.kalashnikovprojects.ufmserver.dto.FoodItemsCategorized
 import com.kalashnikovprojects.ufmserver.dto.toCategoryWithFoodItems
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
@@ -27,7 +27,7 @@ fun Route.categorizedFoodItemsRoutes() {
                 it.toCategoryWithFoodItems(foodItems)
             }
             val noCategoryFoodItems = foodItemsCategoriesRepository.getNoCategoryFoodItems(userId)
-            val response = CategorizedResponse(
+            val response = FoodItemsCategorized(
                 categories,
                 noCategoryFoodItems
             )

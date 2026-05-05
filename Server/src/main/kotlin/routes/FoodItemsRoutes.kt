@@ -5,7 +5,7 @@ import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
 import com.kalashnikovprojects.ufmserver.dto.Category
-import com.kalashnikovprojects.ufmserver.dto.Event
+import com.kalashnikovprojects.ufmserver.dto.Events
 import com.kalashnikovprojects.ufmserver.dto.NoIdFoodItem
 import com.kalashnikovprojects.ufmserver.dto.toFoodItem
 import io.ktor.http.HttpStatusCode
@@ -88,7 +88,7 @@ fun Route.foodItemsRoutes() {
                     id,
                     request.map { it.id }
                 )
-                eventBus.getFlow(userId).emit(Event.SetFoodCategories(
+                eventBus.getFlow(userId).emit(Events.SetFoodCategories(
                     id,
                     request
                 ))
@@ -119,7 +119,7 @@ fun Route.foodItemsRoutes() {
                 }
 
                 val createdId = foodItemsRepository.create(userId, request)
-                eventBus.getFlow(userId).emit(Event.AddFoodEvent(
+                eventBus.getFlow(userId).emit(Events.AddFoodEvent(
                     element = request.toFoodItem(createdId)
                 ))
                 call.respond(HttpStatusCode.Created, request.toFoodItem(createdId))
@@ -161,7 +161,7 @@ fun Route.foodItemsRoutes() {
 
                 if (isUpdated) {
                     eventBus.getFlow(userId).emit(
-                        Event.ChangeFoodEvent(
+                        Events.ChangeFoodEvent(
                             id,
                             element = request.toFoodItem(id)
                         )
@@ -189,7 +189,7 @@ fun Route.foodItemsRoutes() {
             val isUpdated = foodItemsRepository.toggleById(userId, id, inStock)
 
             if (isUpdated) {
-                eventBus.getFlow(userId).emit(Event.ToggleFoodEvent(id, inStock))
+                eventBus.getFlow(userId).emit(Events.ToggleFoodEvent(id, inStock))
                 call.respond(HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound)
@@ -208,7 +208,7 @@ fun Route.foodItemsRoutes() {
 
             val isDeleted = foodItemsRepository.deleteById(userId, id)
             if (isDeleted) {
-                eventBus.getFlow(userId).emit(Event.DeleteFoodEvent(
+                eventBus.getFlow(userId).emit(Events.DeleteFoodEvent(
                     id,
                 ))
                 call.respond(HttpStatusCode.OK)

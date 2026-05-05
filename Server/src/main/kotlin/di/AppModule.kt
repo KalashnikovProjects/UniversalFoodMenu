@@ -19,7 +19,7 @@ import org.koin.dsl.module
 
 
 fun getAppModule(
-    host: String,
+    baseUrl: String,
     dbConfig: DbConfig,
     jwtConfig: JwtConfig,
 ) = module {
@@ -30,7 +30,7 @@ fun getAppModule(
         dbConfig
     }
     single {
-        FileStorageAdapter(host)
+        FileStorageAdapter(baseUrl)
     }
     single {
         HashingAdapter()

@@ -12,6 +12,8 @@ import com.kalashnikovprojects.ufmserver.dto.FoodItem
 import com.kalashnikovprojects.ufmserver.dto.ImageItem
 import com.kalashnikovprojects.ufmserver.dto.NoIdDesignItem
 import com.kalashnikovprojects.ufmserver.dto.TextItem
+import com.kalashnikovprojects.ufmserver.dto.toDesignItemWithScreenId
+import com.kalashnikovprojects.ufmserver.models.DesignItemWithScreenId
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
@@ -47,6 +49,21 @@ class DesignItemsRepository(val database: R2dbcDatabase) {
             it[user_id] = userId.toUInt()
         }
         newRecord[DesignItems.id].value.toInt()
+    }
+
+    suspend fun getAllByUserId(userId: Int): List<DesignItemWithScreenId> = suspendTransaction(database) {
+        (DesignItems leftJoin
+                FoodItems leftJoin
+                Categories leftJoin
+                TextItems leftJoin
+                ImageItems)
+            .selectAll()
+            .where {
+                DesignItems.user_id eq userId.toUInt()
+            }
+            .map { row ->
+                rowToDesignItemWithScreenId(row)
+            }.toList()
     }
 
     suspend fun getAllByScreenIdUserId(screenId: Int, userId: Int): List<DesignItem> = suspendTransaction(database) {
@@ -116,4 +133,9 @@ fun rowToDesignItem(row: ResultRow): DesignItem {
         element,
         row[DesignItems.style],
     )
+}
+
+
+fun rowToDesignItemWithScreenId(row: ResultRow): DesignItemWithScreenId {
+    return rowToDesignItem(row).toDesignItemWithScreenId(row[DesignItems.screen_id].value.toInt())
 }
