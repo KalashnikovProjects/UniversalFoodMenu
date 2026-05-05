@@ -10,10 +10,10 @@ fun Application.configureKoin() {
     install(Koin) {
         val host = environment.config.property("server.host").getString()
 
-        val dbHost = environment.config.property("database.host").getString()
-        val dbName = environment.config.property("database.name").getString()
-        val dbUser = environment.config.property("database.user").getString()
-        val dbPassword = environment.config.property("database.password").getString()
+        val dbHost = environment.config.property("db.host").getString()
+        val dbName = environment.config.property("db.name").getString()
+        val dbUser = environment.config.property("db.user").getString()
+        val dbPassword = environment.config.property("db.password").getString()
 
         val jwtDomain = environment.config.property("jwt.domain").getString()
         val jwtRealm = environment.config.property("jwt.realm").getString()

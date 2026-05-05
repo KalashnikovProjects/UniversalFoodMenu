@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmserver.adapters.EventBus
+package com.kalashnikovprojects.ufmserver.adapters.eventbus
 
 import com.kalashnikovprojects.ufmserver.dto.Event
 import kotlinx.coroutines.flow.MutableSharedFlow

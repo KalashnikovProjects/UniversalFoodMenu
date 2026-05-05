@@ -1,9 +1,7 @@
 package com.kalashnikovprojects.ufmserver.routes
 
-import com.kalashnikovprojects.ufmserver.adapters.EventBus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
 import com.kalashnikovprojects.ufmserver.dto.CategorizedResponse
 import com.kalashnikovprojects.ufmserver.dto.toCategoryWithFoodItems
 import io.ktor.http.HttpStatusCode

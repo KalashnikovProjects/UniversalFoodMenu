@@ -1,6 +1,6 @@
 package com.kalashnikovprojects.ufmserver.di
 
-import com.kalashnikovprojects.ufmserver.adapters.EventBus.EventBus
+import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
 import com.kalashnikovprojects.ufmserver.adapters.hashing.HashingAdapter
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter

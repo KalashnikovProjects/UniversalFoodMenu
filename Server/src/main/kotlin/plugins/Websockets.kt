@@ -6,7 +6,7 @@ import io.ktor.serialization.kotlinx.*
 import io.ktor.server.websocket.WebSockets
 import kotlinx.serialization.json.*
 
-fun Application.configureSerialization() {
+fun Application.configureWebsockets() {
     install(WebSockets) {
         contentConverter = KotlinxWebsocketSerializationConverter(Json)
     }

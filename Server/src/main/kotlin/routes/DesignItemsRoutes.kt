@@ -1,33 +1,15 @@
 package com.kalashnikovprojects.ufmserver.routes
 
-import com.kalashnikovprojects.ufmserver.data.repository.ImageItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.NoIdImageItem
-import com.kalashnikovprojects.ufmserver.dto.toImageItem
-
-import com.kalashnikovprojects.ufmserver.adapters.EventBus.EventBus
-import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
-import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
+import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.DesignItemsRepository
-import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
-import com.kalashnikovprojects.ufmserver.data.repository.TextItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.DesignItem
 import com.kalashnikovprojects.ufmserver.dto.Event
 import com.kalashnikovprojects.ufmserver.dto.NoIdDesignItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdFoodItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
 import com.kalashnikovprojects.ufmserver.dto.toDesignItem
-import com.kalashnikovprojects.ufmserver.dto.toFoodItem
-import com.kalashnikovprojects.ufmserver.dto.toTextItem
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.PartData
-import io.ktor.http.content.forEachPart
-import io.ktor.http.content.streamProvider
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
-import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject

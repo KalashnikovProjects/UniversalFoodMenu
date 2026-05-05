@@ -10,13 +10,13 @@ data class FoodItem(
     val id: Int,
     val name: String,
     val price: Float,
-    val imageUri: String,
+    val imageUri: String?,
     val inStock: Boolean,
 ) : Designable
 
 fun FoodItem.toNoIdFoodItem() = NoIdFoodItem(
     name = name,
-    price=price,
+    price =price,
     imageUri = imageUri,
     inStock = inStock,
 )
@@ -26,14 +26,15 @@ fun FoodItem.toNoIdFoodItem() = NoIdFoodItem(
 data class NoIdFoodItem(
     val name: String,
     val price: Float,
-    var imageUri: String,
+    @Transient
+    var imageUri: String?,
     val inStock: Boolean,
 ) : Designable
 
 fun NoIdFoodItem.toFoodItem(id: Int) = FoodItem(
-    id=id,
+    id =id,
     name = name,
-    price=price,
+    price =price,
     imageUri = imageUri,
     inStock = inStock,
 )

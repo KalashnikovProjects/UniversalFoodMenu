@@ -1,8 +1,6 @@
 package com.kalashnikovprojects.ufmserver.routes
 
-import com.kalashnikovprojects.ufmserver.adapters.EventBus.EventBus
-import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
-import io.ktor.http.HttpStatusCode
+import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal

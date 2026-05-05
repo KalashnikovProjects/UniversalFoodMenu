@@ -1,8 +1,7 @@
-package com.kalashnikovprojects.ufmserver.modules
+package com.kalashnikovprojects.ufmserver.plugins
 
 import com.kalashnikovprojects.ufmserver.routes.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
 

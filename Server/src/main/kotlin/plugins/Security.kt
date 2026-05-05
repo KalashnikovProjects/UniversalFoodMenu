@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmserver.modules
+package com.kalashnikovprojects.ufmserver.plugins
 
 import io.ktor.server.application.*
 import com.auth0.jwt.JWT

@@ -1,14 +1,12 @@
 package com.kalashnikovprojects.ufmserver.routes
 
-import com.kalashnikovprojects.ufmserver.adapters.EventBus.EventBus
+import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.dto.Category
 import com.kalashnikovprojects.ufmserver.dto.Event
 import com.kalashnikovprojects.ufmserver.dto.FoodItem
 import com.kalashnikovprojects.ufmserver.dto.NoIdCategory
 import com.kalashnikovprojects.ufmserver.dto.toCategory
-import com.kalashnikovprojects.ufmserver.dto.toFoodItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
