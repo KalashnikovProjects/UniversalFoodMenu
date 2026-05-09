@@ -8,6 +8,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
+import io.ktor.server.plugins.ratelimit.RateLimitName
+import io.ktor.server.plugins.ratelimit.rateLimit
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -58,6 +60,7 @@ fun Route.tvAuthorizationRoutes() {
                     screenName,
                     screenWidth,
                     screenHeight,
+                    "",
                 )
             )
             authDeferred.complete(userIdReceived to usernameReceived)
@@ -66,6 +69,7 @@ fun Route.tvAuthorizationRoutes() {
                 screenName,
                 screenWidth,
                 screenHeight,
+                "",
             )
         }
 
@@ -92,25 +96,27 @@ fun Route.tvAuthorizationRoutes() {
     }
 
     authenticate {
-        post("/input_code_for_tv_auth") {
-            val code = call.receive<Int>()
-            val principal = call.principal<JWTPrincipal>()
-            val id = principal!!.payload.getClaim("id").asInt()
-            val username = principal.payload.getClaim("username").asString()
+        rateLimit(RateLimitName("enterScreenAuthCodeRateLimit")) {
+            post("/input_code_for_tv_auth") {
+                val code = call.receive<Int>()
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal!!.payload.getClaim("id").asInt()
+                val username = principal.payload.getClaim("username").asString()
 
-            val callback = tvAuthStates[code]
-            if (callback != null) {
-                callback(id, username)
+                val callback = tvAuthStates[code]
+                if (callback != null) {
+                    callback(userId, username)
 
-                call.respond(
-                    HttpStatusCode.OK,
-                    mapOf("status" to "success")
-                )
-            } else {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    "Bad code"
-                )
+                    call.respond(
+                        HttpStatusCode.OK,
+                        mapOf("status" to "success")
+                    )
+                } else {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        "Bad code"
+                    )
+                }
             }
         }
     }

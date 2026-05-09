@@ -15,10 +15,12 @@ kotlin {
     jvmToolchain(21)
 }
 dependencies {
+    implementation("io.ktor:ktor-server-rate-limit:3.4.0")
+    implementation("io.ktor:ktor-server-status-pages:3.4.0")
     implementation("io.insert-koin:koin-ktor:3.5.3")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.postgresql:r2dbc-postgresql:1.1.1.RELEASE")
-    implementation("io.ktor:ktor-server-websockets:2.3.5")
+    implementation("io.ktor:ktor-server-websockets:3.4.0")
     implementation(ktorLibs.serialization.kotlinx.json)
     implementation(ktorLibs.server.auth)
     implementation(ktorLibs.server.auth.jwt)

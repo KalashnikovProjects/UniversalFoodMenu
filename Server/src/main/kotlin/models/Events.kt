@@ -7,66 +7,78 @@ import kotlinx.serialization.Serializable
 sealed class Events {
     @SerialName("toggle_food_event")
     @Serializable
-    class ToggleFoodEvent(val id: Int, val inStock: Boolean) : Events()
+    data class ToggleFoodEvent(val id: Int, val inStock: Boolean) : Events()
     @SerialName("add_food_event")
     @Serializable
-    class AddFoodEvent(val element: FoodItem) : Events()
+    data class AddFoodEvent(val element: FoodItem) : Events()
     @SerialName("change_food_event")
     @Serializable
-    class ChangeFoodEvent(val id: Int, val element: FoodItem) : Events()
+    data class ChangeFoodEvent(val id: Int, val element: FoodItem) : Events()
     @SerialName("delete_food_event")
     @Serializable
-    class DeleteFoodEvent(val id: Int) : Events()
+    data class DeleteFoodEvent(val id: Int) : Events()
 
     @SerialName("add_category_event")
     @Serializable
-    class AddCategoryEvent(val element: Category) : Events()
+    data class AddCategoryEvent(val element: Category) : Events()
     @SerialName(value = "change_category_event")
     @Serializable
-    class ChangeCategoryEvent(val id: Int, val element: Category) : Events()
+    data class ChangeCategoryEvent(val id: Int, val element: Category) : Events()
     @SerialName("delete_category_event")
     @Serializable
-    class DeleteCategoryEvent(val id: Int) : Events()
+    data class DeleteCategoryEvent(val id: Int) : Events()
 
     @SerialName("add_image_event")
     @Serializable
-    class AddImageEvent(val element: ImageItem) : Events()
-    @SerialName(value = "change_image_event")
-    @Serializable
-    class ChangeImageEvent(val id: Int, val element: ImageItem) : Events()
+    data class AddImageEvent(val element: ImageItem) : Events()
+//    @SerialName(value = "change_image_event")
+//    @Serializable
+//    data class ChangeImageEvent(val id: Int, val element: ImageItem) : Events()
     @SerialName("delete_image_event")
     @Serializable
-    class DeleteImageEvent(val id: Int) : Events()
+    data class DeleteImageEvent(val id: Int) : Events()
 
     @SerialName("add_text_event")
     @Serializable
-    class AddTextEvent(val element: TextItem) : Events()
+    data class AddTextEvent(val element: TextItem) : Events()
     @SerialName(value = "change_text_event")
     @Serializable
-    class ChangeTextEvent(val id: Int, val element: TextItem) : Events()
+    data class ChangeTextEvent(val id: Int, val element: TextItem) : Events()
     @SerialName("delete_text_event")
     @Serializable
-    class DeleteTextEvent(val id: Int) : Events()
+    data class DeleteTextEvent(val id: Int) : Events()
 
     @SerialName("add_design_event")
     @Serializable
-    class AddDesignEvent(val element: DesignItem) : Events()
+    data class AddDesignEvent(val element: DesignItem) : Events()
     @SerialName("change_design_event")
     @Serializable
-    class ChangeDesignEvent(val id: Int, val element: DesignItem) : Events()
+    data class ChangeDesignEvent(val id: Int, val element: DesignItem) : Events()
     @SerialName("delete_design_event")
     @Serializable
-    class DeleteDesignEvent(val id: Int) : Events()
+    data class DeleteDesignEvent(val id: Int) : Events()
 
     @SerialName("set_category_items_event")
     @Serializable
-    class SetCategoryItems(val categoryId: Int, val foodItems: List<FoodItem>) : Events()
+    data class SetCategoryItems(val categoryId: Int, val foodItems: List<FoodItem>) : Events()
 
     @SerialName("set_food_categories_event")
     @Serializable
-    class SetFoodCategories(val foodId: Int, val category: List<Category>) : Events()
+    data class SetFoodCategories(val foodId: Int, val category: List<Category>) : Events()
+
+    @SerialName("add_screen_event")
+    @Serializable
+    data class AddScreenEvent(val element: TVScreen) : Events()
+
+    @SerialName("change_screen_event")
+    @Serializable
+    data class ChangeScreenEvent(val id: Int, val element: TVScreen) : Events()
+
+    @SerialName("logout_screen_event")
+    @Serializable
+    data class DeleteScreenEvent(val id: Int) : Events()
 
     @SerialName("full_reload_event")
     @Serializable
-    class FullReloadEvent() : Events()
+    object FullReloadEvent : Events()
 }

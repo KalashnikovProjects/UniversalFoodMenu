@@ -1,8 +1,11 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.Screens
+import com.kalashnikovprojects.ufmserver.data.tables.TextItems
+import com.kalashnikovprojects.ufmserver.data.tables.TextItems.text
 import com.kalashnikovprojects.ufmserver.data.tables.Users
 import com.kalashnikovprojects.ufmserver.dto.NoIdTVScreen
+import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
 import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
 import com.kalashnikovprojects.ufmserver.dto.TVScreen
 import com.kalashnikovprojects.ufmserver.dto.UserHashedPassword
@@ -15,9 +18,11 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
+import org.jetbrains.exposed.v1.r2dbc.deleteWhere
 import org.jetbrains.exposed.v1.r2dbc.insert
 import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 
 class ScreensRepository(val database: R2dbcDatabase) {
     suspend fun createSchema() {
@@ -31,6 +36,7 @@ class ScreensRepository(val database: R2dbcDatabase) {
             it[name] = screen.name
             it[width] = screen.width
             it[height] = screen.height
+            it[style] = screen.style
             it[user_id] = userId.toUInt()
         }
         newRecord[Screens.id].value.toInt()
@@ -53,18 +59,27 @@ class ScreensRepository(val database: R2dbcDatabase) {
                 rowToTVScreen(row)
             }.singleOrNull()
     }
+
+
+    suspend fun updateById(userId: Int, id: Int, item: NoIdTVScreen): Boolean = suspendTransaction(database) {
+        Screens.update({ Screens.id eq id.toUInt() and (Screens.user_id eq userId.toUInt()) }) {
+            it[name] = item.name
+            it[style] = item.style
+        } == 1
+    }
+
+    suspend fun deleteById(userId: Int, id: Int): Boolean = suspendTransaction(database) {
+        Screens.deleteWhere { Screens.id eq id.toUInt() and (Screens.user_id eq userId.toUInt()) } == 1
+    }
 }
 
 
 fun rowToTVScreen(row: ResultRow): TVScreen {
-    val screenId = row[Screens.id]
-    val screenName = row[Screens.name]
-    val screenWidth = row[Screens.width]
-    val screenHeight = row[Screens.height]
     return TVScreen(
-        screenId.value.toInt(),
-        screenName,
-        screenWidth,
-        screenHeight,
+        row[Screens.id].value.toInt(),
+        row[Screens.name],
+        row[Screens.width],
+        row[Screens.height],
+        row[Screens.style],
     )
 }

@@ -18,6 +18,7 @@ fun Application.configureRouting() {
             textItemsRoutes()
             imageItemsRoutes()
             designItemsRoutes()
+            screensRoutes()
         }
         staticResources("/static", "static")
     }

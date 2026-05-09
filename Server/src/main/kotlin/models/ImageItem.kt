@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("image")
-class ImageItem(
+data class ImageItem(
     val id: Int,
-    val imageUri: String,
+    var imageUri: String,
 ) : Designable
 
 fun ImageItem.toNoIdImageItem() = NoIdImageItem(
@@ -16,7 +16,7 @@ fun ImageItem.toNoIdImageItem() = NoIdImageItem(
 
 @Serializable
 data class NoIdImageItem(
-    val imageUri: String,
+    var imageUri: String,
 )
 
 fun NoIdImageItem.toImageItem(id: Int) = ImageItem(

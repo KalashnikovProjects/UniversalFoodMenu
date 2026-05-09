@@ -82,50 +82,41 @@ fun Route.foodItemsRoutes() {
             }
 
             val request = call.receive<List<Category>>()
-
-            try {
-                foodItemsCategoriesRepository.setCategoriesForFoodItem(userId,
-                    id,
-                    request.map { it.id }
-                )
-                eventBus.getFlow(userId).emit(Events.SetFoodCategories(
-                    id,
-                    request
-                ))
-                call.respond(HttpStatusCode.OK)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, e.localizedMessage ?: "Unknown error")
-            }
+            foodItemsCategoriesRepository.setCategoriesForFoodItem(userId,
+                id,
+                request.map { it.id }
+            )
+            eventBus.getFlow(userId).emit(Events.SetFoodCategories(
+                id,
+                request
+            ))
+            call.respond(HttpStatusCode.OK)
         }
 
         post("/food-items") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
             val request = call.receive<NoIdFoodItem>()
-            try {
-                val multipart = call.receiveMultipart()
-                var fileBytes: ByteArray? = null
-                var fileName = ""
-                multipart.forEachPart { part ->
-                    if (part is PartData.FileItem) {
-                        fileBytes = part.streamProvider().readBytes()
-                        fileName = part.originalFileName as String
-                    }
-                    part.dispose()
+            val multipart = call.receiveMultipart()
+            var fileBytes: ByteArray? = null
+            var fileName = ""
+            multipart.forEachPart { part ->
+                if (part is PartData.FileItem) {
+                    fileBytes = part.streamProvider().readBytes()
+                    fileName = part.originalFileName as String
                 }
-                fileBytes?.let { bytes ->
-                    val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, fileName.substringAfterLast(".", ""))
-                    request.imageUri = imageUrl
-                }
-
-                val createdId = foodItemsRepository.create(userId, request)
-                eventBus.getFlow(userId).emit(Events.AddFoodEvent(
-                    element = request.toFoodItem(createdId)
-                ))
-                call.respond(HttpStatusCode.Created, request.toFoodItem(createdId))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
+                part.dispose()
             }
+            fileBytes?.let { bytes ->
+                val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, fileName.substringAfterLast(".", ""))
+                request.imageUri = imageUrl
+            }
+
+            val createdId = foodItemsRepository.create(userId, request)
+            eventBus.getFlow(userId).emit(Events.AddFoodEvent(
+                element = request.toFoodItem(createdId)
+            ))
+            call.respond(HttpStatusCode.Created, request.toFoodItem(createdId))
         }
 
         put("/food-items/{id}") {
@@ -205,12 +196,20 @@ fun Route.foodItemsRoutes() {
                 call.respond(HttpStatusCode.BadRequest, "Invalid ID")
                 return@delete
             }
-
+            val foodItem = foodItemsRepository.getById(userId, id)
+            if (foodItem == null) {
+                call.respond(HttpStatusCode.NotFound)
+                return@delete
+            }
             val isDeleted = foodItemsRepository.deleteById(userId, id)
             if (isDeleted) {
                 eventBus.getFlow(userId).emit(Events.DeleteFoodEvent(
                     id,
                 ))
+                foodItem.imageUri?.let {
+                    fileStorageAdapter.deleteFoodItemImage(foodItem.imageUri)
+                }
+
                 call.respond(HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound)

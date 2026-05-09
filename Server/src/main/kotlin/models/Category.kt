@@ -4,13 +4,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("category")
-class Category(
+data class Category(
     val id: Int,
+    val imageUri: String?,
+    val price: Float?,
     val name: String,
 ) : Designable
 
 fun Category.toNoIdCategory() = NoIdCategory(
     name = name,
+    imageUri = imageUri,
+    price = price,
 )
 
 fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoriesWithFoodItems(
@@ -22,9 +26,13 @@ fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoriesWith
 @Serializable
 data class NoIdCategory(
     val name: String,
+    var imageUri: String?,
+    val price: Float?
 )
 
 fun NoIdCategory.toCategory(id: Int) = Category(
     id=id,
     name = name,
+    imageUri = imageUri,
+    price = price,
 )

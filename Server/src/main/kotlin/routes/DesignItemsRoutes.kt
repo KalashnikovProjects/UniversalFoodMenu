@@ -39,7 +39,7 @@ fun Route.designItemsRoutes() {
             call.respond(HttpStatusCode.OK, items)
         }
 
-        get("/screen/{screen_id}/design-items") {
+        get("/screens/{screen_id}/design-items") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
 
@@ -71,7 +71,7 @@ fun Route.designItemsRoutes() {
             }
         }
 
-        post("/screen/{screen_id}/design-items") {
+        post("/screens/{screen_id}/design-items") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
 

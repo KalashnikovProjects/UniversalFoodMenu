@@ -27,6 +27,8 @@ class CategoriesRepository(val database: R2dbcDatabase) {
     suspend fun create(userId: Int, item: NoIdCategory): Int = suspendTransaction(database) {
         val newRecord = Categories.insert {
             it[name] = item.name
+            it[image_uri] = item.imageUri
+            it[price] = item.price
             it[user_id] = userId.toUInt()
         }
         newRecord[Categories.id].value.toInt()
@@ -68,6 +70,8 @@ class CategoriesRepository(val database: R2dbcDatabase) {
 fun rowToCategoryItem(row: ResultRow): Category {
     return Category(
         row[Categories.id].value.toInt(),
+        row[Categories.image_uri],
+        row[Categories.price],
         row[Categories.name],
     )
 }
