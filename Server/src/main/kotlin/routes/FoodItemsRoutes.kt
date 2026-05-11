@@ -128,41 +128,37 @@ fun Route.foodItemsRoutes() {
                 call.respond(HttpStatusCode.BadRequest, "Invalid ID")
                 return@put
             }
-            try {
-                val request = call.receive<NoIdFoodItem>()
-                val multipart = call.receiveMultipart()
-                var fileBytes: ByteArray? = null
-                var fileName = ""
-                multipart.forEachPart { part ->
-                    if (part is PartData.FileItem) {
-                        fileBytes = part.streamProvider().readBytes()
-                        fileName = part.originalFileName as String
-                    }
-                    part.dispose()
+            val request = call.receive<NoIdFoodItem>()
+            val multipart = call.receiveMultipart()
+            var fileBytes: ByteArray? = null
+            var fileName = ""
+            multipart.forEachPart { part ->
+                if (part is PartData.FileItem) {
+                    fileBytes = part.streamProvider().readBytes()
+                    fileName = part.originalFileName as String
                 }
-                fileBytes?.let { bytes ->
-                    val imageUrl = fileStorageAdapter.saveFoodItemImage(
-                        bytes,
-                        fileName.substringAfterLast(".", "")
-                    )
-                    request.imageUri = imageUrl
-                }
+                part.dispose()
+            }
+            fileBytes?.let { bytes ->
+                val imageUrl = fileStorageAdapter.saveFoodItemImage(
+                    bytes,
+                    fileName.substringAfterLast(".", "")
+                )
+                request.imageUri = imageUrl
+            }
 
-                val isUpdated = foodItemsRepository.updateById(userId, id, request)
+            val isUpdated = foodItemsRepository.updateById(userId, id, request)
 
-                if (isUpdated) {
-                    eventBus.getFlow(userId).emit(
-                        Events.ChangeFoodEvent(
-                            id,
-                            element = request.toFoodItem(id)
-                        )
+            if (isUpdated) {
+                eventBus.getFlow(userId).emit(
+                    Events.ChangeFoodEvent(
+                        id,
+                        element = request.toFoodItem(id)
                     )
-                    call.respond(HttpStatusCode.OK)
-                } else {
-                    call.respond(HttpStatusCode.NotFound)
-                }
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
+                )
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
 

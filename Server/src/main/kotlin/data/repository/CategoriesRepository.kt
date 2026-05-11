@@ -29,6 +29,7 @@ class CategoriesRepository(val database: R2dbcDatabase) {
             it[name] = item.name
             it[image_uri] = item.imageUri
             it[price] = item.price
+            it[in_stock] = item.inStock
             it[user_id] = userId.toUInt()
         }
         newRecord[Categories.id].value.toInt()
@@ -70,8 +71,9 @@ class CategoriesRepository(val database: R2dbcDatabase) {
 fun rowToCategoryItem(row: ResultRow): Category {
     return Category(
         row[Categories.id].value.toInt(),
+        row[Categories.name],
         row[Categories.image_uri],
         row[Categories.price],
-        row[Categories.name],
+        row[Categories.in_stock]
     )
 }

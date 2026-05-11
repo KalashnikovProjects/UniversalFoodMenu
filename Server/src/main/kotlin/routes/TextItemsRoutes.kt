@@ -52,15 +52,11 @@ fun Route.textItemsRoutes() {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
             val request = call.receive<NoIdTextItem>()
-            try {
-                val createdId = textItemsRepository.create(userId, request)
-                eventBus.getFlow(userId).emit(Events.AddTextEvent(
-                    element = request.toTextItem(createdId)
-                ))
-                call.respond(HttpStatusCode.Created, request.toTextItem(createdId))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
-            }
+            val createdId = textItemsRepository.create(userId, request)
+            eventBus.getFlow(userId).emit(Events.AddTextEvent(
+                element = request.toTextItem(createdId)
+            ))
+            call.respond(HttpStatusCode.Created, request.toTextItem(createdId))
         }
 
         put("/text-items/{id}") {

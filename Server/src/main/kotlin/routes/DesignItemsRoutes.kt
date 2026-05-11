@@ -82,15 +82,11 @@ fun Route.designItemsRoutes() {
             }
 
             val request = call.receive<NoIdDesignItem>()
-            try {
-                val createdId = designItemsRepository.create(userId, screenId, request)
-                eventBus.getFlow(userId).emit(Events.AddDesignEvent(
-                    element = request.toDesignItem(createdId)
-                ))
-                call.respond(HttpStatusCode.Created, request.toDesignItem(createdId))
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
-            }
+            val createdId = designItemsRepository.create(userId, screenId, request)
+            eventBus.getFlow(userId).emit(Events.AddDesignEvent(
+                element = request.toDesignItem(createdId)
+            ))
+            call.respond(HttpStatusCode.Created, request.toDesignItem(createdId))
         }
 
         put("/design-items/{id}") {

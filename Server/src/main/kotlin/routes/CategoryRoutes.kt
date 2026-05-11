@@ -83,20 +83,15 @@ fun Route.categoryRoutes() {
             }
 
             val request = call.receive<List<FoodItem>>()
-
-            try {
-                foodItemsCategoriesRepository.setFoodItemsForCategory(userId,
-                    id,
-                    request.map { it.id }
-                )
-                eventBus.getFlow(userId).emit(Events.SetCategoryItems(
-                    id,
-                    request
-                ))
-                call.respond(HttpStatusCode.OK)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, e.localizedMessage ?: "Unknown error")
-            }
+            foodItemsCategoriesRepository.setFoodItemsForCategory(userId,
+                id,
+                request.map { it.id }
+            )
+            eventBus.getFlow(userId).emit(Events.SetCategoryItems(
+                id,
+                request
+            ))
+            call.respond(HttpStatusCode.OK)
         }
 
         post("/categories") {
