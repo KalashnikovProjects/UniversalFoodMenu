@@ -1,21 +1,14 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.Screens
-import com.kalashnikovprojects.ufmserver.data.tables.TextItems
-import com.kalashnikovprojects.ufmserver.data.tables.TextItems.text
-import com.kalashnikovprojects.ufmserver.data.tables.Users
-import com.kalashnikovprojects.ufmserver.dto.NoIdTVScreen
-import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
-import com.kalashnikovprojects.ufmserver.dto.TVScreen
-import com.kalashnikovprojects.ufmserver.dto.UserHashedPassword
+import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
+import com.kalashnikovprojects.ufmserver.models.TVScreen
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.deleteWhere
@@ -24,8 +17,8 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 
-class ScreensRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class ScreensRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(Screens)
         }

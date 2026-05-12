@@ -2,9 +2,9 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.TextItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.Events
-import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
-import com.kalashnikovprojects.ufmserver.dto.toTextItem
+import com.kalashnikovprojects.ufmserver.models.Events
+import com.kalashnikovprojects.ufmserver.models.NoIdTextItem
+import com.kalashnikovprojects.ufmserver.models.toTextItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal

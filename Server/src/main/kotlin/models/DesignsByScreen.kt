@@ -1,6 +1,5 @@
 package com.kalashnikovprojects.ufmserver.models
 
-import com.kalashnikovprojects.ufmserver.dto.DesignItem
 import kotlinx.serialization.Serializable
 
 

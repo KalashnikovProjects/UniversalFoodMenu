@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmserver.dto
+package com.kalashnikovprojects.ufmserver.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -78,7 +78,31 @@ sealed class Events {
     @Serializable
     data class DeleteScreenEvent(val id: Int) : Events()
 
-    @SerialName("full_reload_event")
+    @SerialName("reload_design_items_by_screen_id")
     @Serializable
-    object FullReloadEvent : Events()
+    data class ReloadDesignItemsByScreenId(val screenId: Int, val items: List<DesignItem>) : Events()
+
+    @SerialName("reload_design_items_with_screen_id")
+    @Serializable
+    data class ReloadDesignItemsWithScreenId(val items: List<DesignItemWithScreenId>) : Events()
+
+    @SerialName("reload_food_items")
+    @Serializable
+    data class ReloadFoodItems(val items: List<FoodItem>) : Events()
+
+    @SerialName("reload_category_items")
+    @Serializable
+    data class ReloadCategoryItems(val items: List<Category>) : Events()
+
+    @SerialName("reload_text_items")
+    @Serializable
+    data class ReloadTextItems(val items: List<TextItem>) : Events()
+
+    @SerialName("reload_image_items")
+    @Serializable
+    data class ReloadImageItems(val items: List<ImageItem>) : Events()
+
+    @SerialName("reload_screen_items")
+    @Serializable
+    data class ReloadScreenItems(val items: List<TVScreen>) : Events()
 }

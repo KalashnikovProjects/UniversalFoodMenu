@@ -1,8 +1,8 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.Users
-import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
-import com.kalashnikovprojects.ufmserver.dto.UserHashedPassword
+import com.kalashnikovprojects.ufmserver.models.NoIdUserHashedPassword
+import com.kalashnikovprojects.ufmserver.models.UserHashedPassword
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.*
@@ -12,8 +12,8 @@ import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 
 
-class UsersRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class UsersRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(Users)
         }

@@ -5,14 +5,14 @@ import com.kalashnikovprojects.ufmserver.data.tables.DesignItems
 import com.kalashnikovprojects.ufmserver.data.tables.FoodItems
 import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
 import com.kalashnikovprojects.ufmserver.data.tables.TextItems
-import com.kalashnikovprojects.ufmserver.dto.Category
-import com.kalashnikovprojects.ufmserver.dto.DesignItem
-import com.kalashnikovprojects.ufmserver.dto.Designable
-import com.kalashnikovprojects.ufmserver.dto.FoodItem
-import com.kalashnikovprojects.ufmserver.dto.ImageItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdDesignItem
-import com.kalashnikovprojects.ufmserver.dto.TextItem
-import com.kalashnikovprojects.ufmserver.dto.toDesignItemWithScreenId
+import com.kalashnikovprojects.ufmserver.models.Category
+import com.kalashnikovprojects.ufmserver.models.DesignItem
+import com.kalashnikovprojects.ufmserver.models.Designable
+import com.kalashnikovprojects.ufmserver.models.FoodItem
+import com.kalashnikovprojects.ufmserver.models.ImageItem
+import com.kalashnikovprojects.ufmserver.models.NoIdDesignItem
+import com.kalashnikovprojects.ufmserver.models.TextItem
+import com.kalashnikovprojects.ufmserver.models.toDesignItemWithScreenId
 import com.kalashnikovprojects.ufmserver.models.DesignItemWithScreenId
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
@@ -28,8 +28,8 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 
-class DesignItemsRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class DesignItemsRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(DesignItems)
         }

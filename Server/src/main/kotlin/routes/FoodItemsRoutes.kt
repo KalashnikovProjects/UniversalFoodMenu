@@ -4,10 +4,10 @@ import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.Category
-import com.kalashnikovprojects.ufmserver.dto.Events
-import com.kalashnikovprojects.ufmserver.dto.NoIdFoodItem
-import com.kalashnikovprojects.ufmserver.dto.toFoodItem
+import com.kalashnikovprojects.ufmserver.models.Category
+import com.kalashnikovprojects.ufmserver.models.Events
+import com.kalashnikovprojects.ufmserver.models.NoIdFoodItem
+import com.kalashnikovprojects.ufmserver.models.toFoodItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart

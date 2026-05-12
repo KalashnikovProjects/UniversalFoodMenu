@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmserver.dto
+package com.kalashnikovprojects.ufmserver.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

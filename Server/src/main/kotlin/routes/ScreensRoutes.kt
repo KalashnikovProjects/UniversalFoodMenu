@@ -1,20 +1,13 @@
 package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
-import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
-import com.kalashnikovprojects.ufmserver.dto.Events
-import com.kalashnikovprojects.ufmserver.dto.NoIdTVScreen
-import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
-import com.kalashnikovprojects.ufmserver.dto.TVScreen
-import com.kalashnikovprojects.ufmserver.dto.toTVScreen
-import com.kalashnikovprojects.ufmserver.dto.toTextItem
+import com.kalashnikovprojects.ufmserver.models.Events
+import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
+import com.kalashnikovprojects.ufmserver.models.toTVScreen
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
-import io.ktor.server.plugins.ratelimit.RateLimitName
-import io.ktor.server.plugins.ratelimit.rateLimit
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -22,14 +15,8 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
-import io.ktor.server.websocket.sendSerialized
-import io.ktor.server.websocket.webSocket
-import io.ktor.websocket.send
-import kotlinx.coroutines.CompletableDeferred
 import org.koin.ktor.ext.inject
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.getValue
-import kotlin.text.toInt
 import kotlin.text.toIntOrNull
 
 fun Route.screensRoutes() {

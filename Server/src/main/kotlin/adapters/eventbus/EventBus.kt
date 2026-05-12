@@ -1,6 +1,6 @@
 package com.kalashnikovprojects.ufmserver.adapters.eventbus
 
-import com.kalashnikovprojects.ufmserver.dto.Events
+import com.kalashnikovprojects.ufmserver.models.Events
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.concurrent.ConcurrentHashMap
 

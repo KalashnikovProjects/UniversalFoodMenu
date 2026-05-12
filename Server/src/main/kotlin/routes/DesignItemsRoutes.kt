@@ -2,11 +2,10 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.DesignItemsRepository
-import com.kalashnikovprojects.ufmserver.dto.Events
-import com.kalashnikovprojects.ufmserver.dto.NoIdDesignItem
-import com.kalashnikovprojects.ufmserver.dto.toDesignItem
-import com.kalashnikovprojects.ufmserver.models.DesignsByScreen
+import com.kalashnikovprojects.ufmserver.models.Events
+import com.kalashnikovprojects.ufmserver.models.NoIdDesignItem
 import com.kalashnikovprojects.ufmserver.models.toDesignItem
+import com.kalashnikovprojects.ufmserver.models.DesignsByScreen
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal

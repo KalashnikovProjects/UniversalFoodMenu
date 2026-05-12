@@ -2,8 +2,8 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.dto.FoodItemsCategorized
-import com.kalashnikovprojects.ufmserver.dto.toCategoryWithFoodItems
+import com.kalashnikovprojects.ufmserver.models.FoodItemsCategorized
+import com.kalashnikovprojects.ufmserver.models.toCategoryWithFoodItems
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal

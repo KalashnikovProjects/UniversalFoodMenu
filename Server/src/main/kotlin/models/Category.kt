@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmserver.dto
+package com.kalashnikovprojects.ufmserver.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -20,8 +20,11 @@ fun Category.toNoIdCategory() = NoIdCategory(
 )
 
 fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoriesWithFoodItems(
-    id=id,
+    id = id,
     name = name,
+    imageUri = imageUri,
+    price = price,
+    inStock = inStock,
     foodItems = foodItems,
 )
 
@@ -29,8 +32,8 @@ fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoriesWith
 data class NoIdCategory(
     val name: String,
     var imageUri: String?,
+    val price: Float?,
     val inStock: Boolean,
-    val price: Float?
 )
 
 fun NoIdCategory.toCategory(id: Int) = Category(

@@ -1,8 +1,8 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
-import com.kalashnikovprojects.ufmserver.dto.ImageItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdImageItem
+import com.kalashnikovprojects.ufmserver.models.ImageItem
+import com.kalashnikovprojects.ufmserver.models.NoIdImageItem
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
@@ -16,8 +16,8 @@ import org.jetbrains.exposed.v1.r2dbc.insert
 import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 
-class ImageItemsRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class ImageItemsRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(ImageItems)
         }

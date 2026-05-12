@@ -1,8 +1,8 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.FoodItems
-import com.kalashnikovprojects.ufmserver.dto.FoodItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdFoodItem
+import com.kalashnikovprojects.ufmserver.models.FoodItem
+import com.kalashnikovprojects.ufmserver.models.NoIdFoodItem
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
@@ -17,8 +17,8 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 
-class FoodItemsRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class FoodItemsRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(FoodItems)
         }

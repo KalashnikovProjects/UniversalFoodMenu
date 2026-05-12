@@ -2,8 +2,8 @@ package com.kalashnikovprojects.ufmserver.routes
 
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
-import com.kalashnikovprojects.ufmserver.dto.NoIdTVScreen
-import com.kalashnikovprojects.ufmserver.dto.TVScreen
+import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
+import com.kalashnikovprojects.ufmserver.models.TVScreen
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal

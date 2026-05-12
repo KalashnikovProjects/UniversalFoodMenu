@@ -1,6 +1,5 @@
-package com.kalashnikovprojects.ufmserver.dto
+package com.kalashnikovprojects.ufmserver.models
 
-import com.kalashnikovprojects.ufmserver.models.DesignItemWithScreenId
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,8 +1,8 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
 import com.kalashnikovprojects.ufmserver.data.tables.Categories
-import com.kalashnikovprojects.ufmserver.dto.Category
-import com.kalashnikovprojects.ufmserver.dto.NoIdCategory
+import com.kalashnikovprojects.ufmserver.models.Category
+import com.kalashnikovprojects.ufmserver.models.NoIdCategory
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
@@ -17,8 +17,8 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 
-class CategoriesRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class CategoriesRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(Categories)
         }

@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmserver.dto
+package com.kalashnikovprojects.ufmserver.models
 
 import kotlinx.serialization.Serializable
 
@@ -7,5 +7,8 @@ import kotlinx.serialization.Serializable
 data class CategoriesWithFoodItems(
     val id: Int,
     val name: String,
+    val imageUri: String?,
+    val price: Float?,
+    val inStock: Boolean,
     val foodItems: List<FoodItem>
 )

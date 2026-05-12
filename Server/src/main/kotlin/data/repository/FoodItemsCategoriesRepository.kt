@@ -3,13 +3,10 @@ package com.kalashnikovprojects.ufmserver.data.repository
 import com.kalashnikovprojects.ufmserver.data.tables.Categories
 import com.kalashnikovprojects.ufmserver.data.tables.FoodItems
 import com.kalashnikovprojects.ufmserver.data.tables.FoodItemsCategories
-import com.kalashnikovprojects.ufmserver.dto.Category
-import com.kalashnikovprojects.ufmserver.dto.FoodItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdCategory
+import com.kalashnikovprojects.ufmserver.models.Category
+import com.kalashnikovprojects.ufmserver.models.FoodItem
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
-import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
@@ -19,14 +16,11 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.batchInsert
 import org.jetbrains.exposed.v1.r2dbc.deleteWhere
-import org.jetbrains.exposed.v1.r2dbc.insert
-import org.jetbrains.exposed.v1.r2dbc.insertIgnore
 import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
-import org.jetbrains.exposed.v1.r2dbc.update
 
-class FoodItemsCategoriesRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class FoodItemsCategoriesRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(FoodItemsCategories)
         }

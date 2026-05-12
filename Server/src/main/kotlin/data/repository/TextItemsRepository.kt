@@ -1,16 +1,8 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
-import com.kalashnikovprojects.ufmserver.data.tables.FoodItems
-import com.kalashnikovprojects.ufmserver.data.tables.FoodItems.image_uri
-import com.kalashnikovprojects.ufmserver.data.tables.FoodItems.in_stock
-import com.kalashnikovprojects.ufmserver.data.tables.FoodItems.name
-import com.kalashnikovprojects.ufmserver.data.tables.FoodItems.price
-import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
 import com.kalashnikovprojects.ufmserver.data.tables.TextItems
-import com.kalashnikovprojects.ufmserver.data.tables.Users
-import com.kalashnikovprojects.ufmserver.dto.ImageItem
-import com.kalashnikovprojects.ufmserver.dto.NoIdTextItem
-import com.kalashnikovprojects.ufmserver.dto.TextItem
+import com.kalashnikovprojects.ufmserver.models.NoIdTextItem
+import com.kalashnikovprojects.ufmserver.models.TextItem
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
@@ -25,8 +17,8 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 
-class TextItemsRepository(val database: R2dbcDatabase) {
-    suspend fun createSchema() {
+class TextItemsRepository(val database: R2dbcDatabase) : Repository {
+    override suspend fun createSchema() {
         suspendTransaction(database) {
             SchemaUtils.create(TextItems)
         }

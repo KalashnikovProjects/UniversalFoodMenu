@@ -3,8 +3,8 @@ package com.kalashnikovprojects.ufmserver.routes
 import com.kalashnikovprojects.ufmserver.adapters.hashing.HashingAdapter
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.UsersRepository
-import com.kalashnikovprojects.ufmserver.dto.UserRawPassword
-import com.kalashnikovprojects.ufmserver.dto.NoIdUserHashedPassword
+import com.kalashnikovprojects.ufmserver.models.UserRawPassword
+import com.kalashnikovprojects.ufmserver.models.NoIdUserHashedPassword
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.*
 import io.ktor.server.request.*
