@@ -8,21 +8,22 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.kalashnikovprojects.ufmtv.R
 import com.kalashnikovprojects.ufmtv.data.remote.EventsWebSocketService
+import com.kalashnikovprojects.ufmtv.data.remote.LoginWebSocketService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class EventsForegroundService : Service() {
+class LoginEventsForegroundService : Service() {
     @Inject
-    lateinit var webSocketService: EventsWebSocketService
+    lateinit var webSocketService: LoginWebSocketService
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
-        val notification = NotificationCompat.Builder(this, "ufm_main_notification")
+        val notification = NotificationCompat.Builder(this, "ufm_login_notification")
             .setContentTitle("Universal food menu")
-            .setContentText("Updating menu")
+            .setContentText("Logging in")
             .setSmallIcon(R.drawable.ufm_icon_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOngoing(true)
@@ -31,12 +32,12 @@ class EventsForegroundService : Service() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14
             startForeground(
-                NOTIFICATION_ID,
+                LoginEventsForegroundService.Companion.NOTIFICATION_ID,
                 notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
             )
         } else {
-            startForeground(NOTIFICATION_ID, notification)
+            startForeground(LoginEventsForegroundService.Companion.NOTIFICATION_ID, notification)
         }
     }
 
@@ -54,6 +55,6 @@ class EventsForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     companion object {
-        private const val NOTIFICATION_ID = 101
+        private const val NOTIFICATION_ID = 102
     }
 }

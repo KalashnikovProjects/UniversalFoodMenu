@@ -1,40 +1,30 @@
 package com.kalashnikovprojects.ufmtv.di
 
-import com.kalashnikovprojects.ufmtv.data.remote.EventWebSocketService
+import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
+import com.kalashnikovprojects.ufmtv.data.remote.EventsWebSocketService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.ktor.client.*
-import io.ktor.client.plugins.websocket.*
-import io.ktor.client.engine.cio.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.websocket.WebSockets
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
-    @Provides
-    @Singleton
-    fun provideApplicationScope(): CoroutineScope {
-        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    }
-
     @Provides
     @Singleton
     fun provideKtorClient(): HttpClient {
         return HttpClient(CIO) {
             install(WebSockets)
-            // Serialization settings
         }
     }
 
     @Provides
     @Singleton
-    fun provideWebSocketService(client: HttpClient): EventWebSocketService {
-        return EventWebSocketService(client)
+    fun provideEventsWebSocketService(client: HttpClient, dataStore: UserPreferencesDataSource): EventsWebSocketService {
+        return EventsWebSocketService(client, dataStore)
     }
 }

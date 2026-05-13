@@ -1,8 +1,7 @@
 package com.kalashnikovprojects.ufmtv.data.remote
 
 import com.kalashnikovprojects.ufmtv.BuildConfig
-import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
-import com.kalashnikovprojects.ufmtv.data.model.Events
+import com.kalashnikovprojects.ufmtv.data.model.LoginEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.websocket.Frame
@@ -17,28 +16,28 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class EventsWebSocketService @Inject constructor(
+class LoginWebSocketService @Inject constructor(
     private val client: HttpClient,
-    private val dataStore: UserPreferencesDataSource,
-) {
-    private val ipAddress: String = BuildConfig.SERVER_IP
-    private val port: Int = BuildConfig.SERVER_PORT
+    ) {
+    private val ipAddress = BuildConfig.SERVER_IP
+    private val port = BuildConfig.SERVER_PORT.toInt()
 
-    private val _events = MutableSharedFlow<Events>()
+    private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
     private var connectionJob: Job? = null
 
     fun connect(scope: CoroutineScope) {
+
         if (connectionJob?.isActive == true) return
 
         connectionJob = scope.launch {
             try {
-                client.webSocket(host = ipAddress, port = port, path = "/api/ws/updates") {
+                client.webSocket(host = ipAddress, port = port, path = "/api/ws/tv_auth") {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
                             val text = frame.readText()
-                            val event = Json.decodeFromString<Events>(text)
+                            val event = Json.decodeFromString<LoginEvent>(text)
                             _events.emit(event)
                         }
                     }

@@ -10,7 +10,7 @@ fun Application.configureRouting() {
         route("/api") {
             authorizationRoutes()
             tvAuthorizationRoutes()
-            websocketListenersRoutes()
+            eventsWebsocketRoutes()
             categoryRoutes()
             foodItemsRoutes()
             categorizedFoodItemsRoutes()

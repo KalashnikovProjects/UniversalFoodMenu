@@ -19,7 +19,7 @@ import kotlinx.coroutines.awaitAll
 import org.koin.ktor.ext.inject
 import kotlin.getValue
 
-fun Route.websocketListenersRoutes() {
+fun Route.eventsWebsocketRoutes() {
     val designItemsRepository by inject<DesignItemsRepository>()
     val textItemsRepository by inject<TextItemsRepository>()
     val foodItemsRepository by inject<FoodItemsRepository>()

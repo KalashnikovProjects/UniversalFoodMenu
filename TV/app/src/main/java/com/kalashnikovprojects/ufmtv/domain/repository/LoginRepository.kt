@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
     fun observeLogin(): Flow<LoginEvent>
+    fun logOut()
     suspend fun disconnect()
 }

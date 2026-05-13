@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kalashnikovprojects.ufmtv.domain.model.FoodItem
-import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
+import com.kalashnikovprojects.ufmtv.presentation.theme.UFMControllerTheme
 import com.kalashnikovprojects.ufmtv.presentation.ui.component.FoodItemRowCard
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.MainMenuViewModel
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel

@@ -12,7 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Surface
 import com.kalashnikovprojects.ufmtv.presentation.navigation.AppNavGraph
-import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
+import com.kalashnikovprojects.ufmtv.presentation.theme.UFMControllerTheme
 import com.kalashnikovprojects.ufmtv.services.EventsForegroundService
 import dagger.hilt.android.AndroidEntryPoint
 

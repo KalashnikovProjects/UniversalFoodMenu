@@ -6,3 +6,12 @@ data class ScreenStyle(
     val defaultTextColorHex: String?,
     val defaultShowPrice: Boolean?,
 )
+
+fun defaultScreenStyle(): ScreenStyle {
+    return ScreenStyle (
+        backgroundColorHex = null,
+        defaultNotInStockStyle = null,
+        defaultTextColorHex = null,
+        defaultShowPrice = null
+    )
+}
