@@ -40,18 +40,21 @@ fun Route.websocketListenersRoutes() {
                     items = designItemsRepository.getAllByScreenIdUserId(screenId, userId)
                 ))
             } else {
-                listOf(
-                    Events.ReloadDesignItemsWithScreenId(items = designItemsRepository.getAllByUserId(userId)),
-                    Events.ReloadFoodItems(items = foodItemsRepository.getAllByUserId(userId)),
-                    Events.ReloadCategoryItems(items = categoriesRepository.getAllByUserId(userId)),
-                    Events.ReloadTextItems(items = textItemsRepository.getAllByUserId(userId)),
-                    Events.ReloadImageItems(items = imageItemsRepository.getAllByUserId(userId)),
-                    Events.ReloadScreenItems(items = screensRepository.getAllByUserId(userId)),
-                ).map {
-                    async {
-                        sendSerialized(it)
-                    }
-                }.awaitAll()
+                val screensDeferred = async {
+                    sendSerialized(Events.ReloadScreens(items = screensRepository.getAllByUserId(userId)))
+                }
+                val secondDeferred = async {
+                    sendSerialized(Events.ReloadFoodItems(items = foodItemsRepository.getAllByUserId(userId)))
+                    sendSerialized(Events.ReloadCategoryItems(items = categoriesRepository.getAllByUserId(userId)))
+                }
+                val textItemsDeferred = async {
+                    sendSerialized(Events.ReloadTextItems(items = textItemsRepository.getAllByUserId(userId)))
+                }
+                val imageItemsDeferred = async {
+                    sendSerialized(Events.ReloadImageItems(items = imageItemsRepository.getAllByUserId(userId)))
+                }
+                awaitAll(screensDeferred, secondDeferred, textItemsDeferred, imageItemsDeferred)
+                sendSerialized(Events.ReloadDesignItemsWithScreenId(items = designItemsRepository.getAllByUserId(userId)))
             }
 
             eventBus.getFlow(userId).collect { event ->
