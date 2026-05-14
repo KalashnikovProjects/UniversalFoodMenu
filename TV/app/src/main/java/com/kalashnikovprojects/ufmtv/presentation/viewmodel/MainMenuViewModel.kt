@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kalashnikovprojects.ufmtv.domain.usecase.GetDesignItemsUseCase
 import com.kalashnikovprojects.ufmtv.domain.usecase.GetScreenStyleUseCase
-import com.kalashnikovprojects.ufmtv.domain.model.DesignItem
-import com.kalashnikovprojects.ufmtv.domain.model.ScreenStyle
+import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
+import com.kalashnikovprojects.ufmtv.domain.entity.ScreenStyle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

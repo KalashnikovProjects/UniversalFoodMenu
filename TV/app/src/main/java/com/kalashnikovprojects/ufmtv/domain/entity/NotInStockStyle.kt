@@ -1,4 +1,4 @@
-package com.kalashnikovprojects.ufmtv.domain.model
+package com.kalashnikovprojects.ufmtv.domain.entity
 
 enum class NotInStockStyle {
     CROSSED_OUT,

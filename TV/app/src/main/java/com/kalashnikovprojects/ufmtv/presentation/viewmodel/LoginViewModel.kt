@@ -3,7 +3,7 @@ package com.kalashnikovprojects.ufmtv.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kalashnikovprojects.ufmtv.domain.usecase.LoginUseCase
-import com.kalashnikovprojects.ufmtv.domain.model.LoginEvent
+import com.kalashnikovprojects.ufmtv.domain.entity.LoginEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -42,15 +42,15 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loginUseCase().collect { event ->
                 when (event) {
-                    is LoginEvent.CodeReceived -> {
+                    is LoginEvents.CodeReceived -> {
                         _uiState.value = RegistrationUiState.DisplayCode(event.code)
                     }
-                    is LoginEvent.TokenReceived -> {
+                    is LoginEvents.TokenReceived -> {
                         _uiState.value = RegistrationUiState.Completed
 
                         _navigationEvent.emit(Unit)
                     }
-                    is LoginEvent.Closed -> {
+                    is LoginEvents.Closed -> {
                         listenToWebSocket()
                     }
                 }

@@ -1,7 +1,8 @@
 package com.kalashnikovprojects.ufmtv.data.remote
 
 import com.kalashnikovprojects.ufmtv.BuildConfig
-import com.kalashnikovprojects.ufmtv.data.model.LoginEvent
+import com.kalashnikovprojects.ufmtv.data.model.LoginEventsDTO
+import com.kalashnikovprojects.ufmtv.domain.entity.LoginEvents
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.websocket.Frame
@@ -22,7 +23,7 @@ class LoginWebSocketService @Inject constructor(
     private val ipAddress = BuildConfig.SERVER_IP
     private val port = BuildConfig.SERVER_PORT.toInt()
 
-    private val _events = MutableSharedFlow<LoginEvent>()
+    private val _events = MutableSharedFlow<LoginEvents>()
     val events = _events.asSharedFlow()
 
     private var connectionJob: Job? = null
@@ -37,12 +38,13 @@ class LoginWebSocketService @Inject constructor(
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
                             val text = frame.readText()
-                            val event = Json.decodeFromString<LoginEvent>(text)
-                            _events.emit(event)
+                            val event = Json.decodeFromString<LoginEventsDTO>(text)
+                            _events.emit(event.toEntity())
                         }
                     }
                 }
             } catch (e: Exception) {
+                _events.emit(LoginEvents.Closed)
                 e.printStackTrace()
             }
         }

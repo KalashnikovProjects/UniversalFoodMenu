@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.kalashnikovprojects.ufmtv.domain.model.FoodItem
+import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
 
 @Composable
 fun FoodItemRowCard(item: FoodItem, onFoodItemToggle: (Int) -> Unit) {

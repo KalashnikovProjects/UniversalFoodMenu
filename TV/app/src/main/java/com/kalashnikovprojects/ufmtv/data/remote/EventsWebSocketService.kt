@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class EventsWebSocketService @Inject constructor(
     private val client: HttpClient,
-    private val dataStore: UserPreferencesDataSource,
+    private val userPreferencesDataSource: UserPreferencesDataSource,
 ) {
     private val ipAddress: String = BuildConfig.SERVER_IP
     private val port: Int = BuildConfig.SERVER_PORT

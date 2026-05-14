@@ -1,6 +1,6 @@
 package com.kalashnikovprojects.ufmtv.data.model
 
-import com.kalashnikovprojects.ufmtv.data.model.StyleDTO
+import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,3 +9,11 @@ data class DesignItemDTO(
     val element: DesignableDTO,
     val style: StyleDTO,
 )
+
+fun DesignItemDTO.toEntity(): DesignItem {
+    return DesignItem(
+        id = id,
+        element = element.toEntity(),
+        style = style.toEntity(),
+    )
+}

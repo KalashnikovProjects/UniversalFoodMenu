@@ -1,9 +1,9 @@
-package com.kalashnikovprojects.ufmtv.domain.model
+package com.kalashnikovprojects.ufmtv.domain.entity
 
-data class Category(
+data class FoodItem(
     val id: Int,
     val name: String,
+    val price: Float,
     val imageUri: String?,
-    val price: Float?,
     val inStock: Boolean,
 ) : Designable
