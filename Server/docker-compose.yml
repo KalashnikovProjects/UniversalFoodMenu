@@ -8,6 +8,8 @@ services:
     environment:
       SERVER_HOST:
         localhost:8096
+      POSTGRES_HOST:
+        ufm-db:5432
     env_file:
       - stack.env  # POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
     depends_on:

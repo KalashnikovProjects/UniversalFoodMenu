@@ -97,7 +97,7 @@ fun Route.screensRoutes() {
 
         val isDeleted = screensRepository.deleteById(userId, id)
         if (isDeleted) {
-            eventBus.getFlow(userId).emit(Events.DeleteScreenEvent(
+            eventBus.getFlow(userId).emit(Events.LogoutScreenEvent(
                 id,
             ))
             call.respond(HttpStatusCode.OK)

@@ -16,12 +16,13 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 @Singleton
 class LoginWebSocketService @Inject constructor(
     private val client: HttpClient,
     ) {
-    private val ipAddress = BuildConfig.SERVER_IP
-    private val port = BuildConfig.SERVER_PORT.toInt()
+    private val ipAddress: String = BuildConfig.SERVER_IP
+    private val port: Int = BuildConfig.SERVER_PORT
 
     private val _events = MutableSharedFlow<LoginEvents>()
     val events = _events.asSharedFlow()
@@ -34,7 +35,10 @@ class LoginWebSocketService @Inject constructor(
 
         connectionJob = scope.launch {
             try {
-                client.webSocket(host = ipAddress, port = port, path = "/api/ws/tv_auth") {
+                client.webSocket(host = ipAddress, port = port, path = "/api/ws/tv_auth",
+                    request = {
+                        attributes.put(NoTokenRequest, true)
+                    }) {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
                             val text = frame.readText()
@@ -44,7 +48,7 @@ class LoginWebSocketService @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                _events.emit(LoginEvents.Closed)
+                _events.emit(LoginEvents.ClosedWithError)
                 e.printStackTrace()
             }
         }

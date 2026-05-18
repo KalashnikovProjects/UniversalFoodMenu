@@ -76,11 +76,15 @@ sealed class Events {
 
     @SerialName("logout_screen_event")
     @Serializable
-    data class DeleteScreenEvent(val id: Int) : Events()
+    data class LogoutScreenEvent(val id: Int) : Events()
 
     @SerialName("reload_design_items_by_screen_id")
     @Serializable
     data class ReloadDesignItemsByScreenId(val screenId: Int, val items: List<DesignItem>) : Events()
+
+    @SerialName("reload_screen")
+    @Serializable
+    data class ReloadScreen(val screenId: Int, val screen: TVScreen) : Events()
 
     @SerialName("reload_design_items_with_screen_id")
     @Serializable

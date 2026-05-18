@@ -6,43 +6,75 @@ import com.kalashnikovprojects.ufmtv.domain.usecase.GetDesignItemsUseCase
 import com.kalashnikovprojects.ufmtv.domain.usecase.GetScreenStyleUseCase
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import com.kalashnikovprojects.ufmtv.domain.entity.ScreenStyle
+import com.kalashnikovprojects.ufmtv.domain.entity.defaultScreenStyle
+import com.kalashnikovprojects.ufmtv.domain.usecase.FinishListeningUpdatesUseCase
+import com.kalashnikovprojects.ufmtv.domain.usecase.GetLogoutEventsUseCase
+import com.kalashnikovprojects.ufmtv.domain.usecase.StartListeningUpdatesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class MainMenuUIState(
+    val designItems: List<DesignItem>,
+    val screenStyle: ScreenStyle,
+)
+
 @HiltViewModel
 class MainMenuViewModel @Inject constructor(
-    val getDesignItemsUseCase: GetDesignItemsUseCase,
-    val getScreenStyleUseCase: GetScreenStyleUseCase,
+    private val startListeningUpdatesUseCase: StartListeningUpdatesUseCase,
+    private val finishListeningUpdatesUseCase: FinishListeningUpdatesUseCase,
+    private val getDesignItemsUseCase: GetDesignItemsUseCase,
+    private val getScreenStyleUseCase: GetScreenStyleUseCase,
+    private val getLogoutEventsUseCase: GetLogoutEventsUseCase,
     ) : ViewModel() {
-    data class MainMenuUIState(
-        var designItems: List<DesignItem>,
-        var screenStyle: ScreenStyle,
-    )
+
+    val navigateLoginScreenEvent = getLogoutEventsUseCase()
+
     private val _uiState = MutableStateFlow(MainMenuUIState(
         designItems = emptyList(),
-        screenStyle = ScreenStyle(
-            backgroundColorHex = null,
-            defaultNotInStockStyle = null,
-            defaultTextColorHex = null,
-            defaultShowPrice = null,
-        )
+        screenStyle = defaultScreenStyle(),
     ))
     val uiState: StateFlow<MainMenuUIState> = _uiState
-
+    private var isUpdatingStarted = false
 
     fun startUpdating() {
+        if (isUpdatingStarted) return
+        isUpdatingStarted = true
+
         viewModelScope.launch {
-            getDesignItemsUseCase().collect { items ->
-                _uiState.value.designItems = items
+            startListeningUpdatesUseCase()
+            launch {
+                getDesignItemsUseCase().collect { items ->
+                    _uiState.update { currentState ->
+                        currentState.copy(designItems = items)
+                    }
+                }
+            }
+            launch {
+                getScreenStyleUseCase().collect { style ->
+                    _uiState.update { currentState ->
+                        currentState.copy(screenStyle = style)
+                    }
+                }
             }
         }
-        viewModelScope.launch {
-            getScreenStyleUseCase().collect { style ->
-                _uiState.value.screenStyle = style
-            }
+    }
+
+    fun stopUpdating() {
+        if (!isUpdatingStarted) return
+        isUpdatingStarted = false
+
+        viewModelScope.launch(NonCancellable) {
+            finishListeningUpdatesUseCase()
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopUpdating()
     }
 }

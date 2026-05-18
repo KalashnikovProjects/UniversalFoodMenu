@@ -9,12 +9,20 @@ import com.kalashnikovprojects.ufmtv.presentation.ui.screen.MainMenuScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = LoginRoute) {
+    NavHost(navController = navController, startDestination = MainMenuRoute) {
         composable<LoginRoute> {
-            LoginScreen()
+            LoginScreen(
+                onNavigateMainScreen = {
+                    navController.navigate(MainMenuRoute)
+                }
+            )
         }
         composable<MainMenuRoute> {
-            MainMenuScreen()
+            MainMenuScreen(
+                onNavigateLoginScreen = {
+                    navController.navigate(LoginRoute)
+                }
+            )
         }
     }
 }

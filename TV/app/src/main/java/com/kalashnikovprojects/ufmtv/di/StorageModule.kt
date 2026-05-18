@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.kalashnikovprojects.ufmtv.data.local.MainDataSource
 import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
 import dagger.Module
 import dagger.Provides
@@ -36,5 +37,11 @@ object StorageModule {
     @Singleton
     fun provideUserPreferencesDataStore(dataStore: DataStore<Preferences>, scope: CoroutineScope): UserPreferencesDataSource {
         return UserPreferencesDataSource(dataStore, scope)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMainDataSource(): MainDataSource {
+        return MainDataSource()
     }
 }

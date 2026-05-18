@@ -2,36 +2,33 @@ package com.kalashnikovprojects.ufmtv.data.repository
 
 import com.kalashnikovprojects.ufmtv.data.local.MainDataSource
 import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
-import com.kalashnikovprojects.ufmtv.data.model.CategoryDTO
 import com.kalashnikovprojects.ufmtv.data.model.Events
 import com.kalashnikovprojects.ufmtv.data.model.toEntity
 import com.kalashnikovprojects.ufmtv.data.remote.EventsWebSocketService
-import com.kalashnikovprojects.ufmtv.domain.entity.Category
 import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
 import com.kalashnikovprojects.ufmtv.domain.entity.ImageItem
 import com.kalashnikovprojects.ufmtv.domain.entity.ScreenStyle
-import com.kalashnikovprojects.ufmtv.domain.entity.TVScreen
 import com.kalashnikovprojects.ufmtv.domain.entity.TextItem
 import com.kalashnikovprojects.ufmtv.domain.repository.MainRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class MainRepositoryImpl @Inject constructor(
     private val dataSource: MainDataSource,
     private val eventsWebSocketService: EventsWebSocketService,
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val externalScope: CoroutineScope
 ) : MainRepository {
-
-    init {
-        observeWebSocketEvents()
-    }
+    private val _logoutEvent = eventsWebSocketService.logoutEvent
 
     override fun getDesignItems(): Flow<List<DesignItem>> {
         return dataSource.designItems
@@ -41,7 +38,11 @@ class MainRepositoryImpl @Inject constructor(
         return dataSource.currentScreen.map { it.style }
     }
 
-    private fun observeWebSocketEvents() {
+    override fun getLogoutEvent(): SharedFlow<Unit> {
+        return _logoutEvent.asSharedFlow()
+    }
+
+    override fun observeEvents() {
         externalScope.launch {
             eventsWebSocketService.events.collect { event ->
                 when (event) {
@@ -140,9 +141,12 @@ class MainRepositoryImpl @Inject constructor(
                         )
                     }
                     is Events.LogoutScreenEvent -> {
-                        userPreferencesDataSource.clearScreenId()
-                        userPreferencesDataSource.clearAuthToken()
-                        eventsWebSocketService.disconnect()
+                        if (event.id == userPreferencesDataSource.screenId.value) {
+                            userPreferencesDataSource.clearAuthToken()
+                            userPreferencesDataSource.clearScreenId()
+                            _logoutEvent.emit(Unit)
+                            eventsWebSocketService.disconnect()
+                        }
                     }
                     is Events.SetCategoryItems -> {
                         dataSource.updateDesignItemsList(
@@ -209,5 +213,9 @@ class MainRepositoryImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun disconnect() {
+        eventsWebSocketService.disconnect()
     }
 }

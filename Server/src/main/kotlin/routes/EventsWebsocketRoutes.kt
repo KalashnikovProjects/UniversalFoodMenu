@@ -14,6 +14,8 @@ import io.ktor.server.auth.principal
 import io.ktor.server.routing.Route
 import io.ktor.server.websocket.sendSerialized
 import io.ktor.server.websocket.webSocket
+import io.ktor.websocket.CloseReason
+import io.ktor.websocket.close
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import org.koin.ktor.ext.inject
@@ -35,6 +37,18 @@ fun Route.eventsWebsocketRoutes() {
             val userId = principal!!.payload.getClaim("id").asInt()
             val screenId: Int? = call.request.queryParameters["screen_id"]?.toIntOrNull()
             if (screenId != null) {
+                val screen = screensRepository.getById(userId, screenId)
+                if (screen == null) {
+                    sendSerialized(Events.LogoutScreenEvent(
+                        id = screenId,
+                    ))
+                    return@webSocket
+                }
+                sendSerialized(Events.ReloadScreen(
+                    screenId = screenId,
+                    screen = screen,
+                ))
+
                 sendSerialized(Events.ReloadDesignItemsByScreenId(
                     screenId = screenId,
                     items = designItemsRepository.getAllByScreenIdUserId(screenId, userId)

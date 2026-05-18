@@ -1,8 +1,5 @@
 package com.kalashnikovprojects.ufmtv.domain.entity
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class TVScreen(
     val id: Int,
     val name: String,

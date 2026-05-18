@@ -5,10 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoriesWithFoodItems(
-    val id: Int,
-    val name: String,
-    val imageUri: String?,
-    val price: Float?,
-    val inStock: Boolean,
+    val category: Category,
     val foodItems: List<FoodItem>
 )

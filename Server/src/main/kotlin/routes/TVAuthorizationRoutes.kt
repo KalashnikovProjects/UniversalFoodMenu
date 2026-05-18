@@ -48,7 +48,10 @@ fun Route.tvAuthorizationRoutes() {
             code = (100000..999999).random()
         } while (tvAuthStates.containsKey(code))
 
-        send(code.toString())
+        sendSerialized(
+            mapOf(
+                "code" to code.toString()
+            ))
 
         val authDeferred = CompletableDeferred<Pair<Int, String>>()
 

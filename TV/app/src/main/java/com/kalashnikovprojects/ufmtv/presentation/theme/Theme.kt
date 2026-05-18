@@ -200,7 +200,8 @@ fun UFMControllerTheme(
     dynamicColor: Boolean = true,
     content: @Composable() () -> Unit
 ) {
-  val colorScheme = darkScheme
+
+  val colorScheme = if (darkTheme) darkScheme else lightScheme
 
   MaterialTheme(
     colorScheme = colorScheme,

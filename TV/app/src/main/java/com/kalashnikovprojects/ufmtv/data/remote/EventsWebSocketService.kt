@@ -1,10 +1,13 @@
 package com.kalashnikovprojects.ufmtv.data.remote
 
+import android.util.Log
 import com.kalashnikovprojects.ufmtv.BuildConfig
 import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
 import com.kalashnikovprojects.ufmtv.data.model.Events
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.http.HttpStatusCode
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +23,11 @@ import javax.inject.Singleton
 class EventsWebSocketService @Inject constructor(
     private val client: HttpClient,
     private val userPreferencesDataSource: UserPreferencesDataSource,
-) {
+    ) {
     private val ipAddress: String = BuildConfig.SERVER_IP
     private val port: Int = BuildConfig.SERVER_PORT
+
+    val logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     private val _events = MutableSharedFlow<Events>()
     val events = _events.asSharedFlow()
@@ -31,7 +36,7 @@ class EventsWebSocketService @Inject constructor(
 
     fun connect(scope: CoroutineScope) {
         if (connectionJob?.isActive == true) return
-
+        Log.d("UFM", "connected_events")
         connectionJob = scope.launch {
             try {
                 client.webSocket(host = ipAddress, port = port, path = "/api/ws/updates") {
@@ -42,6 +47,14 @@ class EventsWebSocketService @Inject constructor(
                             _events.emit(event)
                         }
                     }
+                }
+            } catch (e: ResponseException) {
+                if (e.response.status == HttpStatusCode.Unauthorized) {
+                    userPreferencesDataSource.clearAuthToken()
+                    userPreferencesDataSource.clearScreenId()
+                    logoutEvent.emit(Unit)
+                } else {
+                    e.printStackTrace()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -20,11 +20,7 @@ fun Category.toNoIdCategory() = NoIdCategory(
 )
 
 fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoriesWithFoodItems(
-    id = id,
-    name = name,
-    imageUri = imageUri,
-    price = price,
-    inStock = inStock,
+    category = this,
     foodItems = foodItems,
 )
 
