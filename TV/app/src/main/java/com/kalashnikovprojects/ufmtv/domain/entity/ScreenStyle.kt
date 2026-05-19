@@ -1,15 +1,7 @@
 package com.kalashnikovprojects.ufmtv.domain.entity
 
 data class ScreenStyle(
-    val screenTheme: ScreenTheme?,
-    val backgroundColorHex: String?,
-    val defaultStyle: Style?,
+    val screenTheme: ScreenTheme? = null,
+    val backgroundColorHex: String? = null,
+    val defaultStyle: Style? = null,
 )
-
-fun defaultScreenStyle(): ScreenStyle {
-    return ScreenStyle (
-        screenTheme = null,
-        backgroundColorHex = null,
-        defaultStyle = defaultStyle(),
-    )
-}

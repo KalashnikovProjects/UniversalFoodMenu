@@ -1,23 +1,14 @@
 package com.kalashnikovprojects.ufmtv.domain.entity
 
 data class Style(
-    val x: Int?,
-    val y: Int?,
-    val scale: Float?,
-    val notInStockStyle: NotInStockStyle?,
-    val textColorHex: String?,
-    val showImage: Boolean?,
-    val showPrice: Boolean?,
-    val categoryItemStyle: Style?,
-)
-
-fun defaultStyle(): Style = Style(
-    x=null,
-    y=null,
-    scale=null,
-    notInStockStyle=null,
-    textColorHex=null,
-    showImage=null,
-    showPrice=null,
-    categoryItemStyle=null
+    val x: Float?=null,
+    val y: Float?=null,
+    val scale: Float?=null,
+    val notInStockStyle: NotInStockStyle?=null,
+    val textColorHex: String?=null,
+    val showImage: Boolean?=null,
+    val showPrice: Boolean?=null,
+    val foodItemStyle: FoodItemStyle?=null,
+    val imageScale: Float?=null,
+    val categoryItemStyle: Style?=null,
 )

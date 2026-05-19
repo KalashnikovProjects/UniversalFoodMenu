@@ -1,11 +1,38 @@
 package com.kalashnikovprojects.ufmtv.presentation.ui.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kalashnikovprojects.ufmtv.domain.entity.Category
+import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
+import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
+import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
+import com.kalashnikovprojects.ufmtv.domain.entity.ImageItem
+import com.kalashnikovprojects.ufmtv.domain.entity.ScreenStyle
+import com.kalashnikovprojects.ufmtv.domain.entity.ScreenTheme
+import com.kalashnikovprojects.ufmtv.domain.entity.Style
+import com.kalashnikovprojects.ufmtv.domain.entity.TextItem
+import com.kalashnikovprojects.ufmtv.presentation.theme.backgroundDark
+import com.kalashnikovprojects.ufmtv.presentation.theme.backgroundLight
+import com.kalashnikovprojects.ufmtv.presentation.ui.component.FoodItemDisplay
+import com.kalashnikovprojects.ufmtv.presentation.viewmodel.MainMenuUIState
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.MainMenuViewModel
 
 @Composable
@@ -27,74 +54,75 @@ fun MainMenuScreen(
             onNavigateLoginScreen()
         }
     }
-//
-//    Column(modifier = Modifier.fillMaxSize()) {
-//        Row(modifier = Modifier.padding(
-//            top = 10.dp, start=5.dp, end=5.dp, bottom=20.dp)) {
-//            IconButton(onClick = onToggleDrawer,
-//            ) {
-//                Icon(Icons.Filled.MoreVert, contentDescription = "Settings")
-//            }
-//            BasicTextField(
-//                state = searchState,
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .background(
-//                        MaterialTheme.colorScheme.surfaceVariant,
-//                        RoundedCornerShape(6.dp),
-//                    )
-//                    .padding(horizontal = 16.dp, vertical = 12.dp),
-//                textStyle = MaterialTheme.typography.bodyLarge.copy(
-//                    color = MaterialTheme.colorScheme.onSurface
-//                ),
-//                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
-//                decorator = { innerTextField ->
-//                    Box {
-//                        if (searchState.text.isEmpty()) {
-//                            Text(
-//                                "Поиск...",
-//                                color = MaterialTheme.colorScheme.onSurfaceVariant
-//                            )
-//                        }
-//                        innerTextField()
-//                    }
-//                }
-//            )
-//
-//            IconButton(onClick = {
-//                },
-//                modifier = Modifier.wrapContentSize(),
-//            ) {
-//                Icon(Icons.Filled.Menu, contentDescription = "Table view")
-//            }
-//        }
-//        LazyColumn {
-//            items(filteredFoodItems) {
-//                FoodItemRowCard(item = it, onFoodItemToggle)
-//            }
-//        }
-//    }
+
+    MainMenuContent(uiState)
 }
 
-//@Preview(name = "Light Mode", showSystemUi = true, showBackground = true)
-//@Preview(
-//    name = "Dark Mode",
-//    showSystemUi = true,
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES // Включает темную тему
-//)
-//@Composable
-//fun HomeScreenPreview() {
-//    UFMControllerTheme {
-//        HomeScreen(
-//            filteredFoodItems = listOf(
-//                FoodItem(1, "Американский бургер", imageUri = "https://static.vecteezy.com/system/resources/previews/041/290/624/non_2x/ai-generated-fresh-burger-isolated-on-transparent-background-free-png.png", price = 99.99F, inStock = true),
-//                FoodItem(2, "Итальянская пицца", imageUri = null, price = 99.99F, inStock = false),
-//                FoodItem(2, "Китайский вок", imageUri = null, price = 99.99F, inStock = false),
-//                FoodItem(1, "Японские роллы", imageUri = null, price = 99.99F, inStock = true)),
-//            onFoodItemToggle = {},
-//            searchState = TextFieldState(""),
-//            onToggleDrawer={}
-//        )
-//    }
-//}
+@Composable
+fun MainMenuContent(uiState: MainMenuUIState) {
+
+    val themeBackgroundColor = if (uiState.screenStyle.screenTheme==ScreenTheme.WHITE)
+        backgroundLight
+    else backgroundDark
+    val backgroundColor = if (uiState.screenStyle.backgroundColorHex != null)
+        Color(uiState.screenStyle.backgroundColorHex.toLong(16))
+    else themeBackgroundColor
+    Box (
+        modifier = Modifier.fillMaxSize().background(backgroundColor),
+    ) {
+        uiState.designItems.forEach { (id, element, style) ->
+            key(id) {
+                val biasX = ((style.x ?: 0.5F) * 2) - 1f
+                val biasY = ((style.y ?: 0.5F) * 2) - 1f
+
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .align(BiasAlignment(biasX, biasY))
+                        .scale(style.scale ?: uiState.screenStyle.defaultStyle?.scale?: 0.5F)
+                ) {
+                    when (element) {
+                        is FoodItem -> FoodItemDisplay(
+                            element,
+                            style
+                        )
+                        is CategoryWithFoodItems -> TODO()
+                        is ImageItem -> TODO()
+                        is TextItem -> TODO()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun MeinMenuPreview1() {
+    MainMenuContent(
+        // TODO заполнить сюда ещё больще всего
+        uiState = MainMenuUIState(
+            designItems = listOf(
+                DesignItem(
+                    1,
+                    CategoryWithFoodItems(
+                        category = Category(
+                            id = 1,
+                            name = "Бургеры",
+                            imageUri = null,
+                            price = null,
+                            inStock = null,
+                        ),
+                        foodItems = emptyList(),
+                    ),
+                    Style(
+                        x = 0.5F,
+                        y = 0.3F,
+                        scale = 1.1F,
+                    ),
+                )
+            ),
+            screenStyle = ScreenStyle(),
+        )
+    )
+}

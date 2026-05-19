@@ -6,7 +6,6 @@ import com.kalashnikovprojects.ufmtv.domain.usecase.GetDesignItemsUseCase
 import com.kalashnikovprojects.ufmtv.domain.usecase.GetScreenStyleUseCase
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import com.kalashnikovprojects.ufmtv.domain.entity.ScreenStyle
-import com.kalashnikovprojects.ufmtv.domain.entity.defaultScreenStyle
 import com.kalashnikovprojects.ufmtv.domain.usecase.FinishListeningUpdatesUseCase
 import com.kalashnikovprojects.ufmtv.domain.usecase.GetLogoutEventsUseCase
 import com.kalashnikovprojects.ufmtv.domain.usecase.StartListeningUpdatesUseCase
@@ -36,7 +35,7 @@ class MainMenuViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(MainMenuUIState(
         designItems = emptyList(),
-        screenStyle = defaultScreenStyle(),
+        screenStyle = ScreenStyle(),
     ))
     val uiState: StateFlow<MainMenuUIState> = _uiState
     private var isUpdatingStarted = false

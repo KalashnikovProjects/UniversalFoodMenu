@@ -12,7 +12,7 @@ data class CategoryDTO(
     val name: String,
     val imageUri: String?,
     val price: Float?,
-    val inStock: Boolean,
+    val inStock: Boolean?,
 ) : DesignableDTO {
     override fun toEntity(): CategoryWithFoodItems {
         return CategoryWithFoodItems(category = Category(

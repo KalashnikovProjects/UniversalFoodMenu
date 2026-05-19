@@ -13,5 +13,5 @@ fun defaultTVScreen() = TVScreen(
     name = "",
     width = 0,
     height = 0,
-    style=defaultScreenStyle(),
+    style= ScreenStyle(),
 )
