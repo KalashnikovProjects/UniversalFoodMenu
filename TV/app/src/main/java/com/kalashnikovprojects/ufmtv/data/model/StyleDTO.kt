@@ -1,6 +1,5 @@
 package com.kalashnikovprojects.ufmtv.data.model
 
-import com.kalashnikovprojects.ufmtv.domain.entity.FoodItemStyle
 import com.kalashnikovprojects.ufmtv.domain.entity.Style
 import kotlinx.serialization.Serializable
 
@@ -13,8 +12,9 @@ data class StyleDTO(
     val textColorHex: String?,
     val showImage: Boolean?,
     val showPrice: Boolean?,
-    val foodItemStyle: FoodItemStyleDTO?,
+    val foodItemDisplayTypeStyle: FoodItemDisplayTypeStyleDTO?,
     val imageScale: Float?,
+    val itemWidthScale: Float?,
     val categoryItemStyle: StyleDTO?,
 )
 
@@ -27,8 +27,9 @@ fun StyleDTO.toEntity() : Style {
         textColorHex = textColorHex,
         showImage = showImage,
         showPrice = showPrice,
-        foodItemStyle=foodItemStyle?.toEntity(),
+        foodItemDisplayTypeStyle=foodItemDisplayTypeStyle?.toEntity(),
         imageScale=imageScale,
+        itemWidthScale=itemWidthScale,
         categoryItemStyle=categoryItemStyle?.toEntity(),
     )
 }
