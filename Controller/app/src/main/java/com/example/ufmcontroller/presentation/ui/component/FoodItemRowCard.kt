@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import com.example.ufmcontroller.domain.model.FoodItem
+import coil3.compose.AsyncImage
+import com.example.ufmcontroller.domain.entity.FoodItem
 
 @Composable
 fun FoodItemRowCard(item: FoodItem, onFoodItemToggle: (Int) -> Unit) {

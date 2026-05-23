@@ -100,7 +100,7 @@ sealed interface Events {
 
     @SerialName("reload_text_items")
     @Serializable
-    data class ReloadTextItem(val items: List<TextItemDTO>) : Events
+    data class ReloadTextItems(val items: List<TextItemDTO>) : Events
 
     @SerialName("reload_image_items")
     @Serializable

@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmtv.data.model
 
+import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import kotlinx.serialization.Serializable
 
 @Serializable

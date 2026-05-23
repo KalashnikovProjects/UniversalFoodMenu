@@ -1,33 +1,51 @@
 package com.example.ufmcontroller.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import androidx.navigation.toRoute
 import com.example.ufmcontroller.presentation.ui.screen.AboutAppScreen
-import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
+import com.example.ufmcontroller.presentation.ui.screen.LoginScreen
+import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
+
+// import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
+// import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
 
 @Composable
-fun AppNavGraph(navController: NavHostController, viewModel: MainViewModel, onToggleDrawer: () -> Unit) {
-    val filteredFoodItems by viewModel.filteredFoodItems.collectAsStateWithLifecycle()
+fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, onToggleDrawer: () -> Unit) {
     NavHost(navController = navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
-            HomeScreen(
-                filteredFoodItems = filteredFoodItems,
-                onFoodItemToggle = viewModel::toggleFoodItem,
-                searchState = viewModel.searchState,
+//            HomeScreen(
+//                navigateEditFoodItem={
+//                    id ->
+//                    navController.navigate(ItemRoute(id))
+//                },
+//                onToggleDrawer=onToggleDrawer,
+//            )
+        }
+        composable<SettingsRoute> {
+            SettingsScreen(
+                onLogout = {
+                    mainViewModel.stopEventsService()
+
+                    navController.navigate(LoginRoute)
+                },
                 onToggleDrawer=onToggleDrawer,
             )
         }
         composable<AboutAppRoute> {
             AboutAppScreen(
                 onToggleDrawer=onToggleDrawer,
+            )
+        }
+        composable<LoginRoute> {
+            LoginScreen(
+                onSuccessfulLogin = {
+                    mainViewModel.startEventsService()
+
+                    navController.navigate(HomeRoute)
+                }
             )
         }
 //        composable<ItemRoute> { backStackEntry ->

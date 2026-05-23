@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FoodItemsCategorized (
-    val categories: List<CategoriesWithFoodItems>,
+    val categories: List<CategoryWithFoodItems>,
     val noCategoryFoodItems: List<FoodItem>,
 )

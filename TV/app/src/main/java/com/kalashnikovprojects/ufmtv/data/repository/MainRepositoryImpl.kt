@@ -5,7 +5,6 @@ import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
 import com.kalashnikovprojects.ufmtv.data.model.Events
 import com.kalashnikovprojects.ufmtv.data.model.toEntity
 import com.kalashnikovprojects.ufmtv.data.remote.EventsWebSocketService
-import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
 import com.kalashnikovprojects.ufmtv.domain.entity.ImageItem
@@ -46,100 +45,80 @@ class MainRepositoryImpl @Inject constructor(
         externalScope.launch {
             eventsWebSocketService.events.collect { event ->
                 when (event) {
-                    is Events.AddDesignEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value + listOf(event.element.toEntity())
-                        )
-                    }
                     is Events.AddFoodEvent -> {
-                        dataSource.updateFoodItems(
-                            dataSource.foodItems.value + listOf(event.element.toEntity())
-                        )
-                    }
-                    is Events.ChangeCategoryEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.element is CategoryWithFoodItems && it.element.category.id == event.id)
-                                    it.copy(element = it.element.copy(event.element.toEntity().category))
-                                else it
-                            }
-                        )
-                    }
-                    is Events.ChangeDesignEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.id == event.id) event.element.toEntity() else it
-                            }
-                        )
+                        dataSource.putFood(event.element.toEntity())
                     }
                     is Events.ChangeFoodEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.element is FoodItem && it.element.id == event.id)
-                                    it.copy(element = event.element.toEntity())
-                                else it
-                            }
-                        )
-                        dataSource.updateFoodItems(
-                            dataSource.foodItems.value.map {
-                                if (it.id == event.id)
-                                    event.element.toEntity()
-                                else it
-                            }
-                        )
+                        dataSource.putFood(event.element.toEntity())
+                    }
+                    is Events.ToggleFoodEvent -> {
+                        dataSource.foodItems.value.find { it.id == event.id }?.let {
+                            dataSource.putFood(it.copy(inStock = event.inStock))
+                        }
+                    }
+                    is Events.DeleteFoodEvent -> {
+                        dataSource.deleteFood(event.id)
+                    }
+                    is Events.SetFoodCategories -> {
+                        dataSource.updateFoodRelationsForCategories(event.foodId, event.categories.map { it.id })
+                    }
+                    is Events.ReloadFoodItems -> {
+                        event.items.forEach { dataSource.putFood(it.toEntity()) }
+                    }
+
+                    is Events.AddCategoryEvent -> {
+                        dataSource.putCategory(event.element.toEntity().category)
+                    }
+                    is Events.ChangeCategoryEvent -> {
+                        dataSource.putCategory(event.element.toEntity().category)
+                    }
+                    is Events.DeleteCategoryEvent -> {
+                        dataSource.deleteCategory(event.id)
+                    }
+                    is Events.SetCategoryItems -> {
+                        dataSource.setCategoryFoodRelations(event.categoryId, event.foodItems.map { it.id })
+                        event.foodItems.forEach { dataSource.putFood(it.toEntity()) }
+                    }
+                    is Events.ReloadCategoryItems -> {
+                        event.items.forEach { dataSource.putCategory(it.toEntity().category) }
+                    }
+
+                    is Events.AddDesignEvent -> {
+                        dataSource.addDesignItemRaw(event.element.toEntity())
+                    }
+                    is Events.ChangeDesignEvent -> {
+                        dataSource.putDesignItemRaw(event.element.toEntity())
+                    }
+                    is Events.DeleteDesignEvent -> {
+                        dataSource.deleteDesignItemRaw(event.id)
+                    }
+                    is Events.ReloadDesignItemsByScreenId -> {
+                        dataSource.updateDesignItemsRaw(event.items.map { it.toEntity() })
+                    }
+
+                    is Events.ChangeTextEvent -> {
+                        dataSource.updateDesignItemElement(event.id) { event.element.toEntity() }
+                    }
+                    is Events.DeleteTextEvent -> {
+                        dataSource.updateDesignItemElement(event.id) { current ->
+                            if (current is TextItem) Unit else current
+                        }
+                    }
+                    is Events.DeleteImageEvent -> {
+                        dataSource.updateDesignItemElement(event.id) { current ->
+                            if (current is ImageItem) Unit else current
+                        }
                     }
                     is Events.ChangeScreenEvent -> {
                         if (event.id == userPreferencesDataSource.screenId.value) {
                             dataSource.updateCurrentScreen(event.element.toEntity())
                         }
                     }
-                    is Events.ChangeTextEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.element is TextItem && it.element.id == event.id)
-                                    it.copy(element = event.element.toEntity())
-                                else it
-                            }
-                        )
+                    is Events.ReloadScreen -> {
+                        dataSource.updateCurrentScreen(event.screen.toEntity())
                     }
-                    is Events.DeleteCategoryEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.filter {
-                                it.element !is CategoryWithFoodItems || it.element.category.id != event.id
-                            }
-                        )
-                    }
-                    is Events.DeleteDesignEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.filter { it.id != event.id }
-                        )
-                    }
-                    is Events.DeleteFoodEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.filter {
-                                it.element !is FoodItem || it.element.id != event.id
-                            }
-                        )
-                        dataSource.updateFoodItems(
-                            dataSource.foodItems.value.filter {
-                                it.id != event.id
-                            }
-                        )
-                    }
-                    is Events.DeleteImageEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.filter {
-                                it.element !is ImageItem || it.element.id != event.id
-                            }
-                        )
-                    }
-                    is Events.DeleteTextEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.filter {
-                                it.element !is TextItem || it.element.id != event.id
-                            }
-                        )
-                    }
+
+
                     is Events.LogoutScreenEvent -> {
                         if (event.id == userPreferencesDataSource.screenId.value) {
                             userPreferencesDataSource.clearAuthToken()
@@ -148,68 +127,14 @@ class MainRepositoryImpl @Inject constructor(
                             eventsWebSocketService.disconnect()
                         }
                     }
-                    is Events.SetCategoryItems -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.element is CategoryWithFoodItems && it.element.category.id == event.categoryId)
-                                    it.copy(element = it.element.copy(foodItems =
-                                        event.foodItems.map { foodItem -> foodItem.toEntity() })
-                                    )
-                                else it
-                            }
-                        )
-                    }
-                    is Events.SetFoodCategories -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.element is CategoryWithFoodItems) {
-                                    if (event.categories.map { category -> category.id }.contains(it.element.category.id)) {
-                                        if (it.element.foodItems.map { fd -> fd.id }.contains(event.foodId)) {
-                                            it
-                                        } else {
-                                            it.copy(element = it.element.copy(foodItems =
-                                                it.element.foodItems + dataSource.foodItems.value.filter {
-                                                    foodItem -> foodItem.id == event.foodId
-                                                }
-                                            ))
-                                        }
-                                    } else {
-                                        it.copy(element = it.element.copy(foodItems =
-                                            it.element.foodItems.filter { item -> item.id != event.foodId }
-                                        ))
-                                    }
-                                } else it
-                            }
-                        )
-                    }
-                    is Events.ToggleFoodEvent -> {
-                        dataSource.updateDesignItemsList(
-                            dataSource.designItems.value.map {
-                                if (it.element is FoodItem && it.element.id == event.id)
-                                    it.copy(element=it.element.copy(inStock = event.inStock))
-                                else it
-                            }
-                        )
-                    }
-                    is Events.ReloadScreen -> {
-                        dataSource.updateCurrentScreen(event.screen.toEntity())
-                    }
 
-                    is Events.ReloadDesignItemsByScreenId -> {
-                        dataSource.updateDesignItemsList(event.items.map { it.toEntity() })
-                    }
-
-                    // Events not for tv
-                    is Events.AddCategoryEvent -> {}
-                    is Events.AddImageEvent -> {}
-                    is Events.AddScreenEvent -> {}
                     is Events.AddTextEvent -> {}
-                    is Events.ReloadCategoryItems -> {}
-                    is Events.ReloadDesignItemsWithScreenId -> {}
-                    is Events.ReloadFoodItems -> {}
+                    is Events.ReloadTextItems -> {}
+                    is Events.AddImageEvent -> {}
                     is Events.ReloadImageItems -> {}
+                    is Events.AddScreenEvent -> {}
                     is Events.ReloadScreens -> {}
-                    is Events.ReloadTextItem -> {}
+                    is Events.ReloadDesignItemsWithScreenId -> {}
                 }
             }
         }

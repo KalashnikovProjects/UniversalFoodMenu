@@ -5,39 +5,36 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
-import androidx.navigation.NavHostController
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.ufmcontroller.presentation.navigation.AboutAppRoute
 import com.example.ufmcontroller.presentation.navigation.HomeRoute
 import com.example.ufmcontroller.presentation.navigation.MenuEditRoute
 import com.example.ufmcontroller.presentation.navigation.SettingsRoute
 import com.example.ufmcontroller.presentation.navigation.VisualConfigurationRoute
-import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
 import kotlinx.serialization.Serializable
 
 @Composable
 fun AppNavigationDrawer(
     navigate: (@Serializable Any) -> Unit,
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
+    gesturesEnabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
@@ -83,14 +80,6 @@ fun AppNavigationDrawer(
                         }
                     )
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp))
-                    NavigationDrawerItem(
-                        label = { Text("Выход из аккаунта") },
-                        selected = false,
-                        onClick = {
-                            // TODO
-                        }
-                    )
                     NavigationDrawerItem(
                         label = { Text("Настройки") },
                         selected = false,
@@ -108,6 +97,7 @@ fun AppNavigationDrawer(
                 }
             }
         },
+        gesturesEnabled=gesturesEnabled,
         drawerState = drawerState
     ) {
         content()

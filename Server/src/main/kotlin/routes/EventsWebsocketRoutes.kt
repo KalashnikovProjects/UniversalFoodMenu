@@ -48,6 +48,8 @@ fun Route.eventsWebsocketRoutes() {
                     screenId = screenId,
                     screen = screen,
                 ))
+                sendSerialized(Events.ReloadFoodItems(items = foodItemsRepository.getAllByUserId(userId)))
+                sendSerialized(Events.ReloadCategoryItems(items = categoriesRepository.getAllByUserId(userId)))
 
                 sendSerialized(Events.ReloadDesignItemsByScreenId(
                     screenId = screenId,

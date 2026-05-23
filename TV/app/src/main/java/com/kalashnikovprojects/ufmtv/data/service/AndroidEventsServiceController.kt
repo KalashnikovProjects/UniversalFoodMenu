@@ -6,14 +6,14 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
-import com.kalashnikovprojects.ufmtv.domain.repository.EventsServiceController
+import com.kalashnikovprojects.ufmtv.domain.repository.EventsServiceRepository
 import com.kalashnikovprojects.ufmtv.services.EventsForegroundService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class AndroidEventsServiceController @Inject constructor(
     @ApplicationContext private val context: Context
-) : EventsServiceController {
+) : EventsServiceRepository {
 
     private val intent = Intent(context, EventsForegroundService::class.java)
 

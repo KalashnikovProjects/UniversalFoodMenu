@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmtv.presentation.ui.screen
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginUIState
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginViewModel
 
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun Dp.scaled(): Dp {
     val configuration = LocalConfiguration.current
@@ -45,6 +47,7 @@ fun Dp.scaled(): Dp {
     return (this.value * scaleFactor).dp
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun TextUnit.scaled(): TextUnit {
     if (!this.isSp) return this

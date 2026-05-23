@@ -50,17 +50,6 @@ fun Route.screensRoutes() {
         }
     }
 
-    post("/screens") {
-        val principal = call.principal<JWTPrincipal>()
-        val userId = principal!!.payload.getClaim("id").asInt()
-        val request = call.receive<NoIdTVScreen>()
-        val createdId = screensRepository.create(userId, request)
-        eventBus.getFlow(userId).emit(Events.AddScreenEvent(
-            element = request.toTVScreen(createdId)
-        ))
-        call.respond(HttpStatusCode.Created, request.toTVScreen(createdId))
-    }
-
     put("/screens/{id}") {
         val principal = call.principal<JWTPrincipal>()
         val userId = principal!!.payload.getClaim("id").asInt()

@@ -2,13 +2,22 @@ package com.example.ufmcontroller.presentation.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
+object LoginRoute
+
+@Serializable
 object HomeRoute
 
 @Serializable
 object MenuEditRoute
 
 @Serializable
+data class ItemRoute(val id: Int)
+
+@Serializable
 object VisualConfigurationRoute
+
+@Serializable
+data class ScreenRoute(val id: Int)
 
 @Serializable
 object SettingsRoute
@@ -24,7 +33,5 @@ object AboutAppRoute
 //      отсюда могут быть кнопки на ещё несколько экранов, например:
 //      3.1 TVConfigurationScreen - редактор расположения телеков (какой слева, какой справа)
 //      3.2 EditComponentVisual -
-//  4. Настройки самого приложения (не знаю зачем, может тёмную тему туда)
+//  4. Настройки самого приложения (тут выход из аккаунта например, тему)
 //  5. О приложении - ссылка на мой гитхаб, имя разработчика
-
-// Сделать один общий компонент - меню слева выезжающее, где переключение между экранами.

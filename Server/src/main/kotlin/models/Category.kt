@@ -9,7 +9,7 @@ data class Category(
     val name: String,
     val imageUri: String?,
     val price: Float?,
-    val inStock: Boolean,
+    val inStock: Boolean?,
 ) : Designable
 
 fun Category.toNoIdCategory() = NoIdCategory(
@@ -19,7 +19,7 @@ fun Category.toNoIdCategory() = NoIdCategory(
     inStock = inStock,
 )
 
-fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoriesWithFoodItems(
+fun Category.toCategoryWithFoodItems(foodItems: List<FoodItem>) = CategoryWithFoodItems(
     category = this,
     foodItems = foodItems,
 )
@@ -29,7 +29,7 @@ data class NoIdCategory(
     val name: String,
     var imageUri: String?,
     val price: Float?,
-    val inStock: Boolean,
+    val inStock: Boolean?,
 )
 
 fun NoIdCategory.toCategory(id: Int) = Category(

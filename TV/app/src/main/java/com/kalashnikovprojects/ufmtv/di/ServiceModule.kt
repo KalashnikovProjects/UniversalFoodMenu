@@ -2,7 +2,7 @@ package com.kalashnikovprojects.ufmtv.di
 
 import com.kalashnikovprojects.ufmtv.data.service.AndroidEventsServiceController
 import com.kalashnikovprojects.ufmtv.data.service.AndroidLoginServiceController
-import com.kalashnikovprojects.ufmtv.domain.repository.EventsServiceController
+import com.kalashnikovprojects.ufmtv.domain.repository.EventsServiceRepository
 import com.kalashnikovprojects.ufmtv.domain.repository.LoginServiceController
 import dagger.Binds
 import dagger.Module
@@ -23,5 +23,5 @@ abstract class ServiceModule {
     @Singleton
     abstract fun bindEventsServiceController(
         impl: AndroidEventsServiceController
-    ): EventsServiceController
+    ): EventsServiceRepository
 }

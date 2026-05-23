@@ -1,63 +1,67 @@
 package com.example.ufmcontroller.presentation.ui.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.ufmcontroller.domain.model.FoodItem
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
-import coil.compose.AsyncImage
 import com.example.ufmcontroller.presentation.ui.component.FoodItemRowCard
+import com.example.ufmcontroller.presentation.viewmodel.MainScreenUiState
+import com.example.ufmcontroller.presentation.viewmodel.MainScreenViewModel
 
 // TODO: добавить во viewModel и в какие-то сохранялки между запусками режим отображения (плитки или список)
 
 @Composable
 fun HomeScreen(
-    filteredFoodItems: List<FoodItem>,
-    onFoodItemToggle: (Int) -> Unit,
+    viewModel: MainScreenViewModel= hiltViewModel<MainScreenViewModel>(),
+    navigateEditFoodItem: (Int) -> Unit,
+    onToggleDrawer: () -> Unit,
+) {
+    val uiState: MainScreenUiState by viewModel.uiState.collectAsState()
+
+    HomeScreenContent(
+        uiState = uiState,
+        searchState = viewModel.searchState,
+        navigateEditFoodItem = navigateEditFoodItem,
+        toggleFoodItem = {id -> viewModel.toggleFoodItem(id) },
+        onToggleDrawer = onToggleDrawer,
+    )
+}
+
+@Composable
+fun HomeScreenContent(
+    uiState: MainScreenUiState,
     searchState: TextFieldState,
+    navigateEditFoodItem: (Int) -> Unit,
+    toggleFoodItem: (Int) -> Unit,
     onToggleDrawer: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -95,39 +99,52 @@ fun HomeScreen(
 
             IconButton(onClick = {
                 // TODO: переключить режим отображения
-                },
+            },
                 modifier = Modifier.wrapContentSize(),
             ) {
                 Icon(Icons.Filled.Menu, contentDescription = "Table view")
             }
         }
         LazyColumn {
-            items(filteredFoodItems) {
-                FoodItemRowCard(item = it, onFoodItemToggle)
+            items(uiState.filteredFoodItems) {
+                    item ->
+                Box(modifier = Modifier.combinedClickable(
+                    onClick = { },
+                    onLongClick = {
+                        navigateEditFoodItem(item.id)
+                    },
+                )) {
+                    FoodItemRowCard(item = item, { toggleFoodItem(item.id) })
+                }
             }
         }
     }
 }
 
 @Preview(name = "Light Mode", showSystemUi = true, showBackground = true)
-@Preview(
-    name = "Dark Mode",
-    showSystemUi = true,
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES // Включает темную тему
-)
+@Preview(name = "Dark Mode", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun HomeScreenPreview() {
+    val searchState by remember { mutableStateOf(TextFieldState("")) }
     UFMControllerTheme {
-        HomeScreen(
-            filteredFoodItems = listOf(
-                FoodItem(1, "Американский бургер", imageUri = "https://static.vecteezy.com/system/resources/previews/041/290/624/non_2x/ai-generated-fresh-burger-isolated-on-transparent-background-free-png.png", price = 99.99F, inStock = true),
-                FoodItem(2, "Итальянская пицца", imageUri = null, price = 99.99F, inStock = false),
-                FoodItem(2, "Китайский вок", imageUri = null, price = 99.99F, inStock = false),
-                FoodItem(1, "Японские роллы", imageUri = null, price = 99.99F, inStock = true)),
-            onFoodItemToggle = {},
-            searchState = TextFieldState(""),
-            onToggleDrawer={}
+        HomeScreenContent(
+            uiState = MainScreenUiState(
+                filteredFoodItems = listOf(
+                    FoodItem(
+                        1,
+                        "Американский бургер",
+                        imageUri = "https://static.vecteezy.com/system/resources/previews/041/290/624/non_2x/ai-generated-fresh-burger-isolated-on-transparent-background-free-png.png",
+                        price = 99.99F,
+                        inStock = true
+                    ),
+                    FoodItem(2, "Итальянская пицца", imageUri = null, price = 99.99F, inStock = false),
+                    FoodItem(2, "Китайский вок", imageUri = null, price = 99.99F, inStock = false),
+                    FoodItem(1, "Японские роллы", imageUri = null, price = 99.99F, inStock = true))
+            ),
+            searchState = searchState,
+            navigateEditFoodItem = {},
+            toggleFoodItem = { },
+            onToggleDrawer = { },
         )
     }
 }

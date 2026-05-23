@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
+    id("com.google.devtools.ksp") version "2.0.21-1.0.26"
+    id("com.google.dagger.hilt.android") version "2.57.1"
 }
 
 android {
@@ -26,23 +28,51 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "SERVER_IP", "ufm.taprams.ru") // TODO: заменить хост на настоящий
+            buildConfigField("int", "SERVER_PORT", "8096")
+        }
+        getByName("debug") {
+            buildConfigField("String", "SERVER_IP", "\"10.0.2.2\"") // TODO заменить хост
+            buildConfigField("int", "SERVER_PORT", "8096")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+    implementation(libs.androidx.appcompat)
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+
+    implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+
+    implementation("io.ktor:ktor-client-android:3.0.0")
+    implementation("io.ktor:ktor-client-content-negotiation:3.0.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
+    implementation("io.ktor:ktor-client-logging:3.0.0")
+    implementation("io.ktor:ktor-client-cio:3.0.0")
+    implementation("io.ktor:ktor-client-auth:3.0.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    ksp("com.squareup:javapoet:1.13.0")
+    implementation("com.squareup:javapoet:1.13.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

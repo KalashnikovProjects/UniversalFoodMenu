@@ -41,7 +41,7 @@ object StorageModule {
 
     @Provides
     @Singleton
-    fun provideMainDataSource(): MainDataSource {
-        return MainDataSource()
+    fun provideMainDataSource(scope: CoroutineScope): MainDataSource {
+        return MainDataSource(scope)
     }
 }

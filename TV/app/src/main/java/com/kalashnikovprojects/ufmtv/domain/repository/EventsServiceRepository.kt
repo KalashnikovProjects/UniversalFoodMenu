@@ -1,6 +1,6 @@
 package com.kalashnikovprojects.ufmtv.domain.repository
 
-interface EventsServiceController {
+interface EventsServiceRepository {
     fun startService()
     fun stopService()
 }
