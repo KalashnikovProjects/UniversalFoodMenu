@@ -51,7 +51,7 @@ class LoginViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    step = LoginStep.Error(e.message ?: "Unknown error")
+                    step = LoginStep.Error(e.message ?: "Неизвестная ошибка")
                 )
             }
         }
@@ -69,7 +69,7 @@ class LoginViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    step = LoginStep.Error(e.message ?: "Unknown error")
+                    step = LoginStep.Error(e.message ?: "Неизвестная ошибка")
                 )
             }
         }

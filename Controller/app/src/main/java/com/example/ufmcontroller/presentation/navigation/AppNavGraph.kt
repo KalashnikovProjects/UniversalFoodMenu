@@ -5,9 +5,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.ufmcontroller.presentation.ui.screen.AboutAppScreen
+import com.example.ufmcontroller.presentation.ui.screen.AddTvScreenScreen
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
 import com.example.ufmcontroller.presentation.ui.screen.LoginScreen
 import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
+import com.example.ufmcontroller.presentation.ui.screen.VisualConfigurationScreen
 
 // import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
 // import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
@@ -23,6 +25,23 @@ fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, o
 //                },
 //                onToggleDrawer=onToggleDrawer,
 //            )
+        }
+        composable<VisualConfigurationRoute> {
+            VisualConfigurationScreen (
+                onNavigateToScreen = {
+                    id ->
+                    navController.navigate(ScreenRoute(id))
+                },
+                onAddScreen = {
+                    navController.navigate(AddTvScreenRoute)
+                },
+                onToggleDrawer=onToggleDrawer,
+            )
+        }
+        composable<AddTvScreenRoute> {
+            AddTvScreenScreen(
+                onBack = { navController.popBackStack() },
+            )
         }
         composable<SettingsRoute> {
             SettingsScreen(

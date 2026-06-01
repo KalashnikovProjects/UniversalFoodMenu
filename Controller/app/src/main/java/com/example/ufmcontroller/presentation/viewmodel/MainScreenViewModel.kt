@@ -26,8 +26,6 @@ data class MainScreenUiState(
 class MainScreenViewModel @Inject constructor(
     getFoodItemsUseCase: GetFoodItemsUseCase,
     private val toggleFoodItemUseCase: ToggleFoodItemUseCase,
-    private val addFoodItemUseCase: AddFoodItemUseCase,
-    private val editFoodItemUseCase: EditFoodItemUseCase,
 ) : ViewModel() {
 
     private val foodItemsFlow = getFoodItemsUseCase()
@@ -58,18 +56,6 @@ class MainScreenViewModel @Inject constructor(
     fun toggleFoodItem(id: Int) {
         viewModelScope.launch {
             toggleFoodItemUseCase(id)
-        }
-    }
-
-    fun addFoodItem(foodItem: FoodItem) {
-        viewModelScope.launch {
-            addFoodItemUseCase(foodItem)
-        }
-    }
-
-    fun editFoodItem(id: Int, foodItem: FoodItem) {
-        viewModelScope.launch {
-            editFoodItemUseCase(id, foodItem)
         }
     }
 }

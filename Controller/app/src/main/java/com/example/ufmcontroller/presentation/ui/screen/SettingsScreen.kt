@@ -2,9 +2,13 @@ package com.example.ufmcontroller.presentation.ui.screen
 
 import android.app.UiModeManager
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -81,7 +85,7 @@ fun SettingsScreenContent(
     val context = LocalContext.current
 
     Column {
-        DefaultAppTop("Настройки", onToggleDrawer = onToggleDrawer)
+        DefaultAppTop("Настройки", onButton = onToggleDrawer)
         Column(
             modifier=Modifier.padding(30.dp)
         ) {
@@ -153,22 +157,30 @@ fun SettingsScreenContent(
     }
 }
 
-@Preview
+@Preview(group = "light", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(group = "dark", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SettingsScreenContentPreview() {
     UFMControllerTheme {
-        var uiState by remember { mutableStateOf(
-            SettingsUiState(false))
-        }
-        SettingsScreenContent(
-            uiState,
-            onLogout = {},
-            onToggleDrawer = {  },
-            toggleDropdown = {
-                uiState = uiState.copy(
-                    dropdownOpen = !uiState.dropdownOpen
+        Box(
+            modifier = Modifier
+                .fillMaxSize().background(colorScheme.background)
+        ) {
+            var uiState by remember {
+                mutableStateOf(
+                    SettingsUiState(false)
                 )
-            },
-        )
+            }
+            SettingsScreenContent(
+                uiState,
+                onLogout = {},
+                onToggleDrawer = { },
+                toggleDropdown = {
+                    uiState = uiState.copy(
+                        dropdownOpen = !uiState.dropdownOpen
+                    )
+                },
+            )
+        }
     }
 }

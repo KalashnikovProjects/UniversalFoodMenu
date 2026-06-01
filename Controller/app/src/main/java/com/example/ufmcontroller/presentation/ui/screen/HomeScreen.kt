@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -127,24 +128,48 @@ fun HomeScreenContent(
 fun HomeScreenPreview() {
     val searchState by remember { mutableStateOf(TextFieldState("")) }
     UFMControllerTheme {
-        HomeScreenContent(
-            uiState = MainScreenUiState(
-                filteredFoodItems = listOf(
-                    FoodItem(
-                        1,
-                        "Американский бургер",
-                        imageUri = "https://static.vecteezy.com/system/resources/previews/041/290/624/non_2x/ai-generated-fresh-burger-isolated-on-transparent-background-free-png.png",
-                        price = 99.99F,
-                        inStock = true
-                    ),
-                    FoodItem(2, "Итальянская пицца", imageUri = null, price = 99.99F, inStock = false),
-                    FoodItem(2, "Китайский вок", imageUri = null, price = 99.99F, inStock = false),
-                    FoodItem(1, "Японские роллы", imageUri = null, price = 99.99F, inStock = true))
-            ),
-            searchState = searchState,
-            navigateEditFoodItem = {},
-            toggleFoodItem = { },
-            onToggleDrawer = { },
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize().background(colorScheme.background)
+        ) {
+            HomeScreenContent(
+                uiState = MainScreenUiState(
+                    filteredFoodItems = listOf(
+                        FoodItem(
+                            1,
+                            "Американский бургер",
+                            imageUri = "https://static.vecteezy.com/system/resources/previews/041/290/624/non_2x/ai-generated-fresh-burger-isolated-on-transparent-background-free-png.png",
+                            price = 99.99F,
+                            inStock = true
+                        ),
+                        FoodItem(
+                            2,
+                            "Итальянская пицца",
+                            imageUri = null,
+                            price = 99.99F,
+                            inStock = false
+                        ),
+                        FoodItem(
+                            2,
+                            "Китайский вок",
+                            imageUri = null,
+                            price = 99.99F,
+                            inStock = false
+                        ),
+                        FoodItem(
+                            1,
+                            "Японские роллы",
+                            imageUri = null,
+                            price = 99.99F,
+                            inStock = true
+                        )
+                    )
+                ),
+                searchState = searchState,
+                navigateEditFoodItem = {},
+                toggleFoodItem = { },
+                onToggleDrawer = { },
+            )
+        }
     }
 }

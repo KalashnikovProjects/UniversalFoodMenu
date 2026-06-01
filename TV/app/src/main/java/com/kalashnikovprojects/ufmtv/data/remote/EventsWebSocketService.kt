@@ -7,6 +7,7 @@ import com.kalashnikovprojects.ufmtv.data.model.Events
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.request.request
 import io.ktor.http.HttpStatusCode
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
@@ -39,7 +40,12 @@ class EventsWebSocketService @Inject constructor(
         Log.d("UFM", "connected_events")
         connectionJob = scope.launch {
             try {
-                client.webSocket(host = ipAddress, port = port, path = "/api/ws/updates") {
+                client.webSocket(host = ipAddress, port = port, path = "/api/ws/updates",
+                    request = {
+                        url {
+                            parameters.append("screen_id", (userPreferencesDataSource.screenId.value ?: 0).toString())
+                        }
+                    }) {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
                             val text = frame.readText()

@@ -17,7 +17,9 @@ import com.kalashnikovprojects.ufmtv.data.remote.LoginWebSocketService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 @AndroidEntryPoint
 class LoginEventsForegroundService : Service() {
     @Inject

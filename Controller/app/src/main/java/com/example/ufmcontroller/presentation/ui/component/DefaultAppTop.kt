@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,25 +28,33 @@ import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
 
 
 @Composable
-fun DefaultAppTop(text: String="Universal Food Menu", onToggleDrawer: () -> Unit) {
+fun DefaultAppTop(text: String="Universal Food Menu", onButton: () -> Unit, buttonIsToMenu: Boolean = true) {
     Row(
         modifier = Modifier.padding(
             top = 10.dp, start = 5.dp, end = 5.dp
-        ).fillMaxWidth(),
+        )
+            .fillMaxWidth()
+            .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
-            onClick = onToggleDrawer,
+            onClick = onButton,
             colors = IconButtonColors(
                 containerColor = Color.Transparent,
                 contentColor = colorScheme.onBackground,
                 disabledContainerColor = Color.Transparent,
                 disabledContentColor = colorScheme.onBackground.copy(alpha = 0.5F),
-            )
+            ),
+            modifier = Modifier.size(70.dp)
         ) {
-            Icon(Icons.Filled.MoreVert,
-                contentDescription = "Settings")
+            if (buttonIsToMenu) {
+                Icon(Icons.Filled.MoreVert,
+                    contentDescription = "Menu")
+            } else {
+                Icon(Icons.Filled.ArrowBackIosNew,
+                    contentDescription = "Back")
+            }
         }
         Text(
             text,
@@ -66,6 +76,6 @@ fun DefaultAppTop(text: String="Universal Food Menu", onToggleDrawer: () -> Unit
 @Composable
 fun DefaultAppTopPreview() {
     UFMControllerTheme {
-        DefaultAppTop(onToggleDrawer = {})
+        DefaultAppTop(onButton = {})
     }
 }

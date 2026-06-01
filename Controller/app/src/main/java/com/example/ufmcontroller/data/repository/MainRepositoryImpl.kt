@@ -9,6 +9,7 @@ import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 import com.example.ufmcontroller.domain.entity.ImageItem
 import com.example.ufmcontroller.domain.entity.TVScreen
+import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.entity.TextItem
 import com.example.ufmcontroller.domain.repository.CategoryRepository
 import com.example.ufmcontroller.domain.repository.DesignRepository
@@ -129,9 +130,11 @@ class MainRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getScreens(): Flow<List<TVScreen>> {
+    override fun getScreen(id: Int): Flow<TVScreen> {
         TODO("Not yet implemented")
     }
 
-
+    override fun getScreensWithDesignItems(): Flow<List<TVScreenWithDesignItems>> {
+        TODO("Not yet implemented")
+    }
 }

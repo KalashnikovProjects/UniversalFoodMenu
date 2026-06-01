@@ -53,6 +53,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material3)
     ksp("com.google.dagger:hilt-android-compiler:2.57.1")
 
     implementation("io.coil-kt.coil3:coil-compose:3.0.0")

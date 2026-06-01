@@ -1,6 +1,5 @@
 package com.kalashnikovprojects.ufmtv.data.local
 
-import com.kalashnikovprojects.ufmtv.di.ExternalScope
 import com.kalashnikovprojects.ufmtv.domain.entity.Category
 import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
@@ -23,7 +22,7 @@ import javax.inject.Singleton
 // TODO: maybe dont work
 @Singleton
 class MainDataSource @Inject constructor(
-    @ExternalScope private val externalScope: CoroutineScope
+    private val externalScope: CoroutineScope
 ) {
     private val _designItemsRaw = MutableStateFlow<List<DesignItem>>(emptyList())
     private val _categories = MutableStateFlow<Map<Int, Category>>(emptyMap())

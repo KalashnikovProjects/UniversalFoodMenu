@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmtv.di
 
+import android.content.Context
 import android.util.Log
 import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
 import com.kalashnikovprojects.ufmtv.data.remote.EventsWebSocketService
@@ -8,6 +9,7 @@ import com.kalashnikovprojects.ufmtv.data.remote.NoTokenRequest
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -63,7 +65,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLoginWebSocketService(client: HttpClient): LoginWebSocketService {
-        return LoginWebSocketService(client)
+    fun provideLoginWebSocketService(@ApplicationContext context: Context, client: HttpClient): LoginWebSocketService {
+        return LoginWebSocketService(context, client)
     }
 }

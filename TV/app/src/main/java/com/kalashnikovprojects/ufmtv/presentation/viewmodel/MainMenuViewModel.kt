@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class MainMenuViewModel @Inject constructor(
         designItems = emptyList(),
         screenStyle = ScreenStyle(),
     ))
-    val uiState: StateFlow<MainMenuUIState> = _uiState
+    val uiState: StateFlow<MainMenuUIState> = _uiState.asStateFlow()
     private var isUpdatingStarted = false
 
     fun startUpdating() {
