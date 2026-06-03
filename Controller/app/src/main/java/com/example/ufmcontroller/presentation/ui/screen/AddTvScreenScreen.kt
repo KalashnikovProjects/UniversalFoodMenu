@@ -97,7 +97,7 @@ fun AddTvScreenScreenContent(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize(),
         ) {
-            Text("Введите код, отображаемый на экране",
+            Text("Введите код, отображаемый на экране телевизора",
                 fontSize = 22.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.W500,

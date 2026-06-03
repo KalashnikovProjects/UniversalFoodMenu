@@ -19,7 +19,6 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.Text
 import com.kalashnikovprojects.ufmtv.R
-import com.kalashnikovprojects.ufmtv.presentation.ui.screen.scaled
 
 @Composable
 fun LoginScreenBase(

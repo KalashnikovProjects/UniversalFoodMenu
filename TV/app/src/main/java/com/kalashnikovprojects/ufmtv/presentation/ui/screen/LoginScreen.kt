@@ -34,27 +34,10 @@ import androidx.tv.material3.surfaceColorAtElevation
 import com.kalashnikovprojects.ufmtv.presentation.theme.UFMControllerTheme
 import com.kalashnikovprojects.ufmtv.presentation.ui.component.LoginScreenBase
 import com.kalashnikovprojects.ufmtv.presentation.ui.component.LoginScreenLoadingWithText
+import com.kalashnikovprojects.ufmtv.presentation.ui.component.scaled
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginStep
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginUIState
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginViewModel
-
-
-@SuppressLint("ConfigurationScreenWidthHeight")
-@Composable
-fun Dp.scaled(): Dp {
-    val configuration = LocalConfiguration.current
-    val scaleFactor = configuration.screenWidthDp.toFloat() / 960f
-    return (this.value * scaleFactor).dp
-}
-
-@SuppressLint("ConfigurationScreenWidthHeight")
-@Composable
-fun TextUnit.scaled(): TextUnit {
-    if (!this.isSp) return this
-    val configuration = LocalConfiguration.current
-    val scaleFactor = configuration.screenWidthDp.toFloat() / 960f
-    return (this.value * scaleFactor).sp
-}
 
 @Composable
 fun LoginScreen(

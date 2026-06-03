@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.surfaceColorAtElevation
-import com.kalashnikovprojects.ufmtv.presentation.ui.screen.scaled
 
 @Composable
 fun LoginScreenLoadingWithText(

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,10 +47,10 @@ fun DefaultAppTop(text: String="Universal Food Menu", onButton: () -> Unit, butt
                 disabledContainerColor = Color.Transparent,
                 disabledContentColor = colorScheme.onBackground.copy(alpha = 0.5F),
             ),
-            modifier = Modifier.size(70.dp)
+            modifier = Modifier.size(60.dp)
         ) {
             if (buttonIsToMenu) {
-                Icon(Icons.Filled.MoreVert,
+                Icon(Icons.Filled.Menu,
                     contentDescription = "Menu")
             } else {
                 Icon(Icons.Filled.ArrowBackIosNew,
@@ -66,7 +67,7 @@ fun DefaultAppTop(text: String="Universal Food Menu", onButton: () -> Unit, butt
             painter = painterResource(id = R.drawable.ufm_icon_foreground),
             contentDescription = "UFM logo",
             tint = Color.Unspecified,
-            modifier = Modifier.size(70.dp)
+            modifier = Modifier.size(60.dp)
         )
     }
 }

@@ -11,13 +11,23 @@ object HomeRoute
 object MenuEditRoute
 
 @Serializable
-data class ItemRoute(val id: Int) // TODO
+object AddItemRoute
+
+@Serializable
+data class EditItemRoute(val id: Int)
+
+
+@Serializable
+object AddCategoryRoute
+
+@Serializable
+data class EditCategoryRoute(val id: Int)
 
 @Serializable
 object VisualConfigurationRoute
 
 @Serializable
-data class ScreenRoute(val id: Int) // TODO
+data class TvScreenRoute(val id: Int) // TODO
 
 @Serializable
 object AddTvScreenRoute

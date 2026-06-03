@@ -42,11 +42,15 @@ class MainRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun toggleCategory(id: Int) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteCategory(id: Int) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCategories(): Flow<List<Category>> {
+    override fun getCategories(): Flow<List<Category>> {
         TODO("Not yet implemented")
     }
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.DesignServices
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -15,6 +16,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -50,10 +52,11 @@ fun AppNavigationDrawer(
                     }) {
                         Icon(
                             Icons.Filled.Home,
-                            contentDescription = "to home screen"
+                            contentDescription = "to home screen",
+                            tint = colorScheme.primary
                         )
                         Text("Universal food menu",
-                            color=MaterialTheme.colorScheme.onSurface,
+                            color=colorScheme.onSurface,
                             modifier = Modifier.padding(8.dp),
                             style = MaterialTheme.typography.titleLarge)
                     }
@@ -63,7 +66,10 @@ fun AppNavigationDrawer(
                         label = { Text("Редактировать меню") },
                         selected = false,
                         icon = {
-                            Icon(Icons.Filled.Create, contentDescription = null)
+                            Icon(Icons.Filled.Create,
+                                contentDescription = null,
+                                tint = colorScheme.primary
+                            )
                                },
                         onClick = {
                             navigate(MenuEditRoute)
@@ -73,7 +79,10 @@ fun AppNavigationDrawer(
                         label = { Text("Настроить экраны") },
                         selected = false,
                         icon = {
-                            Icon(Icons.Filled.Build, contentDescription = null)
+                            Icon(Icons.Filled.DesignServices,
+                                contentDescription = null,
+                                tint = colorScheme.primary
+                            )
                         },
                         onClick = {
                             navigate(VisualConfigurationRoute)

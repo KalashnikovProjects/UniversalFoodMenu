@@ -6,31 +6,54 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.ufmcontroller.presentation.ui.screen.AboutAppScreen
 import com.example.ufmcontroller.presentation.ui.screen.AddTvScreenScreen
+import com.example.ufmcontroller.presentation.ui.screen.EditMenuScreen
+import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
 import com.example.ufmcontroller.presentation.ui.screen.LoginScreen
 import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
 import com.example.ufmcontroller.presentation.ui.screen.VisualConfigurationScreen
 
-// import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
-// import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
-
 @Composable
 fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, onToggleDrawer: () -> Unit) {
     NavHost(navController = navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
-//            HomeScreen(
-//                navigateEditFoodItem={
-//                    id ->
-//                    navController.navigate(ItemRoute(id))
-//                },
-//                onToggleDrawer=onToggleDrawer,
-//            )
+            HomeScreen(
+                navigateEditCategory={
+                    id ->
+                    navController.navigate(EditCategoryRoute(id))
+                },
+                navigateEditFoodItem={
+                    id ->
+                    navController.navigate(EditItemRoute(id))
+                },
+                onToggleDrawer=onToggleDrawer,
+            )
+        }
+        composable<MenuEditRoute> {
+            EditMenuScreen(
+                onNavigateToEditFoodItem = {
+                        id ->
+                    navController.navigate(EditItemRoute(id))
+                },
+                onNavigateToEditCategory = {
+                        id ->
+                    navController.navigate(EditCategoryRoute(id))
+                },
+                onNavigateToAddFoodItem = {
+                    navController.navigate(AddItemRoute)
+                },
+                onNavigateToAddCategoryItem = {
+                    navController.navigate(AddCategoryRoute)
+                },
+                onToggleDrawer = onToggleDrawer,
+
+            )
         }
         composable<VisualConfigurationRoute> {
             VisualConfigurationScreen (
                 onNavigateToScreen = {
                     id ->
-                    navController.navigate(ScreenRoute(id))
+                    navController.navigate(TvScreenRoute(id))
                 },
                 onAddScreen = {
                     navController.navigate(AddTvScreenRoute)

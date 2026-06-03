@@ -2,6 +2,7 @@ package com.example.ufmcontroller.presentation.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,8 +88,6 @@ fun LoginScreenContent(
     login: () -> Unit,
     register: () -> Unit,
 ) {
-    val tabs = LoginTab.entries
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -128,6 +127,7 @@ fun LoginScreenContent(
                     containerColor = colorScheme.surfaceContainerHigh,
                     contentColor = colorScheme.primary,
                 ) {
+                    val tabs = LoginTab.entries
                     tabs.forEach { tab ->
                         Tab(
                             selected = uiState.currentTab == tab,
@@ -233,6 +233,10 @@ fun LoginScreenContent(
 @Composable
 fun LoginScreenContentPreview() {
     UFMControllerTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize().background(colorScheme.background)
+        ) {
         var loginUiState by remember { mutableStateOf(
             LoginUiState(step = LoginStep.Normal))
         }
@@ -256,5 +260,6 @@ fun LoginScreenContentPreview() {
                 loginUiState = loginUiState.copy(step = LoginStep.Error("Пароль неверный"))
             },
         )
+            }
     }
 }
