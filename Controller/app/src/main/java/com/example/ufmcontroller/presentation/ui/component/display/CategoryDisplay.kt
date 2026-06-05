@@ -1,4 +1,4 @@
-package com.example.ufmcontroller.presentation.ui.component
+package com.example.ufmcontroller.presentation.ui.component.display
 
 import android.R
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +30,6 @@ import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.NotInStockStyle
 import com.example.ufmcontroller.domain.entity.Style
 import com.example.ufmcontroller.domain.entity.withDefaultStyle
-import com.example.ufmcontroller.presentation.ui.component.FoodItemDisplay
 
 
 @Composable

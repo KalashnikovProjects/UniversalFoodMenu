@@ -20,12 +20,12 @@ import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 
 @Composable
 fun CategorizedFoodItemsElement(categorized: FoodItemsCategorized,
-                                opened: Set<Int>,
-                                onCategoryClick: (Int) -> Unit,
-                                onCategoryLongClick: (Int) -> Unit,
-                                onFoodItemClick: (Int) -> Unit,
-                                onFoodItemLongClick: (Int) -> Unit,
-                                onCategoryToggle: (Int) -> Unit={ _ -> },
+                                opened: Set<Int> = emptySet(),
+                                onCategoryClick: (Int) -> Unit = {},
+                                onCategoryLongClick: (Int) -> Unit = {},
+                                onFoodItemClick: (Int) -> Unit = {},
+                                onFoodItemLongClick: (Int) -> Unit = {},
+                                onCategoryToggle: (Int) -> Unit = {},
                                 showSwitch: Boolean=false,
                                 showNotInStock: Boolean = true,
                                 ) {

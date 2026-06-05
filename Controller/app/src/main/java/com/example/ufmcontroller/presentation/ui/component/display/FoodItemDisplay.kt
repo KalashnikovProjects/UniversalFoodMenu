@@ -1,4 +1,4 @@
-package com.example.ufmcontroller.presentation.ui.component
+package com.example.ufmcontroller.presentation.ui.component.display
 
 import android.R
 import androidx.compose.foundation.layout.Arrangement

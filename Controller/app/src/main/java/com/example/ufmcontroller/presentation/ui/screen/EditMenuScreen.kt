@@ -117,7 +117,7 @@ fun EditMenuScreenContent(
                         onClick = { selectTab(tab) },
                         text = {
                             val tabText = when (tab) {
-                                EditMenuTab.FOOD -> "Элементы меню"
+                                EditMenuTab.FOOD -> "Позиции меню"
                                 EditMenuTab.CATEGORIES -> "Категории"
                             }
                             Text(

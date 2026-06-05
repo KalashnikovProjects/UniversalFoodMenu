@@ -31,6 +31,7 @@ data class TvScreenUiState (
 )
 
 // TODO. Тут ничего не готово
+@HiltViewModel(assistedFactory = TvScreenViewModel.Factory::class)
 class TvScreenViewModel @AssistedInject constructor(
     private val getScreenUseCase: GetScreenUseCase,
     @Assisted private val id: Int

@@ -2,11 +2,12 @@ package com.example.ufmcontroller.domain.usecase.category
 
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.repository.CategoryRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class AddCategoryUseCase @Inject constructor(
+class GetCategoriesByFoodIdUseCase @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) {
-    suspend operator fun invoke(category: Category): Category =
-        categoryRepository.addCategory(category)
+    operator fun invoke(foodId: Int): Flow<List<Category>> =
+        categoryRepository.getCategoriesByFoodId(foodId)
 }

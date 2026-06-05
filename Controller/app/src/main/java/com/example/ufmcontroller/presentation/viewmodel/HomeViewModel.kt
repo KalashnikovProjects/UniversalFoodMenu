@@ -29,7 +29,7 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getCategorizedFoodItemsUseCase: GetCategorizedFoodItemsUseCase,
+    private val getCategorizedFoodItemsUseCase: GetCategorizedFoodItemsUseCase,
     private val toggleFoodItemUseCase: ToggleFoodItemUseCase,
     private val toggleCategoryUseCase: ToggleCategoryUseCase,
     ) : ViewModel() {

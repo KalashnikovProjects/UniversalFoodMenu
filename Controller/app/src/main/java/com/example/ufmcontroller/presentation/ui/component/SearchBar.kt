@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchBar(state: TextFieldState, modifier: Modifier) {
+fun SearchBar(state: TextFieldState, modifier: Modifier=Modifier) {
     BasicTextField(
         state = state,
         modifier = modifier

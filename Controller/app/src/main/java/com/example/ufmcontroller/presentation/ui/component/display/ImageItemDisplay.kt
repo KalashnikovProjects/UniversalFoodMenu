@@ -1,4 +1,4 @@
-package com.example.ufmcontroller.presentation.ui.component
+package com.example.ufmcontroller.presentation.ui.component.display
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable

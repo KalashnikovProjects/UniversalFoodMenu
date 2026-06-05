@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Switch
@@ -23,9 +24,11 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.ufmcontroller.domain.entity.FoodItem
 
+// showNotInStock - влияет ли есть ли в наличии на отображение
 @Composable
-fun FoodItemRowCard(item: FoodItem, onFoodItemClick: (Int) -> Unit,
-                    onFoodItemLongClick: (Int) -> Unit,
+fun FoodItemRowCard(item: FoodItem,
+                    onFoodItemClick: (Int) -> Unit = {},
+                    onFoodItemLongClick: (Int) -> Unit = {},
                     showSwitch: Boolean = false,
                     showNotInStock: Boolean = true,
 ) {
@@ -84,7 +87,7 @@ fun FoodItemRowCard(item: FoodItem, onFoodItemClick: (Int) -> Unit,
                 )
             }
             if (showSwitch) {
-                Switch(checked = item.inStock, onCheckedChange = {
+                Checkbox(checked = item.inStock, onCheckedChange = {
                         value ->
                         onFoodItemClick(item.id)
                     },

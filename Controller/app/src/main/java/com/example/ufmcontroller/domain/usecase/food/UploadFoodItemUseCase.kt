@@ -6,15 +6,16 @@ import com.example.ufmcontroller.domain.repository.CategoryRepository
 import com.example.ufmcontroller.domain.repository.FoodRepository
 import javax.inject.Inject
 
-class EditFoodItemUseCase @Inject constructor(
+class UploadFoodItemUseCase @Inject constructor(
     private val foodRepository: FoodRepository,
     private val categoryRepository: CategoryRepository,
-    ) {
-    suspend operator fun invoke(id: Int,
-                                foodItem: FoodItem,
-                                categories: List<Category> = emptyList(),
-                                ) {
-        foodRepository.editFoodItem(id, foodItem)
+) {
+    suspend operator fun invoke(
+        foodItem: FoodItem,
+        categories: List<Category> = emptyList(),
+    ): FoodItem {
+        val foodItem = foodRepository.addFoodItem(foodItem)
         categoryRepository.updateFoodRelationsForCategories(foodItem.id, categories.map { it.id })
+        return foodItem
     }
 }

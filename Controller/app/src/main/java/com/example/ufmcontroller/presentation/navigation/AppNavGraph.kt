@@ -4,13 +4,19 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.example.ufmcontroller.presentation.ui.screen.AboutAppScreen
+import com.example.ufmcontroller.presentation.ui.screen.AddCategoryScreen
+import com.example.ufmcontroller.presentation.ui.screen.AddFoodItemScreen
 import com.example.ufmcontroller.presentation.ui.screen.AddTvScreenScreen
+import com.example.ufmcontroller.presentation.ui.screen.EditCategoryScreen
+import com.example.ufmcontroller.presentation.ui.screen.EditFoodItemScreen
 import com.example.ufmcontroller.presentation.ui.screen.EditMenuScreen
 import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
 import com.example.ufmcontroller.presentation.ui.screen.LoginScreen
 import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
+import com.example.ufmcontroller.presentation.ui.screen.TvScreenScreen
 import com.example.ufmcontroller.presentation.ui.screen.VisualConfigurationScreen
 
 @Composable
@@ -46,7 +52,51 @@ fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, o
                     navController.navigate(AddCategoryRoute)
                 },
                 onToggleDrawer = onToggleDrawer,
+            )
+        }
+        composable<AddItemRoute> {
+            AddFoodItemScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable<EditItemRoute> {
+                backStackEntry ->
+            val route: EditItemRoute = backStackEntry.toRoute()
 
+            EditFoodItemScreen (
+                foodId = route.id,
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable<AddCategoryRoute> {
+            AddCategoryScreen(
+                onBack = { navController.popBackStack() },
+                navigateEditFoodItem = {
+                        id ->
+                    navController.navigate(EditItemRoute(id))
+                },
+            )
+        }
+        composable<EditCategoryRoute> {
+                backStackEntry ->
+            val route: EditCategoryRoute = backStackEntry.toRoute()
+
+            EditCategoryScreen(
+                categoryId = route.id,
+                onBack = { navController.popBackStack() },
+                navigateEditFoodItem = {
+                        id ->
+                    navController.navigate(EditItemRoute(id))
+                },
+            )
+        }
+        composable<TvScreenRoute> {
+                backStackEntry ->
+            val route: TvScreenRoute = backStackEntry.toRoute()
+
+            TvScreenScreen (
+                screenId = route.id,
+                onBack = { navController.popBackStack() },
             )
         }
         composable<VisualConfigurationRoute> {
@@ -90,18 +140,5 @@ fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, o
                 }
             )
         }
-//        composable<ItemRoute> { backStackEntry ->
-//            val route: ItemRoute = backStackEntry.toRoute()
-//
-//            val todo = foodItems.find { it.id == route.id }
-//
-//            todo?.let {
-//                ItemScreen(
-//                    todo = it,
-//                    onBack = { navController.popBackStack() },
-//                    onToggle = viewModel::toggleTodo,
-//                )
-//            }
-//        }
     }
 }

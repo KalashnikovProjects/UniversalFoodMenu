@@ -43,6 +43,7 @@ import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
 import com.example.ufmcontroller.presentation.ui.component.CategorizedFoodItemsElement
+import com.example.ufmcontroller.presentation.ui.component.DefaultAppTop
 import com.example.ufmcontroller.presentation.ui.component.SearchBar
 import com.example.ufmcontroller.presentation.viewmodel.HomeUiState
 import com.example.ufmcontroller.presentation.viewmodel.HomeViewModel
@@ -84,37 +85,11 @@ fun HomeScreenContent(
     Column(modifier = Modifier
         .fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier.padding(
-                top = 12.dp, start = 5.dp, end = 5.dp
-            )
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        DefaultAppTop(
+            onButton = onToggleDrawer,
         ) {
-            IconButton(
-                onClick = onToggleDrawer,
-                colors = IconButtonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = colorScheme.onBackground,
-                    disabledContainerColor = Color.Transparent,
-                    disabledContentColor = colorScheme.onBackground.copy(alpha = 0.5F),
-                ),
-                modifier = Modifier.size(60.dp)
-            ) {
-                Icon(Icons.Filled.Menu,
-                    contentDescription = "Settings"
-                )
-            }
             SearchBar(searchState, Modifier
-                .weight(1f))
-
-            Icon(
-                painter = painterResource(id = R.drawable.ufm_icon_foreground),
-                contentDescription = "UFM logo",
-                tint = Color.Unspecified,
-                modifier = Modifier.size(60.dp)
-            )
+                .fillMaxWidth())
         }
         CategorizedFoodItemsElement(
             uiState.items,

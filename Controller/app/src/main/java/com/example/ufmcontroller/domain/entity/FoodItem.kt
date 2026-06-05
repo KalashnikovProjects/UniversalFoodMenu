@@ -7,3 +7,7 @@ data class FoodItem(
     val imageUri: String? = null,
     val inStock: Boolean,
 ) : Designable
+
+
+fun defaultFoodItem() =
+    FoodItem(0, "", 0F, null, true)

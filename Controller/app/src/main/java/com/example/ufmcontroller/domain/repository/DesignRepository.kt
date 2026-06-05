@@ -9,6 +9,6 @@ interface DesignRepository {
 
     suspend fun editDesignItem(id: Int, designItem: DesignItem)
     suspend fun deleteDesignItem(id: Int)
-
+    fun getDesignItem(id: Int): Flow<DesignItem>
     fun getDesignItems(): Flow<List<DesignItem>>
 }

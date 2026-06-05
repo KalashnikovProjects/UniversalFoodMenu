@@ -7,3 +7,7 @@ data class Category(
     val price: Float? = null,
     val inStock: Boolean?,
 )
+
+
+fun defaultCategory() =
+    Category(0, "", null, null, true)

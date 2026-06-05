@@ -1,5 +1,6 @@
 package com.example.ufmcontroller.presentation.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -38,19 +41,21 @@ import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
 
 @Composable
 fun CategoryElement(category: CategoryWithFoodItems,
-                 opened: Boolean,
-                 onCategoryClick: (Int) -> Unit,
-                 onCategoryLongClick: (Int) -> Unit,
-                 onFoodItemClick: (Int) -> Unit,
-                 onFoodItemLongClick: (Int) -> Unit,
-                 onCategoryToggle: (Int) -> Unit={ _ -> },
-                 showSwitch: Boolean=false,
-                 showChildSwitch: Boolean=showSwitch,
-                 showExpand: Boolean=true,
-                 showHead:  Boolean=true,
-                 showNotInStock: Boolean = true,
-                 showBG: Boolean=false,
+                    isCheckedUp: Boolean=category.category.inStock != false,
+                    opened: Boolean=false,
+                    onCategoryClick: (Int) -> Unit = {},
+                    onCategoryLongClick: (Int) -> Unit = {},
+                    onFoodItemClick: (Int) -> Unit = {},
+                    onFoodItemLongClick: (Int) -> Unit = {},
+                    onCategoryToggle: (Int) -> Unit = {},
+                    showSwitch: Boolean=false,
+                    showChildSwitch: Boolean=showSwitch,
+                    showExpand: Boolean=true,
+                    showHead:  Boolean=true,
+                    showNotInStock: Boolean = true,
+                    showBG: Boolean=false,
                     doSpaceIfNoExpand: Boolean=true,
+                    categoryFontSize: TextUnit = 26.sp,
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -65,6 +70,10 @@ fun CategoryElement(category: CategoryWithFoodItems,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
+                    .combinedClickable(
+                        onClick = { onCategoryClick(category.category.id) },
+                        onLongClick = { onCategoryLongClick(category.category.id) }
+                    )
                     .padding(vertical = 7.dp, horizontal = 10.dp)
                     .fillMaxWidth()
             ) {
@@ -93,11 +102,8 @@ fun CategoryElement(category: CategoryWithFoodItems,
                     )
                 }
                 Text(category.category.name,
-                    fontSize = 26.sp,
-                    modifier = Modifier.combinedClickable(
-                        onClick = { onCategoryClick(category.category.id) },
-                        onLongClick = { onCategoryLongClick(category.category.id) }
-                    )
+                    fontSize = categoryFontSize,
+                    modifier = Modifier
                         .weight(1F),
                     textDecoration = if (category.category.inStock == false && showNotInStock) TextDecoration.LineThrough else
                         TextDecoration.None,
@@ -106,7 +112,7 @@ fun CategoryElement(category: CategoryWithFoodItems,
                 if (category.category.price != null) {
                     Text(
                         text = category.category.price.toString(),
-                        fontSize = 14.sp,
+                        fontSize = categoryFontSize / 2,
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
                             .alpha(0.6F),
@@ -118,7 +124,7 @@ fun CategoryElement(category: CategoryWithFoodItems,
 
 
                 if (showSwitch) {
-                    Switch(checked = category.category.inStock != false, onCheckedChange = {
+                    Checkbox(checked = isCheckedUp, onCheckedChange = {
                         onCategoryToggle(category.category.id)
                     },
                         modifier = Modifier.scale(0.8F)
@@ -126,7 +132,7 @@ fun CategoryElement(category: CategoryWithFoodItems,
                 }
             }
         }
-        if (opened) {
+        AnimatedVisibility(opened) {
             Column(
                 modifier = Modifier.padding(start=10.dp)
             ) {

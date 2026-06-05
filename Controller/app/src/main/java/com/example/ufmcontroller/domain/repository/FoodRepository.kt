@@ -9,6 +9,8 @@ interface FoodRepository {
     suspend fun toggleFoodItem(id: Int)
     suspend fun editFoodItem(id: Int, foodItem: FoodItem)
     suspend fun deleteFoodItem(id: Int)
+    fun getFoodItem(id: Int): Flow<FoodItem>
+    fun getFoodItemsByCategoryId(categoryId: Int): Flow<List<FoodItem>>
     fun getFoodItems(): Flow<List<FoodItem>>
     fun getCategorizedFoodItems(): Flow<FoodItemsCategorized>
 }

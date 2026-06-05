@@ -1,4 +1,4 @@
-package com.example.ufmcontroller.presentation.ui.component
+package com.example.ufmcontroller.presentation.ui.component.display
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

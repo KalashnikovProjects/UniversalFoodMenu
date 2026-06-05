@@ -54,6 +54,14 @@ class MainRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun getCategory(id: Int): Flow<Category> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCategoriesByFoodId(foodId: Int): Flow<List<Category>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun setCategoryFoodRelations(
         categoryId: Int,
         foodIds: List<Int>
@@ -88,6 +96,10 @@ class MainRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun getDesignItem(id: Int): Flow<DesignItem> {
+        TODO("Not yet implemented")
+    }
+
     override fun getDesignItems(): Flow<List<DesignItem>> {
         TODO("Not yet implemented")
     }
@@ -108,6 +120,14 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteFoodItem(id: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFoodItem(id: Int): Flow<FoodItem> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFoodItemsByCategoryId(categoryId: Int): Flow<List<FoodItem>> {
         TODO("Not yet implemented")
     }
 

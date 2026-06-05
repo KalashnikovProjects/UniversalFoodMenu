@@ -1,15 +1,12 @@
-package com.example.ufmcontroller.presentation.ui.component
+package com.example.ufmcontroller.presentation.ui.component.display
 
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -17,23 +14,20 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Devices.TV_1080p
 import androidx.compose.ui.tooling.preview.Devices.TV_720p
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastRoundToInt
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
 import com.example.ufmcontroller.domain.entity.DesignItem
@@ -118,11 +112,11 @@ fun ScreenDisplay(
                         drawRect(
                             color = Color(0xFF5489F5),
                             topLeft = Offset(-offset, -offset),
-                            size = androidx.compose.ui.geometry.Size(
+                            size = Size(
                                 width = size.width + offset * 2,
                                 height = size.height + offset * 2
                             ),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = borderWidth)
+                            style = Stroke(width = borderWidth)
                         )
                     }
                 }
