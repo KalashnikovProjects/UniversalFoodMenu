@@ -27,7 +27,7 @@ data class EditCategoryRoute(val id: Int)
 object VisualConfigurationRoute
 
 @Serializable
-data class TvScreenRoute(val id: Int) // TODO
+data class TvScreenRoute(val id: Int)
 
 @Serializable
 object AddTvScreenRoute

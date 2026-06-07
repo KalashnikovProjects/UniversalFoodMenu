@@ -15,6 +15,8 @@ kotlin {
     jvmToolchain(21)
 }
 dependencies {
+    implementation("io.ktor:ktor-server-call-logging:3.4.0")
+    implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation("io.ktor:ktor-server-rate-limit:3.4.0")
     implementation("io.ktor:ktor-server-status-pages:3.4.0")
     implementation("io.insert-koin:koin-ktor:3.5.3")

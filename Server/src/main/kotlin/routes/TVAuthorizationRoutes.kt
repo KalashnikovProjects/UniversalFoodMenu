@@ -1,9 +1,12 @@
 package com.kalashnikovprojects.ufmserver.routes
 
+import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
+import com.kalashnikovprojects.ufmserver.models.Events
 import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
 import com.kalashnikovprojects.ufmserver.models.TVScreen
+import com.kalashnikovprojects.ufmserver.models.toTextItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -28,6 +31,8 @@ fun Route.tvAuthorizationRoutes() {
     val jwtAdapter by inject<JwtAdapter>()
 
     val tvAuthStates = ConcurrentHashMap<Int, suspend (Int, String) -> TVScreen>()
+
+    val eventBus by inject<EventBus>()
 
     webSocket("/ws/tv_auth") {
         val screenWidth: Int
@@ -108,12 +113,11 @@ fun Route.tvAuthorizationRoutes() {
 
                 val callback = tvAuthStates[code]
                 if (callback != null) {
-                    callback(userId, username)
-
-                    call.respond(
-                        HttpStatusCode.OK,
-                        mapOf("status" to "success")
-                    )
+                    val screen = callback(userId, username)
+                    eventBus.getFlow(userId).emit(Events.AddScreenEvent(
+                        screen
+                    ))
+                    call.respond(screen)
                 } else {
                     call.respond(
                         HttpStatusCode.BadRequest,

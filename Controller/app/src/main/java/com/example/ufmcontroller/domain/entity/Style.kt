@@ -1,5 +1,8 @@
 package com.example.ufmcontroller.domain.entity
 
+import com.example.ufmcontroller.data.model.StyleDTO
+import com.example.ufmcontroller.data.model.toEntity
+
 data class Style(
     val x: Float?=null,
     val y: Float?=null,
@@ -27,3 +30,21 @@ fun Style.withDefaultStyle(defaultStyle: Style): Style = Style(
     itemWidthScale=(itemWidthScale ?: defaultStyle.itemWidthScale),
     categoryItemStyle=(categoryItemStyle ?: defaultStyle.categoryItemStyle),
     )
+
+
+
+fun Style.toDTO() : StyleDTO {
+    return StyleDTO(
+        x = x,
+        y = y,
+        scale = scale,
+        notInStockStyle = notInStockStyle?.toDTO(),
+        textColorHex = textColorHex,
+        showImage = showImage,
+        showPrice = showPrice,
+        foodItemDisplayTypeStyle=foodItemDisplayTypeStyle?.toDTO(),
+        imageScale=imageScale,
+        itemWidthScale=itemWidthScale,
+        categoryItemStyle=categoryItemStyle?.toDTO(),
+    )
+}

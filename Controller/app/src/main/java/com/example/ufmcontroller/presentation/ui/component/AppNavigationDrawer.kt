@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DesignServices
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedButton
@@ -79,7 +80,7 @@ fun AppNavigationDrawer(
                         label = { Text("Настроить экраны") },
                         selected = false,
                         icon = {
-                            Icon(Icons.Filled.DesignServices,
+                            Icon(Icons.Filled.Tv,
                                 contentDescription = null,
                                 tint = colorScheme.primary
                             )

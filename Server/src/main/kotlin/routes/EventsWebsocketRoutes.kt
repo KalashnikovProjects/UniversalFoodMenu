@@ -3,11 +3,14 @@ package com.kalashnikovprojects.ufmserver.routes
 import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.DesignItemsRepository
+import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
 import com.kalashnikovprojects.ufmserver.data.repository.ImageItemsRepository
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
 import com.kalashnikovprojects.ufmserver.data.repository.TextItemsRepository
 import com.kalashnikovprojects.ufmserver.models.Events
+import com.kalashnikovprojects.ufmserver.models.FoodItemsCategorized
+import com.kalashnikovprojects.ufmserver.models.toCategoryWithFoodItems
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
@@ -23,10 +26,8 @@ import kotlin.getValue
 
 fun Route.eventsWebsocketRoutes() {
     val designItemsRepository by inject<DesignItemsRepository>()
-    val textItemsRepository by inject<TextItemsRepository>()
-    val foodItemsRepository by inject<FoodItemsRepository>()
+    val foodItemsCategoriesRepository by inject<FoodItemsCategoriesRepository>()
     val categoriesRepository by inject<CategoriesRepository>()
-    val imageItemsRepository by inject<ImageItemsRepository>()
     val screensRepository by inject<ScreensRepository>()
 
     val eventBus by inject<EventBus>()
@@ -48,8 +49,16 @@ fun Route.eventsWebsocketRoutes() {
                     screenId = screenId,
                     screen = screen,
                 ))
-                sendSerialized(Events.ReloadFoodItems(items = foodItemsRepository.getAllByUserId(userId)))
-                sendSerialized(Events.ReloadCategoryItems(items = categoriesRepository.getAllByUserId(userId)))
+                val categories = categoriesRepository.getAllByUserId(userId).map {
+                    val foodItems = foodItemsCategoriesRepository.getFoodItemsForCategory(userId, it.id)
+                    it.toCategoryWithFoodItems(foodItems)
+                }
+                val noCategoryFoodItems = foodItemsCategoriesRepository.getNoCategoryFoodItems(userId)
+                val response = FoodItemsCategorized(
+                    categories,
+                    noCategoryFoodItems
+                )
+                sendSerialized(Events.ReloadCategorizedFoodItems(response))
 
                 sendSerialized(Events.ReloadDesignItemsByScreenId(
                     screenId = screenId,
@@ -60,16 +69,18 @@ fun Route.eventsWebsocketRoutes() {
                     sendSerialized(Events.ReloadScreens(items = screensRepository.getAllByUserId(userId)))
                 }
                 val secondDeferred = async {
-                    sendSerialized(Events.ReloadFoodItems(items = foodItemsRepository.getAllByUserId(userId)))
-                    sendSerialized(Events.ReloadCategoryItems(items = categoriesRepository.getAllByUserId(userId)))
+                    val categories = categoriesRepository.getAllByUserId(userId).map {
+                        val foodItems = foodItemsCategoriesRepository.getFoodItemsForCategory(userId, it.id)
+                        it.toCategoryWithFoodItems(foodItems)
+                    }
+                    val noCategoryFoodItems = foodItemsCategoriesRepository.getNoCategoryFoodItems(userId)
+                    val response = FoodItemsCategorized(
+                        categories,
+                        noCategoryFoodItems
+                    )
+                    sendSerialized(Events.ReloadCategorizedFoodItems(response))
                 }
-                val textItemsDeferred = async {
-                    sendSerialized(Events.ReloadTextItems(items = textItemsRepository.getAllByUserId(userId)))
-                }
-                val imageItemsDeferred = async {
-                    sendSerialized(Events.ReloadImageItems(items = imageItemsRepository.getAllByUserId(userId)))
-                }
-                awaitAll(screensDeferred, secondDeferred, textItemsDeferred, imageItemsDeferred)
+                awaitAll(screensDeferred, secondDeferred)
                 sendSerialized(Events.ReloadDesignItemsWithScreenId(items = designItemsRepository.getAllByUserId(userId)))
             }
 

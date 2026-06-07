@@ -20,18 +20,21 @@ services:
   ufm-db:
     image: postgres
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres_volume:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ufm_db
     env_file:
       - stack.env  # POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
     ports:
       - "5435:5432"
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 1s
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
-  postgres:
+  postgres_volume:
   ufm-static:

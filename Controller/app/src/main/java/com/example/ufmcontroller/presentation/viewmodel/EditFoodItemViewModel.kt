@@ -9,6 +9,7 @@ import com.example.ufmcontroller.domain.entity.defaultFoodItem
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesByFoodIdUseCase
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesUseCase
 import com.example.ufmcontroller.domain.usecase.category.UpdateFoodRelationsForCategoriesUseCase
+import com.example.ufmcontroller.domain.usecase.food.DeleteFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.EditFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.GetFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.UploadFoodItemUseCase
@@ -32,6 +33,7 @@ import javax.inject.Inject
 data class EditFoodItemUiState(
     val categories: List<Category> = emptyList(),
     val isLoading: Boolean = false,
+    val openedDeleteConfirmationDialog: Boolean = false,
 )
 
 
@@ -42,11 +44,14 @@ class EditFoodItemViewModel @AssistedInject constructor(
     private val getCategoriesByFoodIdUseCase: GetCategoriesByFoodIdUseCase,
 
     private val editFoodItemUseCase: EditFoodItemUseCase,
+    private val deleteFoodItemUseCase: DeleteFoodItemUseCase,
     @Assisted private val id: Int
     ) : ViewModel() {
 
     private var foodItem: FoodItem = defaultFoodItem()
     private var categories: List<Category> = emptyList()
+    private val _isLoading = MutableStateFlow(true)
+    private val _openedDeleteConfirmationDialog = MutableStateFlow(false)
 
     val foodItemFieldsStates: FoodItemFieldsStates = FoodItemFieldsStates()
 
@@ -68,15 +73,16 @@ class EditFoodItemViewModel @AssistedInject constructor(
             }
         }
     }
-    private val _isLoading = MutableStateFlow(true)
 
     val uiState: StateFlow<EditFoodItemUiState> = combine(
         filteredCategoriesFlow,
-        _isLoading
-    ) { items, loading ->
+        _isLoading,
+        _openedDeleteConfirmationDialog
+    ) { items, loading, openedDeleteConfirmationDialog ->
         EditFoodItemUiState(
             categories = items,
-            isLoading = loading
+            isLoading = loading,
+            openedDeleteConfirmationDialog=openedDeleteConfirmationDialog,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -121,6 +127,18 @@ class EditFoodItemViewModel @AssistedInject constructor(
                     foodItemFieldsStates.selectedCategories.value.contains(it.id)
                 },
             )
+        }
+    }
+
+    fun delete() {
+        viewModelScope.launch {
+            deleteFoodItemUseCase(id)
+        }
+    }
+
+    fun setOpenedDeleteConfirmationDialog(value: Boolean) {
+        viewModelScope.launch {
+            _openedDeleteConfirmationDialog.value = value
         }
     }
 

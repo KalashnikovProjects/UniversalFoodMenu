@@ -7,3 +7,4 @@ import kotlinx.serialization.Serializable
 sealed interface DesignableDTO {
     fun toEntity(): Designable
 }
+

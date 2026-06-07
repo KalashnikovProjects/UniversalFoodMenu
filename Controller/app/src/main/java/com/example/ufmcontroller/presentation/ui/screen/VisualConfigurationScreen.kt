@@ -88,8 +88,9 @@ fun VisualConfigurationScreenContent(
                 items(uiState.screens) {
                         item ->
                     TvScreenCard(
-                        item,
-                        onNavigateToScreen,
+                        screenWithDesignItems=item,
+                        onNavigateToScreen=onNavigateToScreen,
+                        clickable = true,
                         fontSize = 8.sp,
                     )
                 }

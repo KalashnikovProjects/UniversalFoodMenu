@@ -5,3 +5,11 @@ data class DesignItem(
     val element: Designable,
     val style: Style,
 )
+
+
+fun DesignItem.toDesignItemWithScreenId(screenId: Int) = DesignItemWithScreenId(
+    id=id,
+    element = element,
+    style = style,
+    screenId = screenId,
+)

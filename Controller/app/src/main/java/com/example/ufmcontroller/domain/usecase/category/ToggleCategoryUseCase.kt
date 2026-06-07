@@ -7,6 +7,6 @@ import javax.inject.Inject
 class ToggleCategoryUseCase @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) {
-    suspend operator fun invoke(id: Int) =
-        categoryRepository.toggleCategory(id)
+    suspend operator fun invoke(id: Int, boolean: Boolean) =
+        categoryRepository.toggleCategory(id, boolean)
 }

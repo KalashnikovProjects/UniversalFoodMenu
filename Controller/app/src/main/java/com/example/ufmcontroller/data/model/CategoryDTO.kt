@@ -24,3 +24,13 @@ data class CategoryDTO(
         )
     }
 }
+
+fun Category.toDTO(): CategoryDTO {
+    return CategoryDTO(
+        id = id,
+        name = name,
+        imageUri = imageUri,
+        price = price,
+        inStock = inStock,
+    )
+}

@@ -48,7 +48,6 @@ import com.example.ufmcontroller.presentation.ui.component.SearchBar
 import com.example.ufmcontroller.presentation.viewmodel.HomeUiState
 import com.example.ufmcontroller.presentation.viewmodel.HomeViewModel
 
-// TODO: добавить во viewModel и в какие-то сохранялки между запусками режим отображения (плитки или список)
 
 @Composable
 fun HomeScreen(
@@ -63,10 +62,10 @@ fun HomeScreen(
         uiState = uiState,
         searchState = viewModel.searchState,
         navigateEditFoodItem = navigateEditFoodItem,
-        toggleFoodItem = {id -> viewModel.toggleFoodItem(id) },
+        toggleFoodItem = viewModel::toggleFoodItem,
         onCategoryVisibilitySwitch = {id -> viewModel.switchCategoryVisibility(id) },
         navigateEditCategory = navigateEditCategory,
-        onCategoryToggle = {id -> viewModel.toggleCategory(id) },
+        onCategoryToggle = viewModel::toggleCategory,
         onToggleDrawer = onToggleDrawer,
     )
 }
@@ -76,10 +75,10 @@ fun HomeScreenContent(
     uiState: HomeUiState,
     searchState: TextFieldState,
     navigateEditFoodItem: (Int) -> Unit,
-    toggleFoodItem: (Int) -> Unit,
+    toggleFoodItem: (Int, Boolean) -> Unit,
     onCategoryVisibilitySwitch: (Int) -> Unit,
     navigateEditCategory: (Int) -> Unit,
-    onCategoryToggle: (Int) -> Unit,
+    onCategoryToggle: (Int, Boolean) -> Unit,
     onToggleDrawer: () -> Unit,
 ) {
     Column(modifier = Modifier
@@ -87,10 +86,11 @@ fun HomeScreenContent(
     ) {
         DefaultAppTop(
             onButton = onToggleDrawer,
-        ) {
-            SearchBar(searchState, Modifier
-                .fillMaxWidth())
-        }
+            title = {
+                SearchBar(searchState, Modifier
+                    .fillMaxWidth())
+            }
+        )
         CategorizedFoodItemsElement(
             uiState.items,
             opened = uiState.openedIds,
@@ -190,10 +190,10 @@ fun HomeScreenPreview() {
                 ),
                 searchState = searchState,
                 navigateEditFoodItem = {},
-                toggleFoodItem = { },
+                toggleFoodItem = { _, _ -> },
                 onCategoryVisibilitySwitch = {  },
                 navigateEditCategory = {  },
-                onCategoryToggle = {  },
+                onCategoryToggle = { _, _ -> },
                 onToggleDrawer = { },
             )
         }

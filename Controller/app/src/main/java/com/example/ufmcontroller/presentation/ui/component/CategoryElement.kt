@@ -45,9 +45,9 @@ fun CategoryElement(category: CategoryWithFoodItems,
                     opened: Boolean=false,
                     onCategoryClick: (Int) -> Unit = {},
                     onCategoryLongClick: (Int) -> Unit = {},
-                    onFoodItemClick: (Int) -> Unit = {},
+                    onFoodItemClick: (Int, Boolean) -> Unit = {_, _ -> },
                     onFoodItemLongClick: (Int) -> Unit = {},
-                    onCategoryToggle: (Int) -> Unit = {},
+                    onCategoryToggle: (Int, Boolean) -> Unit = {_, _ -> },
                     showSwitch: Boolean=false,
                     showChildSwitch: Boolean=showSwitch,
                     showExpand: Boolean=true,
@@ -125,7 +125,7 @@ fun CategoryElement(category: CategoryWithFoodItems,
 
                 if (showSwitch) {
                     Checkbox(checked = isCheckedUp, onCheckedChange = {
-                        onCategoryToggle(category.category.id)
+                        onCategoryToggle(category.category.id, !isCheckedUp)
                     },
                         modifier = Modifier.scale(0.8F)
                     )
@@ -138,8 +138,8 @@ fun CategoryElement(category: CategoryWithFoodItems,
             ) {
                 for (item in category.foodItems) {
                     FoodItemRowCard(item = item,
-                        { onFoodItemClick(item.id) },
-                        { onFoodItemLongClick(item.id) },
+                        onFoodItemClick,
+                        onFoodItemLongClick,
                         showSwitch=showChildSwitch,
                         showNotInStock=showNotInStock
                     )

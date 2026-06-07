@@ -44,7 +44,9 @@ import com.example.ufmcontroller.presentation.ui.component.display.ScreenDisplay
 @Composable
 fun TvScreenCard(
     screenWithDesignItems: TVScreenWithDesignItems,
-    onNavigateToScreen: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateToScreen: (Int) -> Unit = {},
+    clickable: Boolean = false,
     fontSize: TextUnit = 14.sp,
     ) {
     val screenWidth = screenWithDesignItems.tvScreen.width.toFloat()
@@ -53,11 +55,17 @@ fun TvScreenCard(
     val ratio: Float = screenWidth / screenHeight
     val size: String = "${screenWithDesignItems.tvScreen.width}x${screenWithDesignItems.tvScreen.height}"
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                onNavigateToScreen(screenWithDesignItems.tvScreen.id)
-            }
+            .then(
+                if (clickable) {
+                    Modifier.clickable {
+                        onNavigateToScreen(screenWithDesignItems.tvScreen.id)
+                    }
+                } else {
+                    Modifier
+                }
+            )
     ) {
         BoxWithConstraints(
             modifier = Modifier
@@ -118,7 +126,6 @@ fun TvScreenCardPreview() {
                 ),
                 designItems = emptyList()
             ),
-            onNavigateToScreen = {}
         )
         Spacer(modifier = Modifier.size(7.dp))
         TvScreenCard(
@@ -228,7 +235,6 @@ fun TvScreenCardPreview() {
                     ),
                 )
             ),
-            onNavigateToScreen = {},
         )
     }
 

@@ -7,6 +7,7 @@ import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepo
 import com.kalashnikovprojects.ufmserver.models.Events
 import com.kalashnikovprojects.ufmserver.models.FoodItem
 import com.kalashnikovprojects.ufmserver.models.NoIdCategory
+import com.kalashnikovprojects.ufmserver.models.NoIdFoodItem
 import com.kalashnikovprojects.ufmserver.models.toCategory
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
@@ -19,6 +20,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
 import kotlin.getValue
 
@@ -82,10 +84,10 @@ fun Route.categoryRoutes() {
                 return@put
             }
 
-            val request = call.receive<List<FoodItem>>()
+            val request = call.receive<List<Int>>()
             foodItemsCategoriesRepository.setFoodItemsForCategory(userId,
                 id,
-                request.map { it.id }
+                request
             )
             eventBus.getFlow(userId).emit(Events.SetCategoryItems(
                 id,
@@ -98,25 +100,44 @@ fun Route.categoryRoutes() {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
 
-            val request = call.receive<NoIdCategory>()
-            val multipart = call.receiveMultipart()
+            var requestPayload: NoIdCategory? = null
             var fileBytes: ByteArray? = null
             var fileName = ""
+
+            val multipart = call.receiveMultipart()
+
             multipart.forEachPart { part ->
-                if (part is PartData.FileItem) {
-                    fileBytes = part.streamProvider().readBytes()
-                    fileName = part.originalFileName as String
+                when (part) {
+                    is PartData.FormItem -> {
+                        if (part.name == "categoryData") {
+                            requestPayload = Json.decodeFromString<NoIdCategory>(part.value)
+                        }
+                    }
+                    is PartData.FileItem -> {
+                        if (part.name == "image") {
+                            fileBytes = part.streamProvider().readBytes()
+                            fileName = part.originalFileName ?: "unknown.jpg"
+                        }
+                    }
+                    else -> {}
                 }
                 part.dispose()
             }
-            fileBytes?.let { bytes ->
-                val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, fileName.substringAfterLast(".", ""))
-                request.imageUri = imageUrl
+
+            if (requestPayload == null) {
+                call.respond(HttpStatusCode.BadRequest, "Missing food item data")
+                return@post
             }
 
-            val createdId = categoriesRepository.create(userId, request)
+            fileBytes?.let { bytes ->
+                val extension = fileName.substringAfterLast(".", "")
+                val imageUrl = fileStorageAdapter.saveCategoryItemImage(bytes, extension)
+                requestPayload!!.imageUri = imageUrl
+            }
+
+            val createdId = categoriesRepository.create(userId, requestPayload)
             eventBus.getFlow(userId).emit(Events.AddCategoryEvent(
-                element = request.toCategory(createdId)
+                element = requestPayload.toCategory(createdId)
             ))
             call.respond(HttpStatusCode.Created, createdId)
         }
@@ -130,31 +151,71 @@ fun Route.categoryRoutes() {
                 call.respond(HttpStatusCode.BadRequest, "Invalid ID")
                 return@put
             }
-            val request = call.receive<NoIdCategory>()
 
-            val multipart = call.receiveMultipart()
+            var requestPayload: NoIdCategory? = null
             var fileBytes: ByteArray? = null
             var fileName = ""
+
+            val multipart = call.receiveMultipart()
+
             multipart.forEachPart { part ->
-                if (part is PartData.FileItem) {
-                    fileBytes = part.streamProvider().readBytes()
-                    fileName = part.originalFileName as String
+                when (part) {
+                    is PartData.FormItem -> {
+                        if (part.name == "categoryData") {
+                            requestPayload = Json.decodeFromString<NoIdCategory>(part.value)
+                        }
+                    }
+                    is PartData.FileItem -> {
+                        if (part.name == "image") {
+                            fileBytes = part.streamProvider().readBytes()
+                            fileName = part.originalFileName ?: "unknown.jpg"
+                        }
+                    }
+                    else -> {}
                 }
                 part.dispose()
             }
-            fileBytes?.let { bytes ->
-                val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, fileName.substringAfterLast(".", ""))
-                request.imageUri = imageUrl
+
+            if (requestPayload == null) {
+                call.respond(HttpStatusCode.BadRequest, "Missing food item data")
+                return@put
             }
-            val isUpdated = categoriesRepository.updateById(userId, id, request)
+
+            fileBytes?.let { bytes ->
+                val extension = fileName.substringAfterLast(".", "")
+                val imageUrl = fileStorageAdapter.saveCategoryItemImage(bytes, extension)
+                requestPayload!!.imageUri = imageUrl
+            }
+            val isUpdated = categoriesRepository.updateById(userId, id, requestPayload)
 
             if (isUpdated) {
                 eventBus.getFlow(userId).emit(
                     Events.ChangeCategoryEvent(
                         id,
-                        element = request.toCategory(id)
+                        element = requestPayload.toCategory(id)
                     )
                 )
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        post("/categoriess/{id}/toggle") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("id").asInt()
+
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid ID")
+                return@post
+            }
+
+            val inStock = call.receive<Boolean>()
+            val isUpdated = categoriesRepository.toggleById(userId, id, inStock)
+
+            if (isUpdated) {
+                eventBus.getFlow(userId).emit(Events.ToggleCategoryEvent(id, inStock))
                 call.respond(HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound)

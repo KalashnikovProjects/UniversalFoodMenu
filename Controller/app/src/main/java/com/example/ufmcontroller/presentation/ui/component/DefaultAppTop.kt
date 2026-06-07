@@ -3,6 +3,7 @@ package com.example.ufmcontroller.presentation.ui.component
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,15 +38,8 @@ fun DefaultAppTop(
     text: String="Universal Food Menu",
     onButton: () -> Unit,
     buttonIsToMenu: Boolean = true,
-    title: @Composable () -> Unit = @Composable {
-        Text(
-            text,
-            style = MaterialTheme.typography.titleLarge,
-            color = colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    title: (@Composable () -> Unit)? = null,
+    actions: (@Composable RowScope.() -> Unit)? = null
 ) {
     TopAppBar(
         navigationIcon = {
@@ -68,8 +62,16 @@ fun DefaultAppTop(
                 }
             }
         },
-        title = title,
-        actions = {
+        title = title ?: @Composable {
+            Text(
+                text,
+                style = MaterialTheme.typography.titleLarge,
+                color = colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        actions = actions ?: @Composable {
             Icon(
                 painter = painterResource(id = R.drawable.ufm_icon_foreground),
                 contentDescription = "UFM logo",

@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
@@ -14,6 +16,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -30,8 +33,9 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mainViewModel.startEventsService()
         super.onCreate(savedInstanceState)
+        mainViewModel.startEventsService()
+
         setContent {
             val navController = rememberNavController()
             val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -55,7 +59,10 @@ class MainActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(paddingValues)
+                                .padding(
+                                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                                )
                         ) {
                             AppNavGraph(
                                 mainViewModel=mainViewModel,

@@ -1,0 +1,49 @@
+package com.example.ufmcontroller.data.repository
+
+import android.content.Context
+import android.net.Uri
+import com.example.ufmcontroller.data.remote.RemoteCategoryDataSource
+import com.example.ufmcontroller.domain.entity.Category
+import com.example.ufmcontroller.domain.repository.CategoryRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class CategoryRepositoryImpl @Inject constructor(
+    private val remoteCategoryDataSource: RemoteCategoryDataSource,
+    ) : CategoryRepository {
+    override suspend fun addCategory(category: Category): Category {
+        return remoteCategoryDataSource.addCategory(category)
+    }
+    override suspend fun editCategory(
+        id: Int,
+        category: Category
+    ) {
+        return remoteCategoryDataSource.editCategory(id, category)
+    }
+
+    override suspend fun toggleCategory(id: Int, boolean: Boolean) {
+        return remoteCategoryDataSource.toggleCategory(id, boolean)
+    }
+
+    override suspend fun deleteCategory(id: Int) {
+        return remoteCategoryDataSource.deleteCategory(id)
+    }
+
+    override suspend fun setCategoryFoodRelations(
+        categoryId: Int,
+        foodIds: List<Int>
+    ) {
+        return remoteCategoryDataSource.setCategoryFoodRelations(categoryId, foodIds)
+    }
+
+    override suspend fun updateFoodRelationsForCategories(
+        foodId: Int,
+        categoryIds: List<Int>
+    ) {
+        return remoteCategoryDataSource.updateFoodRelationsForCategories(foodId, categoryIds)
+    }
+}

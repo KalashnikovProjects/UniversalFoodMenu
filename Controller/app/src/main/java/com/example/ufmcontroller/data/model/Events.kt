@@ -1,5 +1,8 @@
 package com.example.ufmcontroller.data.model
 
+import com.example.ufmcontroller.domain.entity.DesignItem
+import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
+import com.example.ufmcontroller.domain.entity.TVScreen
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,6 +21,10 @@ sealed interface Events {
     @Serializable
     data class DeleteFoodEvent(val id: Int) : Events
 
+
+    @SerialName("toggle_category_event")
+    @Serializable
+    data class ToggleCategoryEvent(val id: Int, val inStock: Boolean) : Events
     @SerialName("add_category_event")
     @Serializable
     data class AddCategoryEvent(val element: CategoryDTO) : Events
@@ -50,21 +57,21 @@ sealed interface Events {
 
     @SerialName("add_design_event")
     @Serializable
-    data class AddDesignEvent(val element: DesignItemDTO) : Events
+    data class AddDesignEvent(val element: DesignItemWithScreenIdDTO) : Events
     @SerialName("change_design_event")
     @Serializable
-    data class ChangeDesignEvent(val id: Int, val element: DesignItemDTO) : Events
+    data class ChangeDesignEvent(val id: Int, val element: DesignItemWithScreenIdDTO) : Events
     @SerialName("delete_design_event")
     @Serializable
     data class DeleteDesignEvent(val id: Int) : Events
 
     @SerialName("set_category_items_event")
     @Serializable
-    data class SetCategoryItems(val categoryId: Int, val foodItems: List<FoodItemDTO>) : Events
+    data class SetCategoryItems(val categoryId: Int, val foodItemsIds: List<Int>) : Events
 
     @SerialName("set_food_categories_event")
     @Serializable
-    data class SetFoodCategories(val foodId: Int, val categories: List<CategoryDTO>) : Events
+    data class SetFoodCategories(val foodId: Int, val categoriesIds: List<Int>) : Events
 
     @SerialName("add_screen_event")
     @Serializable
@@ -90,21 +97,9 @@ sealed interface Events {
     @Serializable
     data class ReloadDesignItemsWithScreenId(val items: List<DesignItemWithScreenIdDTO>) : Events
 
-    @SerialName("reload_food_items")
+    @SerialName("reload_categorized_food_items")
     @Serializable
-    data class ReloadFoodItems(val items: List<FoodItemDTO>) : Events
-
-    @SerialName("reload_CategoryDTO_items")
-    @Serializable
-    data class ReloadCategoryItems(val items: List<CategoryDTO>) : Events
-
-    @SerialName("reload_text_items")
-    @Serializable
-    data class ReloadTextItems(val items: List<TextItemDTO>) : Events
-
-    @SerialName("reload_image_items")
-    @Serializable
-    data class ReloadImageItems(val items: List<ImageItemDTO>) : Events
+    data class ReloadCategorizedFoodItems(val c: FoodItemsCategorizedDTO) : Events
 
     @SerialName("reload_screens")
     @Serializable

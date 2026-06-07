@@ -6,6 +6,6 @@ import javax.inject.Inject
 class ToggleFoodItemUseCase @Inject constructor(
     private val foodRepository: FoodRepository
 ) {
-    suspend operator fun invoke(id: Int) =
-        foodRepository.toggleFoodItem(id)
+    suspend operator fun invoke(id: Int, boolean: Boolean) =
+        foodRepository.toggleFoodItem(id, boolean)
 }

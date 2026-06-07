@@ -19,6 +19,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
 import kotlin.getValue
 
@@ -81,10 +82,10 @@ fun Route.foodItemsRoutes() {
                 return@put
             }
 
-            val request = call.receive<List<Category>>()
+            val request = call.receive<List<Int>>()
             foodItemsCategoriesRepository.setCategoriesForFoodItem(userId,
                 id,
-                request.map { it.id }
+                request
             )
             eventBus.getFlow(userId).emit(Events.SetFoodCategories(
                 id,
@@ -96,27 +97,46 @@ fun Route.foodItemsRoutes() {
         post("/food-items") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
-            val request = call.receive<NoIdFoodItem>()
-            val multipart = call.receiveMultipart()
+
+            var requestPayload: NoIdFoodItem? = null
             var fileBytes: ByteArray? = null
             var fileName = ""
+
+            val multipart = call.receiveMultipart()
+
             multipart.forEachPart { part ->
-                if (part is PartData.FileItem) {
-                    fileBytes = part.streamProvider().readBytes()
-                    fileName = part.originalFileName as String
+                when (part) {
+                    is PartData.FormItem -> {
+                        if (part.name == "foodItemData") {
+                            requestPayload = Json.decodeFromString<NoIdFoodItem>(part.value)
+                        }
+                    }
+                    is PartData.FileItem -> {
+                        if (part.name == "image") {
+                            fileBytes = part.streamProvider().readBytes()
+                            fileName = part.originalFileName ?: "unknown.jpg"
+                        }
+                    }
+                    else -> {}
                 }
                 part.dispose()
             }
-            fileBytes?.let { bytes ->
-                val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, fileName.substringAfterLast(".", ""))
-                request.imageUri = imageUrl
+
+            if (requestPayload == null) {
+                call.respond(HttpStatusCode.BadRequest, "Missing food item data")
+                return@post
             }
 
-            val createdId = foodItemsRepository.create(userId, request)
-            eventBus.getFlow(userId).emit(Events.AddFoodEvent(
-                element = request.toFoodItem(createdId)
-            ))
-            call.respond(HttpStatusCode.Created, request.toFoodItem(createdId))
+            fileBytes?.let { bytes ->
+                val extension = fileName.substringAfterLast(".", "")
+                val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, extension)
+                requestPayload!!.imageUri = imageUrl
+            }
+            val createdId = foodItemsRepository.create(userId, requestPayload!!)
+            val finalFoodItem = requestPayload!!.toFoodItem(createdId)
+
+            eventBus.getFlow(userId).emit(Events.AddFoodEvent(element = finalFoodItem))
+            call.respond(HttpStatusCode.Created, finalFoodItem)
         }
 
         put("/food-items/{id}") {
@@ -128,32 +148,49 @@ fun Route.foodItemsRoutes() {
                 call.respond(HttpStatusCode.BadRequest, "Invalid ID")
                 return@put
             }
-            val request = call.receive<NoIdFoodItem>()
-            val multipart = call.receiveMultipart()
+
+            var requestPayload: NoIdFoodItem? = null
             var fileBytes: ByteArray? = null
             var fileName = ""
+
+            val multipart = call.receiveMultipart()
+
             multipart.forEachPart { part ->
-                if (part is PartData.FileItem) {
-                    fileBytes = part.streamProvider().readBytes()
-                    fileName = part.originalFileName as String
+                when (part) {
+                    is PartData.FormItem -> {
+                        if (part.name == "foodItemData") {
+                            requestPayload = Json.decodeFromString<NoIdFoodItem>(part.value)
+                        }
+                    }
+                    is PartData.FileItem -> {
+                        if (part.name == "image") {
+                            fileBytes = part.streamProvider().readBytes()
+                            fileName = part.originalFileName ?: "unknown.jpg"
+                        }
+                    }
+                    else -> {}
                 }
                 part.dispose()
             }
-            fileBytes?.let { bytes ->
-                val imageUrl = fileStorageAdapter.saveFoodItemImage(
-                    bytes,
-                    fileName.substringAfterLast(".", "")
-                )
-                request.imageUri = imageUrl
+
+            if (requestPayload == null) {
+                call.respond(HttpStatusCode.BadRequest, "Missing food item data")
+                return@put
             }
 
-            val isUpdated = foodItemsRepository.updateById(userId, id, request)
+            fileBytes?.let { bytes ->
+                val extension = fileName.substringAfterLast(".", "")
+                val imageUrl = fileStorageAdapter.saveFoodItemImage(bytes, extension)
+                requestPayload!!.imageUri = imageUrl
+            }
+
+            val isUpdated = foodItemsRepository.updateById(userId, id, requestPayload)
 
             if (isUpdated) {
                 eventBus.getFlow(userId).emit(
                     Events.ChangeFoodEvent(
                         id,
-                        element = request.toFoodItem(id)
+                        element = requestPayload.toFoodItem(id)
                     )
                 )
                 call.respond(HttpStatusCode.OK)

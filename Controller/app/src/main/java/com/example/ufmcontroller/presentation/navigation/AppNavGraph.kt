@@ -1,6 +1,7 @@
 package com.example.ufmcontroller.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,17 @@ import com.example.ufmcontroller.presentation.ui.screen.VisualConfigurationScree
 
 @Composable
 fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, onToggleDrawer: () -> Unit) {
+    LaunchedEffect(Unit) {
+        mainViewModel.logoutEvent.collect {
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            if (currentRoute != LoginRoute::class.qualifiedName) {
+                navController.navigate(LoginRoute) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
     NavHost(navController = navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
             HomeScreen(
@@ -96,6 +108,14 @@ fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, o
 
             TvScreenScreen (
                 screenId = route.id,
+                navigateEditFoodItem =  {
+                        id ->
+                    navController.navigate(EditItemRoute(id))
+                },
+                navigateEditCategory = {
+                        id ->
+                    navController.navigate(EditCategoryRoute(id))
+                },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -113,6 +133,7 @@ fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, o
         }
         composable<AddTvScreenRoute> {
             AddTvScreenScreen(
+                onNavigateAfterLogin = { navController.navigate(TvScreenRoute(it)) },
                 onBack = { navController.popBackStack() },
             )
         }

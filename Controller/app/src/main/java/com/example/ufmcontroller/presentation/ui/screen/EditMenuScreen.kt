@@ -151,7 +151,7 @@ fun EditMenuScreenContent(
                                 key("food_element_edit_list${item.id}") {
                                     FoodItemRowCard(
                                         item = item,
-                                        onFoodItemClick = onNavigateToEditFoodItem,
+                                        onFoodItemClick = { id, _ -> onNavigateToEditFoodItem(id) },
                                         onFoodItemLongClick = onNavigateToEditFoodItem,
                                         showSwitch = false,
                                         showNotInStock = false,
@@ -172,12 +172,12 @@ fun EditMenuScreenContent(
                                             emptyList(),
                                         ),
                                         opened = false,
-                                        onFoodItemClick = { },
+                                        onFoodItemClick = { _, _ -> },
                                         onFoodItemLongClick = { },
                                         showSwitch = false,
                                         onCategoryClick = onNavigateToEditCategory,
                                         onCategoryLongClick = onNavigateToEditCategory,
-                                        onCategoryToggle = { },
+                                        onCategoryToggle = { _, _ -> },
                                         showExpand = false,
                                         showNotInStock = false,
                                         showBG = true,
@@ -192,8 +192,10 @@ fun EditMenuScreenContent(
         }
         Crossfade(
             targetState = uiState.editMenuTab,
-            label = "AuthScreenTransition",
-            modifier = Modifier.align(Alignment.BottomEnd).padding(30.dp)
+            label = "EditMenuTabTransition",
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(30.dp)
         ) {
             tab ->
             FloatingActionButton(
@@ -201,11 +203,12 @@ fun EditMenuScreenContent(
             ) {
                 Icon(Icons.Filled.Add,
                     "Add",
-                    modifier = Modifier.padding(15.dp).size(40.dp),
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(40.dp),
                 )
             }
         }
-
     }
 }
 

@@ -21,7 +21,7 @@ sealed interface AddTvScreenStep {
     object Normal: AddTvScreenStep
     object Loading: AddTvScreenStep
     data class Error(val message: String) : AddTvScreenStep
-    object Successful : AddTvScreenStep
+    data class Successful(val id: Int) : AddTvScreenStep
 }
 
 @HiltViewModel
@@ -41,9 +41,9 @@ class AddTvScreenViewModel @Inject constructor(
                 step = AddTvScreenStep.Loading
             )
             try {
-                inputCodeUseCase(codeFieldState.text.toString())
+                val new = inputCodeUseCase(codeFieldState.text.toString())
                 _uiState.value = _uiState.value.copy(
-                    step = AddTvScreenStep.Successful
+                    step = AddTvScreenStep.Successful(new.id)
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

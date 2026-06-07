@@ -6,6 +6,7 @@ import com.kalashnikovprojects.ufmserver.models.Events
 import com.kalashnikovprojects.ufmserver.models.NoIdDesignItem
 import com.kalashnikovprojects.ufmserver.models.toDesignItem
 import com.kalashnikovprojects.ufmserver.models.DesignsByScreen
+import com.kalashnikovprojects.ufmserver.models.toDesignItemWithScreenId
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -83,16 +84,20 @@ fun Route.designItemsRoutes() {
             val request = call.receive<NoIdDesignItem>()
             val createdId = designItemsRepository.create(userId, screenId, request)
             eventBus.getFlow(userId).emit(Events.AddDesignEvent(
-                element = request.toDesignItem(createdId)
+                element = request.toDesignItem(createdId).toDesignItemWithScreenId(screenId)
             ))
             call.respond(HttpStatusCode.Created, request.toDesignItem(createdId))
         }
 
-        put("/design-items/{id}") {
+        put("/screens/{screen_id}/design-items/{id}") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
             val request = call.receive<NoIdDesignItem>()
-
+            val screenId = call.parameters["screen_id"]?.toIntOrNull()
+            if (screenId == null) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid ID")
+                return@put
+            }
             val id = call.parameters["id"]?.toIntOrNull()
             if (id == null) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid ID")
@@ -104,7 +109,7 @@ fun Route.designItemsRoutes() {
             if (isUpdated) {
                 eventBus.getFlow(userId).emit(Events.ChangeDesignEvent(
                     id,
-                    element = request.toDesignItem(id)
+                    element = request.toDesignItem(id).toDesignItemWithScreenId(screenId = screenId)
                 ))
                 call.respond(HttpStatusCode.OK)
             } else {
@@ -112,7 +117,7 @@ fun Route.designItemsRoutes() {
             }
         }
 
-        delete("/design-items/{id}") {
+        delete("/screens/{screen_id}/design-items/{id}") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
 

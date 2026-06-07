@@ -1,7 +1,15 @@
 package com.example.ufmcontroller.domain.entity
 
-sealed interface FoodItemDisplayTypeStyle {
-    object Row: FoodItemDisplayTypeStyle
+import com.example.ufmcontroller.data.model.FoodItemDisplayTypeStyleDTO
 
-    object Cell: FoodItemDisplayTypeStyle
+sealed interface FoodItemDisplayTypeStyle {
+    fun toDTO(): FoodItemDisplayTypeStyleDTO
+
+    object Row: FoodItemDisplayTypeStyle {
+        override fun toDTO() = FoodItemDisplayTypeStyleDTO.Row
+    }
+
+    object Cell: FoodItemDisplayTypeStyle {
+        override fun toDTO() = FoodItemDisplayTypeStyleDTO.Cell
+    }
 }

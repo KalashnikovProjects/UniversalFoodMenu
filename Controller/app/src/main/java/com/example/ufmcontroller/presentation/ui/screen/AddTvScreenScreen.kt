@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +70,7 @@ import com.example.ufmcontroller.presentation.viewmodel.LoginTab
 @Composable
 fun AddTvScreenScreen(
     viewModel: AddTvScreenViewModel= hiltViewModel<AddTvScreenViewModel>(),
+    onNavigateAfterLogin: (Int) -> Unit,
     onBack: () -> Unit,
 ) {
     val uiState: AddTvScreenUiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -77,7 +79,9 @@ fun AddTvScreenScreen(
         uiState,
         viewModel.codeFieldState, {
         viewModel.postCode()
-    }, onBack)
+    },
+        onNavigateAfterLogin,
+        onBack)
 }
 
 @Composable
@@ -85,8 +89,16 @@ fun AddTvScreenScreenContent(
     uiState: AddTvScreenUiState,
     codeFieldState: TextFieldState,
     onInputCode: () -> Unit,
+    onNavigateAfterLogin: (Int) -> Unit,
     onBack: () -> Unit,
     ) {
+    LaunchedEffect(
+        key1 = uiState.step,
+    ) {
+        if (uiState.step is AddTvScreenStep.Successful) {
+            onNavigateAfterLogin(uiState.step.id)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -176,7 +188,9 @@ fun AddTvScreenScreenContent(
                 Button(
                     onClick = onInputCode,
                     enabled = uiState.step != AddTvScreenStep.Loading,
-                    modifier = Modifier.width(230.dp).padding(top=10.dp),
+                    modifier = Modifier
+                        .width(230.dp)
+                        .padding(top = 10.dp),
                     shape = MaterialTheme.shapes.medium,
                 ) {
                     Box(
@@ -219,6 +233,7 @@ fun AddTvScreenScreenContentNormalPreview() {
             codeFieldState = rememberTextFieldState(""),
             onInputCode = {},
             onBack = {},
+            onNavigateAfterLogin = { },
         )
     }
 }
@@ -237,6 +252,7 @@ fun AddTvScreenScreenContentLoadingPreview() {
             codeFieldState = rememberTextFieldState("1"),
             onInputCode = {},
             onBack = {},
+            onNavigateAfterLogin = { },
         )
     }
 }
@@ -250,7 +266,8 @@ fun AddTvScreenScreenContentErrorPreview() {
     UFMControllerTheme {
         Box(
             modifier = Modifier
-                .fillMaxSize().background(colorScheme.background)
+                .fillMaxSize()
+                .background(colorScheme.background)
         ) {
             var addTvScreenUiState by remember {
                 mutableStateOf(
@@ -262,6 +279,7 @@ fun AddTvScreenScreenContentErrorPreview() {
                 codeFieldState = rememberTextFieldState("123456"),
                 onInputCode = {},
                 onBack = {},
+                onNavigateAfterLogin = { },
             )
         }
     }

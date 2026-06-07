@@ -21,23 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ufmcontroller.presentation.ui.component.DefaultAppTop
 
 @Composable
 fun AboutAppScreen(
     onToggleDrawer: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(
-        top = 10.dp, start=5.dp, end=5.dp, bottom=20.dp)) {
-        Row {
-            IconButton(onClick = onToggleDrawer,
-            ) {
-                Icon(Icons.Filled.MoreVert, contentDescription = "Settings")
-            }
-            Text("Universal food menu",
-                color=MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(8.dp),
-                style = MaterialTheme.typography.titleLarge)
-        }
+    Column(modifier = Modifier.fillMaxSize()) {
+        DefaultAppTop(onButton=onToggleDrawer)
         Column(modifier = Modifier.padding(30.dp)) {
             Text("Разработчик",
                 fontSize = 22.sp,

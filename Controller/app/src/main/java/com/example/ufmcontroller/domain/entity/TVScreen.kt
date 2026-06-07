@@ -15,3 +15,11 @@ fun defaultTVScreen() = TVScreen(
     height = 0,
     style= ScreenStyle(),
 )
+
+fun TVScreen.toDTO() = TVScreen(
+    id = id,
+    name = name,
+    width = width,
+    height = height,
+    style = style
+)

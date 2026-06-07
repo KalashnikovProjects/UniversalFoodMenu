@@ -28,12 +28,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "SERVER_IP", "ufm.taprams.ru") // TODO: заменить хост на настоящий
-            buildConfigField("int", "SERVER_PORT", "8096")
+            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: заменить хост на настоящий ufm.taprams.ru
         }
         getByName("debug") {
-            buildConfigField("String", "SERVER_IP", "\"10.0.2.2\"") // TODO заменить хост
-            buildConfigField("int", "SERVER_PORT", "8096")
+            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"")
         }
     }
     compileOptions {
@@ -67,6 +65,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:3.0.0")
     implementation("io.ktor:ktor-client-cio:3.0.0")
     implementation("io.ktor:ktor-client-auth:3.0.0")
+    implementation("io.ktor:ktor-client-logging:3.0.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")

@@ -7,11 +7,13 @@ import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.defaultCategory
 import com.example.ufmcontroller.domain.entity.defaultFoodItem
+import com.example.ufmcontroller.domain.usecase.category.DeleteCategoryUseCase
 import com.example.ufmcontroller.domain.usecase.category.EditCategoryUseCase
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesByFoodIdUseCase
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesUseCase
 import com.example.ufmcontroller.domain.usecase.category.GetCategoryUseCase
 import com.example.ufmcontroller.domain.usecase.category.UpdateFoodRelationsForCategoriesUseCase
+import com.example.ufmcontroller.domain.usecase.food.DeleteFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.EditFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.GetFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.GetFoodItemsByCategoryIdUseCase
@@ -38,6 +40,7 @@ import javax.inject.Inject
 data class EditCategoryUiState(
     val foodItems: List<FoodItem> = emptyList(),
     val isLoading: Boolean = false,
+    val openedDeleteConfirmationDialog: Boolean = false
 )
 
 
@@ -48,12 +51,14 @@ class EditCategoryViewModel @AssistedInject constructor(
     private val getFoodItemsByCategoryIdUseCase: GetFoodItemsByCategoryIdUseCase,
 
     private val editCategoryUseCase: EditCategoryUseCase,
+    private val deleteCategoryUseCase: DeleteCategoryUseCase,
     @Assisted private val id: Int
     ) : ViewModel() {
 
     private var category: Category = defaultCategory()
     private var foodItems: List<FoodItem> = emptyList()
-
+    private val _openedDeleteConfirmationDialog = MutableStateFlow(false)
+    private val _isLoading = MutableStateFlow(true)
     val categoryFieldsStates: CategoryFieldsStates = CategoryFieldsStates()
     private val _foodItemsFlow = getFoodItemsUseCase()
     private val searchQueryFlow = snapshotFlow { categoryFieldsStates.foodItemsSearch.text }
@@ -74,16 +79,17 @@ class EditCategoryViewModel @AssistedInject constructor(
         }
     }
 
-    private val _isLoading = MutableStateFlow(true)
 
     val uiState: StateFlow<EditCategoryUiState> = combine(
         filteredFoodItemsFlow,
-        _isLoading
-    ) { items, loading ->
+        _isLoading,
+        _openedDeleteConfirmationDialog
+    ) { items, loading, openedDeleteConfirmationDialog ->
         EditCategoryUiState(
             foodItems = items,
-            isLoading = loading
-        )
+            isLoading = loading,
+            openedDeleteConfirmationDialog=openedDeleteConfirmationDialog,
+            )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -128,6 +134,18 @@ class EditCategoryViewModel @AssistedInject constructor(
                     categoryFieldsStates.selectedFoodItems.value.contains(it.id)
                 },
             )
+        }
+    }
+
+    fun setOpenedDeleteConfirmationDialog(value: Boolean) {
+        viewModelScope.launch {
+            _openedDeleteConfirmationDialog.value = value
+        }
+    }
+
+    fun delete() {
+        viewModelScope.launch {
+            deleteCategoryUseCase(id)
         }
     }
 

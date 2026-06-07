@@ -6,8 +6,11 @@ import com.example.ufmcontroller.data.local.UserPreferencesDataSource
 import com.example.ufmcontroller.data.model.Events
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ResponseException
+import io.ktor.client.plugins.websocket.WebSocketException
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.URLBuilder
+import io.ktor.http.takeFrom
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
@@ -24,9 +27,6 @@ class EventsWebSocketService @Inject constructor(
     private val client: HttpClient,
     private val userPreferencesDataSource: UserPreferencesDataSource,
     ) {
-    private val ipAddress: String = BuildConfig.SERVER_IP
-    private val port: Int = BuildConfig.SERVER_PORT
-
     val logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     private val _events = MutableSharedFlow<Events>()
@@ -35,11 +35,17 @@ class EventsWebSocketService @Inject constructor(
     private var connectionJob: Job? = null
 
     fun connect(scope: CoroutineScope) {
+        if (BuildConfig.DEBUG) {
+            Log.d("UFM", "Is debug")
+        } else {
+            Log.d("UFM", "is release")
+        }
+
         if (connectionJob?.isActive == true) return
         Log.d("UFM", "connected_events")
         connectionJob = scope.launch {
             try {
-                client.webSocket(host = ipAddress, port = port, path = "/api/ws/updates") {
+                client.webSocket(path = "/api/ws/updates") {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
                             val text = frame.readText()
@@ -48,8 +54,9 @@ class EventsWebSocketService @Inject constructor(
                         }
                     }
                 }
-            } catch (e: ResponseException) {
-                if (e.response.status == HttpStatusCode.Unauthorized) {
+            } catch (e: WebSocketException) {
+                if (e.message?.contains("401") == true) {
+                    Log.w("UFM", "WebSocket Auth Error: 401 Unauthorized")
                     userPreferencesDataSource.clearAuthToken()
                     logoutEvent.emit(Unit)
                 } else {

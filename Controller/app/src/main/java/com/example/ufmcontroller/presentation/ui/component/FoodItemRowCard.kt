@@ -27,8 +27,8 @@ import com.example.ufmcontroller.domain.entity.FoodItem
 // showNotInStock - влияет ли есть ли в наличии на отображение
 @Composable
 fun FoodItemRowCard(item: FoodItem,
-                    onFoodItemClick: (Int) -> Unit = {},
-                    onFoodItemLongClick: (Int) -> Unit = {},
+                    onFoodItemClick: (Int, Boolean) -> Unit = {_, _ -> },
+                    onFoodItemLongClick: (Int) -> Unit = {_ -> },
                     showSwitch: Boolean = false,
                     showNotInStock: Boolean = true,
 ) {
@@ -42,7 +42,7 @@ fun FoodItemRowCard(item: FoodItem,
             .padding(horizontal = 3.dp, vertical = 4.dp)
             .combinedClickable(
                 onClick = {
-                    onFoodItemClick(item.id)
+                    onFoodItemClick(item.id, !item.inStock)
                 },
                 onLongClick = {
                     onFoodItemLongClick(item.id)
@@ -89,7 +89,7 @@ fun FoodItemRowCard(item: FoodItem,
             if (showSwitch) {
                 Checkbox(checked = item.inStock, onCheckedChange = {
                         value ->
-                        onFoodItemClick(item.id)
+                        onFoodItemClick(item.id, !item.inStock)
                     },
                     modifier = Modifier.scale(0.8F)
                 )

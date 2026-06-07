@@ -7,6 +7,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,6 +59,7 @@ import coil3.compose.AsyncImage
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
+import com.example.ufmcontroller.presentation.viewmodel.AddDesignExtended
 import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.FoodItemFieldsStates
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -67,7 +69,7 @@ fun FoodItemFields(
     foodItemFieldsStates: FoodItemFieldsStates,
     categories: List<Category>,
 ) {
-    val onCategoryToggle =  { id: Int ->
+    val onCategoryToggle =  { id: Int, boolean: Boolean ->
         foodItemFieldsStates.selectedCategories.update {
             if (it.contains(id)) {
                 it - id
@@ -176,7 +178,11 @@ fun FoodItemFields(
                     }
                 }
             }
-            Row {
+            Row(
+                modifier = Modifier.clickable {
+                    foodItemFieldsStates.isExtendedCategoriesSelection.value = !foodItemFieldsStates.isExtendedCategoriesSelection.value
+                }
+            ) {
                 IconButton(
                     onClick = {
                         foodItemFieldsStates.isExtendedCategoriesSelection.value = !foodItemFieldsStates.isExtendedCategoriesSelection.value
@@ -217,7 +223,7 @@ fun FoodItemFields(
                                     ),
                                     isCheckedUp = selectedCategories.contains(item.id),
                                     opened = false,
-                                    onCategoryClick = onCategoryToggle,
+                                    onCategoryClick = { id -> onCategoryToggle(id, false) },
                                     onCategoryToggle = onCategoryToggle,
                                     showSwitch = true,
                                     showExpand = false,

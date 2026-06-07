@@ -61,6 +61,12 @@ class CategoriesRepository(val database: R2dbcDatabase) : Repository {
         } == 1
     }
 
+    suspend fun toggleById(userId: Int, id: Int, inStock: Boolean): Boolean = suspendTransaction(database) {
+        Categories.update({ Categories.id eq id.toUInt() and (Categories.user_id eq userId.toUInt()) }) {
+            it[in_stock] = inStock
+        } == 1
+    }
+
     suspend fun deleteById(userId: Int, id: Int): Boolean = suspendTransaction(database) {
         Categories.deleteWhere {
             Categories.id eq id.toUInt() and (Categories.user_id eq userId.toUInt())

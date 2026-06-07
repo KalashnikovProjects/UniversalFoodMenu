@@ -93,15 +93,15 @@ class HomeViewModel @Inject constructor(
     )
 
 
-    fun toggleFoodItem(id: Int) {
+    fun toggleFoodItem(id: Int, boolean: Boolean) {
         viewModelScope.launch {
-            toggleFoodItemUseCase(id)
+            toggleFoodItemUseCase(id, boolean)
         }
     }
 
-    fun toggleCategory(id: Int) {
+    fun toggleCategory(id: Int, boolean: Boolean) {
         viewModelScope.launch {
-            toggleCategoryUseCase(id)
+            toggleCategoryUseCase(id, boolean)
         }
     }
 

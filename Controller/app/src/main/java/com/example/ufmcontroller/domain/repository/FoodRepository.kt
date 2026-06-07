@@ -6,11 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FoodRepository {
     suspend fun addFoodItem(foodItem: FoodItem): FoodItem
-    suspend fun toggleFoodItem(id: Int)
+    suspend fun toggleFoodItem(id: Int, boolean: Boolean)
     suspend fun editFoodItem(id: Int, foodItem: FoodItem)
     suspend fun deleteFoodItem(id: Int)
-    fun getFoodItem(id: Int): Flow<FoodItem>
-    fun getFoodItemsByCategoryId(categoryId: Int): Flow<List<FoodItem>>
-    fun getFoodItems(): Flow<List<FoodItem>>
-    fun getCategorizedFoodItems(): Flow<FoodItemsCategorized>
 }

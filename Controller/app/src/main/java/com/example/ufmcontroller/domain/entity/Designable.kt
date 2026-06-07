@@ -1,3 +1,7 @@
 package com.example.ufmcontroller.domain.entity
 
-sealed interface Designable
+import com.example.ufmcontroller.data.model.DesignableDTO
+
+sealed interface Designable {
+    fun toDTO(): DesignableDTO
+}

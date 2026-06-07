@@ -5,3 +5,9 @@ data class ScreenStyle(
     val backgroundColorHex: String? = null,
     val defaultStyle: Style? = null,
 )
+
+fun ScreenStyle.toDTO(): ScreenStyle = ScreenStyle(
+    screenTheme,
+    backgroundColorHex,
+    defaultStyle
+)
