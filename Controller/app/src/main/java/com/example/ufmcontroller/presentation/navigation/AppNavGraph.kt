@@ -122,6 +122,9 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                         id ->
                     navController.navigate(EditCategoryRoute(id))
                 },
+                onNavigateVisualConfigurationScreen = {
+                    navController.navigate(VisualConfigurationRoute)
+                },
                 onBack = { navController.popBackStack() },
             )
         }

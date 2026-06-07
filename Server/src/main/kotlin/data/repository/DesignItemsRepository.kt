@@ -115,17 +115,18 @@ class DesignItemsRepository(val database: R2dbcDatabase) : Repository {
 }
 
 fun rowToDesignItem(row: ResultRow): DesignItem {
+
     val element: Designable = when {
-        row.hasValue(FoodItems.id) -> {
+        row.getOrNull(DesignItems.food_item_id) != null -> {
             rowToFoodItem(row)
         }
-        row.hasValue(Categories.id) -> {
+        row.getOrNull(DesignItems.category_id) != null -> {
             rowToCategoryItem(row)
         }
-        row.hasValue(ImageItems.id) -> {
+        row.getOrNull(DesignItems.image_item_id) != null -> {
             rowToImageItem(row)
         }
-        row.hasValue(TextItems.id) -> {
+        row.getOrNull(DesignItems.text_item_id) != null -> {
             rowToTextItem(row)
         }
         else -> throw IllegalStateException("DesignItem has no element")

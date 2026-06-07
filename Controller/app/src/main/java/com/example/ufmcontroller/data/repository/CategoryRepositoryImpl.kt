@@ -20,9 +20,10 @@ class CategoryRepositoryImpl @Inject constructor(
     }
     override suspend fun editCategory(
         id: Int,
-        category: Category
+        category: Category,
+        changedImage: Boolean
     ) {
-        return remoteCategoryDataSource.editCategory(id, category)
+        return remoteCategoryDataSource.editCategory(id, category, changedImage)
     }
 
     override suspend fun toggleCategory(id: Int, boolean: Boolean) {

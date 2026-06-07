@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmserver.data.tables
 
+import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.dao.id.UIntIdTable
 
 object Screens : UIntIdTable("screens") {
@@ -8,5 +9,5 @@ object Screens : UIntIdTable("screens") {
     val height = integer("height")
     val style = text("style")
 
-    val user_id = reference("user_id", Users.id)
+    val user_id = reference("user_id", Users.id, onDelete = ReferenceOption.CASCADE)
 }

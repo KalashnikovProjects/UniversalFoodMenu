@@ -1,10 +1,11 @@
 package com.kalashnikovprojects.ufmtv.data.model
 
-import com.kalashnikovprojects.ufmtv.domain.entity.Category
 import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("food")
 data class FoodItemDTO(
     val id: Int,
     val name: String,

@@ -7,19 +7,17 @@ import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
 import com.example.ufmcontroller.data.local.LocalDataSource
-import com.example.ufmcontroller.data.model.Events
+import com.example.ufmcontroller.data.model.EventsDTO
 import com.example.ufmcontroller.data.model.toEntity
 import com.example.ufmcontroller.data.remote.EventsWebSocketService
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
-import com.example.ufmcontroller.domain.entity.TextItem
 import com.example.ufmcontroller.domain.repository.EventsServiceRepository
 import com.example.ufmcontroller.services.EventsForegroundService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,10 +33,6 @@ class AndroidEventsServiceController @Inject constructor(
 
     private val intent = Intent(context, EventsForegroundService::class.java)
     private var eventsJob: Job? = null
-
-    override fun getLogoutEvent(): SharedFlow<Unit> {
-        return eventsWebSocketService.logoutEvent
-    }
 
     override fun startService() {
         Log.d("UFM", "create events service controller")
@@ -63,66 +57,66 @@ class AndroidEventsServiceController @Inject constructor(
             launch {
                 eventsWebSocketService.events.collect { event ->
                     when (event) {
-                        is Events.AddFoodEvent -> {
+                        is EventsDTO.AddFoodEvent -> {
                             dataSource.updateFoodItem(event.element.id, event.element.toEntity())
                         }
-                        is Events.ChangeFoodEvent -> {
+                        is EventsDTO.ChangeFoodEvent -> {
                             dataSource.updateFoodItem(event.element.id, event.element.toEntity())
                         }
-                        is Events.ToggleFoodEvent -> {
+                        is EventsDTO.ToggleFoodEvent -> {
                             dataSource.toggleFoodInStock(event.id, event.inStock)
                         }
-                        is Events.ToggleCategoryEvent -> {
+                        is EventsDTO.ToggleCategoryEvent -> {
                             dataSource.toggleCategoryInStock(event.id, event.inStock)
                         }
-                        is Events.DeleteFoodEvent -> {
+                        is EventsDTO.DeleteFoodEvent -> {
                             dataSource.deleteFoodItem(event.id)
                         }
-                        is Events.SetFoodCategories -> {
+                        is EventsDTO.SetFoodCategories -> {
                             dataSource.setFoodCategories(event.foodId, event.categoriesIds)
                         }
-                        is Events.AddCategoryEvent -> {
+                        is EventsDTO.AddCategoryEvent -> {
                             dataSource.updateCategory(event.element.id, event.element.toEntity().category)
                         }
-                        is Events.ChangeCategoryEvent -> {
+                        is EventsDTO.ChangeCategoryEvent -> {
                             dataSource.updateCategory(event.id, event.element.toEntity().category)
                         }
-                        is Events.DeleteCategoryEvent -> {
+                        is EventsDTO.DeleteCategoryEvent -> {
                             dataSource.deleteCategory(event.id)
                         }
-                        is Events.SetCategoryItems -> {
+                        is EventsDTO.SetCategoryItems -> {
                             dataSource.setCategoryItems(event.categoryId, event.foodItemsIds)
                         }
-                        is Events.AddDesignEvent -> {
+                        is EventsDTO.AddDesignEvent -> {
                             dataSource.updateDesignItem(event.element.id, event.element.toEntity())
                         }
-                        is Events.ChangeDesignEvent -> {
+                        is EventsDTO.ChangeDesignEvent -> {
                             dataSource.updateDesignItem(event.id, event.element.toEntity())
                         }
-                        is Events.DeleteDesignEvent -> {
+                        is EventsDTO.DeleteDesignEvent -> {
                             dataSource.deleteDesignItem(event.id)
                         }
-                        is Events.ChangeTextEvent -> {
+                        is EventsDTO.ChangeTextEvent -> {
                             dataSource.updateTextItemInDesign(event.id, event.element.toEntity())
                         }
-                        is Events.ChangeScreenEvent -> {
+                        is EventsDTO.ChangeScreenEvent -> {
                             dataSource.updateScreen(event.id, event.element.toEntity())
                         }
-                        is Events.AddScreenEvent -> {
+                        is EventsDTO.AddScreenEvent -> {
                             dataSource.updateScreen(event.element.id, event.element.toEntity())
                         }
-                        is Events.LogoutScreenEvent -> {
+                        is EventsDTO.LogoutScreenEvent -> {
                             dataSource.deleteScreen(event.id)
                         }
-                        is Events.ReloadScreens -> {
+                        is EventsDTO.ReloadScreens -> {
                             val screens = event.items.map { it.toEntity() }.associateBy { it.id }
                             dataSource.reloadScreens(screens)
                         }
-                        is Events.ReloadDesignItemsWithScreenId -> {
+                        is EventsDTO.ReloadDesignItemsWithScreenId -> {
                             val items = event.items.map { it.toEntity() }.associateBy { it.id }
                             dataSource.reloadDesignItems(items)
                         }
-                        is Events.ReloadCategorizedFoodItems -> {
+                        is EventsDTO.ReloadCategorizedFoodItems -> {
                             val foodItems = mutableMapOf<Int, FoodItem>()
                             val categories = mutableMapOf<Int, Category>()
                             val relations = mutableListOf<Pair<Int, Int>>()
@@ -140,13 +134,12 @@ class AndroidEventsServiceController @Inject constructor(
 
                             dataSource.reloadAllCategorizedItems(categories, foodItems, relations)
                         }
-                        is Events.ReloadDesignItemsByScreenId,
-                        is Events.DeleteTextEvent,
-                        is Events.DeleteImageEvent,
-                        is Events.ReloadScreen,
-                        is Events.ReloadScreens,
-                        is Events.AddTextEvent,
-                        is Events.AddImageEvent -> {}
+                        is EventsDTO.ReloadDesignItemsByScreenId,
+                        is EventsDTO.DeleteTextEvent,
+                        is EventsDTO.DeleteImageEvent,
+                        is EventsDTO.ReloadScreen,
+                        is EventsDTO.AddTextEvent,
+                        is EventsDTO.AddImageEvent -> {}
                     }
                 }
             }

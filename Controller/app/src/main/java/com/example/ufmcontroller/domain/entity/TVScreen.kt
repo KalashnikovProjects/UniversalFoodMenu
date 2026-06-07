@@ -11,8 +11,8 @@ data class TVScreen(
 fun defaultTVScreen() = TVScreen(
     id = 0,
     name = "",
-    width = 0,
-    height = 0,
+    width = 1,
+    height = 1,
     style= ScreenStyle(),
 )
 

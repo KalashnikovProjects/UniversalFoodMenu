@@ -78,6 +78,7 @@ fun CategoryFields(
     ) { uri: Uri? ->
         if (uri != null) {
             categoryFieldsStates.imageUri.value = uri.toString()
+            categoryFieldsStates.imageChanged.value = true
         }
     }
     val selectedImageUri by categoryFieldsStates.imageUri.collectAsStateWithLifecycle()

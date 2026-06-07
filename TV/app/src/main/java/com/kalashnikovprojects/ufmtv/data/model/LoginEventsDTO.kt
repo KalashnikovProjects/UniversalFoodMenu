@@ -16,7 +16,7 @@ sealed interface LoginEventsDTO {
 
     @SerialName("token_received")
     @Serializable
-    data class TokenReceivedDTO(val token: String) : LoginEventsDTO {
-        override fun toEntity() = LoginEvents.TokenReceived(token)
+    data class TokenReceivedDTO(val screenId: Int, val token: String) : LoginEventsDTO {
+        override fun toEntity() = LoginEvents.TokenReceived(screenId, token)
     }
 }

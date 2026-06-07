@@ -132,6 +132,7 @@ fun EditCategoryScreenContent(
                     TextButton(
                         onClick = {
                             onDelete()
+                            setOpenedDeleteConfirmationDialog(false)
                             onBack()
                         }
                     ) {

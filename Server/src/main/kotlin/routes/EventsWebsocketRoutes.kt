@@ -36,6 +36,7 @@ fun Route.eventsWebsocketRoutes() {
         webSocket("/ws/updates") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
+
             val screenId: Int? = call.request.queryParameters["screen_id"]?.toIntOrNull()
             if (screenId != null) {
                 val screen = screensRepository.getById(userId, screenId)

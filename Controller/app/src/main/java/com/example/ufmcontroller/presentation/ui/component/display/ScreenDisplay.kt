@@ -122,7 +122,7 @@ fun ScreenDisplay(
                 }
                 Box(
                     modifier = mod.then(
-                        if (interactive && selected == id) {
+                        if (interactive) {
                             Modifier.pointerInput(id) {
 
                                 detectDragGestures(
@@ -152,6 +152,7 @@ fun ScreenDisplay(
                         is CategoryWithFoodItems -> CategoryDisplay(element, finalStyle, screenStyle.defaultStyle ?: Style())
                         is ImageItem -> ImageItemDisplay(element, finalStyle)
                         is TextItem -> TextItemDisplay(element, finalStyle)
+                        is Category -> { Log.w("UFM", "Category must not in the ScreenDisplay") }
                     }
                 }
             }

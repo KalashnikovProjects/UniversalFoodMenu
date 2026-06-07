@@ -21,11 +21,12 @@ class LoginRepositoryImpl @Inject constructor(
                     emit(event)
                 }
                 is LoginEvents.TokenReceived -> {
+                    userPreferencesDataSource.saveScreenId(event.screenId)
                     userPreferencesDataSource.saveAuthToken(token=event.token)
                     emit(event)
                     loginWebSocketService.disconnect()
                 }
-                LoginEvents.ClosedWithError -> {
+                LoginEvents.Error -> {
                     emit(event)
                 }
             }

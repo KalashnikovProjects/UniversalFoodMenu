@@ -13,8 +13,9 @@ class EditFoodItemUseCase @Inject constructor(
     suspend operator fun invoke(id: Int,
                                 foodItem: FoodItem,
                                 categoriesIds: List<Int> = emptyList(),
+                                changedImage: Boolean,
                                 ) {
-        foodRepository.editFoodItem(id, foodItem)
+        foodRepository.editFoodItem(id, foodItem, changedImage)
         categoryRepository.updateFoodRelationsForCategories(foodItem.id, categoriesIds)
     }
 }

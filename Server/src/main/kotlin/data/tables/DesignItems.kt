@@ -11,6 +11,6 @@ object DesignItems : UIntIdTable("design_items") {
 
     val style = text("style")
 
-    val screen_id = reference("screen_id", Screens.id)
-    val user_id = reference("user_id", Users.id)
+    val screen_id = reference("screen_id", Screens.id, onDelete = ReferenceOption.CASCADE)
+    val user_id = reference("user_id", Users.id, onDelete = ReferenceOption.CASCADE)
 }

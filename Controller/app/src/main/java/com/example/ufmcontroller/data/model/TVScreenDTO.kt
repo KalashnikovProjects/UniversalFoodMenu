@@ -9,6 +9,7 @@ data class TVScreenDTO(
     val name: String,
     val width: Int,
     val height: Int,
+    @Serializable(with = ScreenStyleFromStringSerializer::class)
     val style: ScreenStyleDTO,
 )
 

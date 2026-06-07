@@ -2,9 +2,11 @@ package com.example.ufmcontroller.data.model
 
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("category")
 data class CategoryDTO(
     val id: Int,
     val name: String,

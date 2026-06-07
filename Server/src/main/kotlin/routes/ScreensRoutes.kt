@@ -6,6 +6,7 @@ import com.kalashnikovprojects.ufmserver.models.Events
 import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
 import com.kalashnikovprojects.ufmserver.models.toTVScreen
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
@@ -24,74 +25,81 @@ fun Route.screensRoutes() {
 
     val eventBus by inject<EventBus>()
 
-    get("/screens") {
-        val principal = call.principal<JWTPrincipal>()
-        val userId = principal!!.payload.getClaim("id").asInt()
+    authenticate {
 
-        val items = screensRepository.getAllByUserId(userId)
-        call.respond(HttpStatusCode.OK, items)
-    }
+        get("/screens") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("id").asInt()
 
-    get("/screens/{id}") {
-        val principal = call.principal<JWTPrincipal>()
-        val userId = principal!!.payload.getClaim("id").asInt()
-
-        val id = call.parameters["id"]?.toIntOrNull()
-        if (id == null) {
-            call.respond(HttpStatusCode.BadRequest, "Invalid ID")
-            return@get
+            val items = screensRepository.getAllByUserId(userId)
+            call.respond(HttpStatusCode.OK, items)
         }
 
-        val item = screensRepository.getById(userId, id)
-        if (item != null) {
-            call.respond(HttpStatusCode.OK, item)
-        } else {
-            call.respond(HttpStatusCode.NotFound)
-        }
-    }
+        get("/screens/{id}") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("id").asInt()
 
-    put("/screens/{id}") {
-        val principal = call.principal<JWTPrincipal>()
-        val userId = principal!!.payload.getClaim("id").asInt()
-        val request = call.receive<NoIdTVScreen>()
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid ID")
+                return@get
+            }
 
-        val id = call.parameters["id"]?.toIntOrNull()
-        if (id == null) {
-            call.respond(HttpStatusCode.BadRequest, "Invalid ID")
-            return@put
-        }
-
-        val isUpdated = screensRepository.updateById(userId, id, request)
-
-        if (isUpdated) {
-            eventBus.getFlow(userId).emit(Events.ChangeScreenEvent(
-                id,
-                element = request.toTVScreen(id)
-            ))
-            call.respond(HttpStatusCode.OK)
-        } else {
-            call.respond(HttpStatusCode.NotFound)
-        }
-    }
-
-    delete("/screens/{id}") {
-        val principal = call.principal<JWTPrincipal>()
-        val userId = principal!!.payload.getClaim("id").asInt()
-
-        val id = call.parameters["id"]?.toIntOrNull()
-        if (id == null) {
-            call.respond(HttpStatusCode.BadRequest, "Invalid ID")
-            return@delete
+            val item = screensRepository.getById(userId, id)
+            if (item != null) {
+                call.respond(HttpStatusCode.OK, item)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
 
-        val isDeleted = screensRepository.deleteById(userId, id)
-        if (isDeleted) {
-            eventBus.getFlow(userId).emit(Events.LogoutScreenEvent(
-                id,
-            ))
-            call.respond(HttpStatusCode.OK)
-        } else {
-            call.respond(HttpStatusCode.NotFound)
+        put("/screens/{id}") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("id").asInt()
+            val request = call.receive<NoIdTVScreen>()
+
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid ID")
+                return@put
+            }
+
+            val isUpdated = screensRepository.updateById(userId, id, request)
+
+            if (isUpdated) {
+                eventBus.getFlow(userId).emit(
+                    Events.ChangeScreenEvent(
+                        id,
+                        element = request.toTVScreen(id)
+                    )
+                )
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        delete("/screens/{id}") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("id").asInt()
+
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid ID")
+                return@delete
+            }
+
+            val isDeleted = screensRepository.deleteById(userId, id)
+            if (isDeleted) {
+                eventBus.getFlow(userId).emit(
+                    Events.LogoutScreenEvent(
+                        id,
+                    )
+                )
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
     }
 }

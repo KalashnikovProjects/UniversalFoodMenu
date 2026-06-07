@@ -1,6 +1,7 @@
 package com.example.ufmcontroller.data.repository
 
 import com.example.ufmcontroller.data.local.LocalDataSource
+import com.example.ufmcontroller.data.remote.EventsWebSocketService
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.DesignItem
 import com.example.ufmcontroller.domain.entity.FoodItem
@@ -8,13 +9,19 @@ import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.repository.GetRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class GetRepositoryImpl @Inject constructor(
     private val dataSource: LocalDataSource,
-) : GetRepository {
+    private val eventsWebSocketService: EventsWebSocketService,
+    ) : GetRepository {
+    override fun getLogoutEvent(): SharedFlow<Unit> {
+        return eventsWebSocketService.logoutEvent
+    }
+
     override fun getCategories(): Flow<List<Category>> {
         return dataSource.categories
     }

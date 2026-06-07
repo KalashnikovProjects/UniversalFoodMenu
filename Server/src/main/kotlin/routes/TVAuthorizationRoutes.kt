@@ -4,8 +4,10 @@ import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.adapters.jwt.JwtAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
 import com.kalashnikovprojects.ufmserver.models.Events
+import com.kalashnikovprojects.ufmserver.models.LoginEvents
 import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
 import com.kalashnikovprojects.ufmserver.models.TVScreen
+import com.kalashnikovprojects.ufmserver.models.toTVScreen
 import com.kalashnikovprojects.ufmserver.models.toTextItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
@@ -53,32 +55,24 @@ fun Route.tvAuthorizationRoutes() {
             code = (100000..999999).random()
         } while (tvAuthStates.containsKey(code))
 
-        sendSerialized(
-            mapOf(
-                "code" to code.toString()
-            ))
+        sendSerialized<LoginEvents>(LoginEvents.CodeReceived(code.toString()))
 
         val authDeferred = CompletableDeferred<Pair<Int, String>>()
 
         var id: Int = -1
         tvAuthStates[code] = callback@{ userIdReceived, usernameReceived ->
-            id = screensRepository.create(
-                userIdReceived,
-                NoIdTVScreen(
-                    screenName,
-                    screenWidth,
-                    screenHeight,
-                    "",
-                )
-            )
-            authDeferred.complete(userIdReceived to usernameReceived)
-            return@callback TVScreen(
-                id,
+            val noIdScreen = NoIdTVScreen(
                 screenName,
                 screenWidth,
                 screenHeight,
-                "",
+                "{}",
             )
+            id = screensRepository.create(
+                userIdReceived,
+                noIdScreen
+            )
+            authDeferred.complete(userIdReceived to usernameReceived)
+            return@callback noIdScreen.toTVScreen(id)
         }
 
         try {
@@ -87,14 +81,7 @@ fun Route.tvAuthorizationRoutes() {
                 userId,
                 username,
             )
-            sendSerialized(
-                mapOf(
-                    "status" to "success",
-                    "id" to id,
-                    "token" to token
-                )
-            )
-
+            sendSerialized<LoginEvents>(LoginEvents.TokenReceived(id, token))
         } catch (_: Exception) {
             call.respond(HttpStatusCode.InternalServerError)
             return@webSocket

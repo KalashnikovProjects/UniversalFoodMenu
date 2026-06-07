@@ -64,11 +64,10 @@ class LoginViewModel @Inject constructor(
                         }
                         _navigationEvent.emit(Unit)
                     }
-                    is LoginEvents.ClosedWithError -> {
+                    is LoginEvents.Error -> {
                         _uiState.update { currentState ->
                             currentState.copy(loginStep = LoginStep.ReconnectBecauseError)
                         }
-                        startListeningLoginEvents()
                     }
                 }
             }

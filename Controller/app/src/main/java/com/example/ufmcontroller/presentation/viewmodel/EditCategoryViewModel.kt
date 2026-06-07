@@ -132,7 +132,8 @@ class EditCategoryViewModel @AssistedInject constructor(
                         inStock = null,
                     ),
                     foodItemsIds = categoryFieldsStates.selectedFoodItems.value.toList(),
-                )
+                    changedImage = categoryFieldsStates.imageChanged.value,
+                    )
             }
         }
     }

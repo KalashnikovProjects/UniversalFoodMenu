@@ -11,5 +11,5 @@ sealed interface LoginEvents {
     data class CodeReceived(val code: String) : LoginEvents
     @SerialName("token_received")
     @Serializable
-    data class TokenReceived(val token: String) : LoginEvents
+    data class TokenReceived(val screenId: Int, val token: String) : LoginEvents
 }

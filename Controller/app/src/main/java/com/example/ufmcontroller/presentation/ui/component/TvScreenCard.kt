@@ -41,6 +41,18 @@ import com.example.ufmcontroller.domain.entity.TextItem
 import com.example.ufmcontroller.presentation.ui.component.display.ScreenDisplay
 
 
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+
 @Composable
 fun TvScreenCard(
     screenWithDesignItems: TVScreenWithDesignItems,
@@ -48,12 +60,19 @@ fun TvScreenCard(
     onNavigateToScreen: (Int) -> Unit = {},
     clickable: Boolean = false,
     fontSize: TextUnit = 14.sp,
-    ) {
+    interactive: Boolean = false,
+    selected: Int? = null,
+    onItemMoved: ((id: Int, newX: Float, newY: Float) -> Unit) = { _, _, _ -> }
+) {
     val screenWidth = screenWithDesignItems.tvScreen.width.toFloat()
     val screenHeight = screenWithDesignItems.tvScreen.height.toFloat()
 
     val ratio: Float = screenWidth / screenHeight
     val size: String = "${screenWithDesignItems.tvScreen.width}x${screenWithDesignItems.tvScreen.height}"
+
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -72,20 +91,47 @@ fun TvScreenCard(
                 .fillMaxWidth()
                 .aspectRatio(ratio)
                 .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
-                .clip(RoundedCornerShape(5.dp)),
+                .clip(RoundedCornerShape(5.dp))
+                .pointerInput(Unit) {
+                    detectTransformGestures { centroid, pan, zoom, _ ->
+                        val oldScale = scale
+                        scale = (scale * zoom).coerceIn(1f, 5f)
+
+                        offset = if (scale > 1f) {
+                            (offset + pan) * (scale / oldScale) + centroid * (1f - scale / oldScale)
+                        } else {
+                            Offset.Zero
+                        }
+                    }
+                },
         ) {
             val scaleFactor = maxWidth.value / screenWidth
-            ScreenDisplay(
-                screenStyle = screenWithDesignItems.tvScreen.style,
-                designItems = screenWithDesignItems.designItems,
-                basicScale = scaleFactor,
-            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        translationX = offset.x,
+                        translationY = offset.y
+                    )
+            ) {
+                ScreenDisplay(
+                    screenStyle = screenWithDesignItems.tvScreen.style,
+                    designItems = screenWithDesignItems.designItems,
+                    basicScale = scaleFactor,
+                    interactive=interactive,
+                    selected=selected,
+                    onItemMoved=onItemMoved
+                )
+            }
         }
+
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 15.dp),
-
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

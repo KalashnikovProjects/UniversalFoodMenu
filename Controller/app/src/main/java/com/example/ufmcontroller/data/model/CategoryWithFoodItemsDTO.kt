@@ -4,14 +4,16 @@ import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
 import com.example.ufmcontroller.domain.entity.Designable
 import com.example.ufmcontroller.domain.entity.FoodItem
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("category_with_food")
 data class CategoryWithFoodItemsDTO(
     val category: CategoryDTO,
     val foodItems: List<FoodItemDTO>,
 ) : DesignableDTO {
-    override fun toEntity(): Designable {
+    override fun toEntity(): CategoryWithFoodItems {
         return CategoryWithFoodItems(
             category = category.toEntity().category,
             foodItems = foodItems.map { it.toEntity() }

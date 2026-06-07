@@ -126,6 +126,7 @@ fun EditFoodItemScreenContent(
                     TextButton(
                         onClick = {
                             onDelete()
+                            setOpenedDeleteConfirmationDialog(false)
                             onBack()
                         }
                     ) {

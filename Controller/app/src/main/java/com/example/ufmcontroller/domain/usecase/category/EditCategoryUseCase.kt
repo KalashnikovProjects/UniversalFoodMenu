@@ -11,8 +11,9 @@ class EditCategoryUseCase  @Inject constructor(
     suspend operator fun invoke(id: Int,
                                 category: Category,
                                 foodItemsIds: List<Int> = emptyList(),
+                                changedImage: Boolean,
     ) {
-        categoryRepository.editCategory(id, category)
+        categoryRepository.editCategory(id, category, changedImage)
         categoryRepository.setCategoryFoodRelations(id, foodItemsIds)
     }
 }

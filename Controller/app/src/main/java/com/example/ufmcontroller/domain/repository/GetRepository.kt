@@ -6,8 +6,11 @@ import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 
 interface GetRepository {
+    fun getLogoutEvent(): SharedFlow<Unit>
+    
     fun getCategories(): Flow<List<Category>>
     fun getCategory(id: Int): Flow<Category>
     fun getCategoriesByFoodId(foodId: Int): Flow<List<Category>>

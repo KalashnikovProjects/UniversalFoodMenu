@@ -7,6 +7,7 @@ data class CategoryFieldsStates(
     val name: TextFieldState = TextFieldState(""),
     val price: TextFieldState = TextFieldState(""),
     val imageUri: MutableStateFlow<String?> = MutableStateFlow(null),
+    val imageChanged: MutableStateFlow<Boolean> = MutableStateFlow(false),
     val isExtendedFoodItemsSelection: MutableStateFlow<Boolean> = MutableStateFlow(false),
     val foodItemsSearch: TextFieldState = TextFieldState(""),
     val selectedFoodItems: MutableStateFlow<Set<Int>> = MutableStateFlow(emptySet()),

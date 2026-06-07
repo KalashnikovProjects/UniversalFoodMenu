@@ -191,8 +191,8 @@ fun LoginScreenContent(
                                 text = uiState.step.message,
                                 style = MaterialTheme.typography.labelLarge,
                                 color = colorScheme.error,
-                                modifier = Modifier.padding(vertical = 20.dp)
-                            )
+                                modifier = Modifier.padding(vertical = 20.dp),
+                                textAlign = TextAlign.Center,)
                         }
                         Button(
                             onClick = when (uiState.currentTab) {

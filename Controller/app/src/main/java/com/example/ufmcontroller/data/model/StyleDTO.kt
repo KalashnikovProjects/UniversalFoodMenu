@@ -5,17 +5,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class StyleDTO(
-    val x: Float?,
-    val y: Float?,
-    val scale: Float?,
-    val notInStockStyle: NotInStockStyleDTO?,
-    val textColorHex: String?,
-    val showImage: Boolean?,
-    val showPrice: Boolean?,
-    val foodItemDisplayTypeStyle: FoodItemDisplayTypeStyleDTO?,
-    val imageScale: Float?,
-    val itemWidthScale: Float?,
-    val categoryItemStyle: StyleDTO?,
+    val x: Float?=null,
+    val y: Float?=null,
+    val scale: Float?=null,
+    val notInStockStyle: NotInStockStyleDTO?=null,
+    val textColorHex: String?=null,
+    val showImage: Boolean?=null,
+    val showPrice: Boolean?=null,
+    val foodItemDisplayTypeStyle: FoodItemDisplayTypeStyleDTO?=null,
+    val imageScale: Float?=null,
+    val itemWidthScale: Float?=null,
+    @Serializable(with = StyleFromStringSerializer::class)
+    val categoryItemStyle: StyleDTO?=null,
 )
 
 fun StyleDTO.toEntity() : Style {

@@ -1,5 +1,6 @@
 package com.example.ufmcontroller.data.remote
 
+import android.R
 import android.content.Context
 import androidx.core.net.toUri
 import com.example.ufmcontroller.data.local.UserPreferencesDataSource
@@ -83,11 +84,12 @@ class RemoteFoodDataSource @Inject constructor(
 
     suspend fun editFoodItem(
         id: Int,
-        foodItem: FoodItem
+        foodItem: FoodItem,
+        changedImage: Boolean
     ) {
         var imageBytes: ByteArray? = null
         var mimeType: String = ""
-        if (foodItem.imageUri != null) {
+        if (foodItem.imageUri != null && changedImage) {
             val uri = foodItem.imageUri.toUri()
             val contentResolver = context.contentResolver
 

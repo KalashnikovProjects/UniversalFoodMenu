@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class DesignItemDTO(
     val id: Int,
     val element: DesignableDTO,
+    @Serializable(with = StyleFromStringSerializer::class)
     val style: StyleDTO,
 )
 

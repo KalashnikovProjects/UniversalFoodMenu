@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.SharedFlow
 
 
 interface MainRepository {
-    fun observeEvents()
     fun getDesignItems(): Flow<List<DesignItem>>
     fun getScreenStyle(): Flow<ScreenStyle>
     fun getLogoutEvent(): SharedFlow<Unit>
-    suspend fun disconnect()
 }

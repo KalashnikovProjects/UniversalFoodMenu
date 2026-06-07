@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmserver.data.tables
 
+import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.dao.id.UIntIdTable
 
 object Categories : UIntIdTable("categories") {
@@ -8,5 +9,5 @@ object Categories : UIntIdTable("categories") {
     val price = float("price").nullable()
     val in_stock = bool("in_stock").nullable()
 
-    val user_id = reference("user_id", Users.id)
+    val user_id = reference("user_id", Users.id, onDelete = ReferenceOption.CASCADE)
 }

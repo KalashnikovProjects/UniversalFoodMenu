@@ -83,6 +83,7 @@ fun FoodItemFields(
     ) { uri: Uri? ->
         if (uri != null) {
             foodItemFieldsStates.imageUri.value = uri.toString()
+            foodItemFieldsStates.imageChanged.value = true
         }
     }
     val selectedImageUri by foodItemFieldsStates.imageUri.collectAsStateWithLifecycle()

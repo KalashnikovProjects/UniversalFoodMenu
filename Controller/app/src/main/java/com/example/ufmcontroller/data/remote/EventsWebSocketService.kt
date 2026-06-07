@@ -3,16 +3,12 @@ package com.example.ufmcontroller.data.remote
 import android.util.Log
 import com.example.ufmcontroller.BuildConfig
 import com.example.ufmcontroller.data.local.UserPreferencesDataSource
-import com.example.ufmcontroller.data.model.Events
+import com.example.ufmcontroller.data.model.EventsDTO
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.websocket.WebSocketException
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.URLBuilder
-import io.ktor.http.takeFrom
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +31,7 @@ class EventsWebSocketService @Inject constructor(
     ) {
     val logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    private val _events = MutableSharedFlow<Events>()
+    private val _events = MutableSharedFlow<EventsDTO>()
     val events = _events.asSharedFlow()
 
     private var connectionJob: Job? = null
@@ -68,14 +64,14 @@ class EventsWebSocketService @Inject constructor(
                         for (frame in incoming) {
                             if (frame is Frame.Text) {
                                 val text = frame.readText()
-                                val event = Json.decodeFromString<Events>(text)
+                                val event = Json.decodeFromString<EventsDTO>(text)
                                 _events.emit(event)
                             }
                         }
                     }
                 } catch (e: WebSocketException) {
                     if (e.message?.contains("401") == true) {
-                        Log.w("UFM", "WebSocket Auth Error: 401 Unauthorized")
+                        Log.d("UFM", "WebSocket Auth Error: 401 Unauthorized")
                         userPreferencesDataSource.clearAuthToken()
                         logoutEvent.emit(Unit)
                         break
@@ -92,6 +88,7 @@ class EventsWebSocketService @Inject constructor(
     }
 
     fun disconnect() {
+        Log.d("UFM", "Disconnect events webSocket")
         connectionJob?.cancel()
         connectionJob = null
     }

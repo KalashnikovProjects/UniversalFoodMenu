@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.kalashnikovprojects.ufmtv.data.local.MainDataSource
+import com.kalashnikovprojects.ufmtv.data.local.LocalDataSource
 import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
 import dagger.Module
 import dagger.Provides
@@ -41,7 +41,7 @@ object StorageModule {
 
     @Provides
     @Singleton
-    fun provideMainDataSource(scope: CoroutineScope): MainDataSource {
-        return MainDataSource(scope)
+    fun provideLocalDataSource(): LocalDataSource {
+        return LocalDataSource()
     }
 }

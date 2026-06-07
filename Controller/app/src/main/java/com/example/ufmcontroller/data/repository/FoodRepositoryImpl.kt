@@ -22,9 +22,10 @@ class FoodRepositoryImpl @Inject constructor(
 
     override suspend fun editFoodItem(
         id: Int,
-        foodItem: FoodItem
+        foodItem: FoodItem,
+        changedImage: Boolean
     ) {
-        return remoteFoodDataSource.editFoodItem(id, foodItem)
+        return remoteFoodDataSource.editFoodItem(id, foodItem, changedImage)
     }
 
     override suspend fun deleteFoodItem(id: Int) {

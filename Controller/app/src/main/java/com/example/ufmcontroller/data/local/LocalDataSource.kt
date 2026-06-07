@@ -9,6 +9,7 @@ import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 import com.example.ufmcontroller.domain.entity.TVScreen
 import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.entity.TextItem
+import com.example.ufmcontroller.domain.entity.defaultTVScreen
 import com.example.ufmcontroller.domain.entity.toDesignItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import kotlin.Pair
 import kotlin.collections.filter
 import kotlin.collections.map
 import kotlin.collections.mapNotNull
+import kotlin.text.category
 
 @Singleton
 class LocalDataSource @Inject constructor(
@@ -64,13 +66,13 @@ class LocalDataSource @Inject constructor(
     }
 
     val designItemsWithScreenId: Flow<List<DesignItemWithScreenId>> = combine(
-        _designItemsRaw, categoriesWithFoodItems, foodItems
+        _designItemsRaw, categoriesWithFoodItems, _foodItemsRaw
     ) { raws, categoriesWithFoodItems, foods ->
         raws.map { designItem ->
             when (val element = designItem.value.element) {
                 is CategoryWithFoodItems -> {
                     designItem.value.copy(
-                        element = categoriesWithFoodItems.find { designItem.key == element.category.id } ?: element
+                        element = categoriesWithFoodItems.find { it.category.id == element.category.id } ?: element
                     )
                 }
                 is FoodItem -> {
@@ -109,7 +111,8 @@ class LocalDataSource @Inject constructor(
     }
 
     fun getScreenWithDesignItems(id: Int): Flow<TVScreenWithDesignItems> {
-        return screensWithDesignItems.map { f -> f.find { it.tvScreen.id == id }!! }
+        return screensWithDesignItems.map { f -> f.find { it.tvScreen.id == id }
+            ?: TVScreenWithDesignItems(defaultTVScreen(), emptyList()) }
     }
 
     fun getCategoryByFoodId(foodId: Int): Flow<List<Category>> {

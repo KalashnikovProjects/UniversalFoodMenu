@@ -77,7 +77,8 @@ class RemoteCategoryDataSource @Inject constructor(
 
     suspend fun editCategory(
         id: Int,
-        category: Category
+        category: Category,
+        changedImage: Boolean
     ) {
         var imageBytes: ByteArray? = null
         var mimeType: String = ""

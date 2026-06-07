@@ -22,6 +22,7 @@ import com.example.ufmcontroller.domain.entity.toDesignItemWithScreenId
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesUseCase
 import com.example.ufmcontroller.domain.usecase.design.AddDesignItemUseCase
 import com.example.ufmcontroller.domain.usecase.design.AddDesignItemWithImageUseCase
+import com.example.ufmcontroller.domain.usecase.design.AddDesignItemWithTextUseCase
 import com.example.ufmcontroller.domain.usecase.design.DeleteDesignItemUseCase
 import com.example.ufmcontroller.domain.usecase.design.EditDesignItemUseCase
 import com.example.ufmcontroller.domain.usecase.design.GetDesignItemUseCase
@@ -75,7 +76,6 @@ data class TvScreenUiState (
         TvScreenTab.ADD_ITEM,
         TvScreenTab.SCREEN,
     ),
-    val selectedTabIndex: Int = 0,
     val foodItems: List<FoodItem> = emptyList(),
     val categories: List<Category> = emptyList(),
     val uploadedImagUri: String? = null,
@@ -102,7 +102,7 @@ class TvScreenViewModel @AssistedInject constructor(
     private val getDesignItemUseCase: GetDesignItemUseCase,
     private val addDesignItemUseCase: AddDesignItemUseCase,
     private val addDesignItemWithImageUseCase: AddDesignItemWithImageUseCase,
-    private val addDesignItemWithTextUseCase: AddDesignItemWithImageUseCase,
+    private val addDesignItemWithTextUseCase: AddDesignItemWithTextUseCase,
 
     private val editDesignItemUseCase: EditDesignItemUseCase,
     private val deleteDesignItemUseCase: DeleteDesignItemUseCase,
@@ -182,7 +182,6 @@ class TvScreenViewModel @AssistedInject constructor(
                 TvScreenTab.ADD_ITEM,
                 TvScreenTab.SCREEN,
             ),
-            selectedTabIndex = (flows[4] as TvScreenTab).ordinal - (if (flows[2] as DesignItem? != null) 0 else 1),
             foodItems = flows[7] as List<FoodItem>,
             categories = flows[8] as List<Category>,
             uploadedImagUri = flows[9] as String?,
@@ -314,12 +313,9 @@ class TvScreenViewModel @AssistedInject constructor(
 
     fun addCategoryDesignItem(categoryId: Int) {
         viewModelScope.launch {
-            val item = CategoryWithFoodItems(
-                Category(
-                    id=categoryId,
-                    name="",
-                ),
-                emptyList(),
+            val item = Category(
+                id=categoryId,
+                name="",
             )
             addDesignItemUseCase(DesignItemWithScreenId(
                 screenId = id,

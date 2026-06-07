@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
     suspend fun addCategory(category: Category): Category
-    suspend fun editCategory(id: Int, category: Category)
+    suspend fun editCategory(id: Int, category: Category, changedImage: Boolean)
     suspend fun toggleCategory(id: Int, boolean: Boolean)
     suspend fun deleteCategory(id: Int)
 

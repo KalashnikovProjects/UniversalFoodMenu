@@ -27,12 +27,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "SERVER_IP", "ufm.taprams.ru") // TODO: заменить хост на настоящий
-            buildConfigField("int", "SERVER_PORT", "8096")
+            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: заменить хост на настоящий ufm.taprams.ru
         }
         getByName("debug") {
-            buildConfigField("String", "SERVER_IP", "\"10.0.2.2\"") // TODO заменить хост
-            buildConfigField("int", "SERVER_PORT", "8096")
+            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: когда засуну в докер, сделать порт 8086
         }
     }
     compileOptions {

@@ -79,10 +79,13 @@ import com.example.ufmcontroller.domain.entity.TVScreen
 import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.entity.TextItem
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
+import com.example.ufmcontroller.presentation.ui.component.AddItemTabContent
 import com.example.ufmcontroller.presentation.ui.component.CategoryElement
 import com.example.ufmcontroller.presentation.ui.component.DefaultAppTop
 import com.example.ufmcontroller.presentation.ui.component.FoodItemRowCard
+import com.example.ufmcontroller.presentation.ui.component.ScreenTabContent
 import com.example.ufmcontroller.presentation.ui.component.SearchBar
+import com.example.ufmcontroller.presentation.ui.component.SelectedItemTabContent
 import com.example.ufmcontroller.presentation.ui.component.TvScreenCard
 import com.example.ufmcontroller.presentation.viewmodel.AddDesignExtended
 import com.example.ufmcontroller.presentation.viewmodel.EditCategoryUiState
@@ -107,6 +110,7 @@ fun TvScreenScreen(
     ),
     navigateEditFoodItem: (Int) -> Unit,
     navigateEditCategory: (Int) -> Unit,
+    onNavigateVisualConfigurationScreen: () -> Unit,
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -123,12 +127,13 @@ fun TvScreenScreen(
         viewModel::deleteScreen,
         viewModel::editCurrentDesignItem,
         viewModel::deleteCurrentDesignItem,
-        viewModel::addImageDesignItem,
-        viewModel::addTextDesignItem,
+        addImageDesignItem=viewModel::addImageDesignItem,
+        addTextDesignItem=viewModel::addTextDesignItem,
         viewModel::addFoodItemDesignItem,
         viewModel::addCategoryDesignItem,
         navigateEditFoodItem,
         navigateEditCategory,
+        onNavigateVisualConfigurationScreen,
         onBack,
     )
 }
@@ -153,6 +158,7 @@ fun TvScreenScreenContent(
     addCategoryDesignItem: (Int) -> Unit,
     navigateEditFoodItem: (Int) -> Unit,
     navigateEditCategory: (Int) -> Unit,
+    onNavigateVisualConfigurationScreen: () -> Unit,
     onBack: () -> Unit,
 ) {
     val pickMedia = rememberLauncherForActivityResult(
@@ -162,49 +168,44 @@ fun TvScreenScreenContent(
             setUploadedImageUri(uri.toString())
         }
     }
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+
+    Box(modifier = Modifier.fillMaxSize()) {
         if (uiState.openedDeleteConfirmationDialog != OpenedDeleteConfirmationDialog.NONE) {
             AlertDialog(
                 title = {
-                    Text(text =
-                        if (uiState.openedDeleteConfirmationDialog == OpenedDeleteConfirmationDialog.DELETE_DESIGN_ITEM) "Удалить элемент дизайна?"
-                            else "Отвязать экран и удалить его настройки отображения?",
-                        textAlign = TextAlign.Center)
+                    Text(
+                        text = if (uiState.openedDeleteConfirmationDialog == OpenedDeleteConfirmationDialog.DELETE_DESIGN_ITEM)
+                            "Удалить элемент дизайна?" else "Отвязать экран и удалить его настройки отображения?",
+                        textAlign = TextAlign.Center
+                    )
                 },
-                onDismissRequest = {
-                    setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
-                },
+                onDismissRequest = { setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE) },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            if (uiState.openedDeleteConfirmationDialog == OpenedDeleteConfirmationDialog.DELETE_DESIGN_ITEM)
+                            if (uiState.openedDeleteConfirmationDialog == OpenedDeleteConfirmationDialog.DELETE_DESIGN_ITEM) {
                                 deleteCurrentDesignItem()
-                            else
+                                setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
+                            } else {
                                 deleteScreen()
+                                setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
+                                onNavigateVisualConfigurationScreen()
+                            }
                             setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
                         }
-                    ) {
-                        Text("Да")
-                    }
+                    ) { Text("Да") }
                 },
                 dismissButton = {
-                    TextButton(
-                        onClick = {
-                            setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
-                        }
-                    ) {
+                    TextButton(onClick = { setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE) }) {
                         Text("Отмена")
                     }
                 }
             )
         }
-        Column {
+
+        Column(modifier = Modifier.fillMaxSize()) {
             DefaultAppTop(
-                "Редактирование экрана",
-                onBack,
-                false,
+                text = "Редактирование экрана",
                 actions = {
                     IconButton(
                         onClick = { setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.DELETE_SCREEN) },
@@ -216,17 +217,24 @@ fun TvScreenScreenContent(
                         ),
                         modifier = Modifier.size(60.dp)
                     ) {
-                        Icon(Icons.Filled.Delete,
-                            contentDescription = "Delete")
+                        Icon(Icons.Filled.Delete, contentDescription = "Delete")
                     }
-                })
+                },
+                onButton = onBack,
+                buttonIsToMenu = false,
+            )
+
             TvScreenCard(
                 uiState.screen,
                 clickable = false,
-                modifier = Modifier.padding(5.dp)
+                modifier = Modifier.padding(5.dp),
+                interactive = true,
+                selected = uiState.selectedId,
+                onItemMoved = { _, _, _ -> }
             )
-            SecondaryTabRow (
-                selectedTabIndex = uiState.tab.ordinal,
+
+            SecondaryTabRow(
+                selectedTabIndex = uiState.tabsList.indexOf(uiState.tab).coerceAtLeast(0),
                 containerColor = colorScheme.surfaceContainerHigh,
                 contentColor = colorScheme.primary,
                 modifier = Modifier
@@ -234,9 +242,7 @@ fun TvScreenScreenContent(
                     .clip(RoundedCornerShape(100))
             ) {
                 uiState.tabsList.forEach { tab ->
-                    key(
-                        "tv_screen_tab_row${tab.ordinal}"
-                    ) {
+                    key("tv_screen_tab_row${tab.ordinal}") {
                         Tab(
                             selected = (uiState.tab == tab),
                             onClick = { selectTab(tab) },
@@ -249,334 +255,34 @@ fun TvScreenScreenContent(
                                 Text(
                                     text = tabText,
                                     style = MaterialTheme.typography.titleLarge,
-                                    textAlign = TextAlign.Center,
-                                    color=colorScheme.onSurfaceVariant,
                                     fontSize = 18.sp,
                                 )
                             }
                         )
                     }
-
                 }
             }
+
             Crossfade(
                 targetState = uiState.tab,
                 label = "TvScreenTabTransition"
-            ) {
-                tab ->
-                    when (tab) {
-                        TvScreenTab.SELECTED_ITEM -> {
-                            Card (
-                                modifier = Modifier.padding(15.dp).fillMaxWidth()
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(15.dp).fillMaxWidth()
-                                ) {
-                                    Text(
-                                        "Стиль элемента",
-                                        modifier = Modifier.padding(vertical = 13.dp),
-                                        color = colorScheme.onBackground,
-                                        fontSize = 17.sp,
-                                        fontWeight = FontWeight(600),
-                                    )
-                                    val style = uiState.selected!!.style
-                                    // TODO
-//                                    Slider(
-//                                        value = style.scale ?: 1f,
-//                                        onValueChange = { inputStates.scaleSliderValue(style.copy(imageScale = it)) },
-//                                        valueRange = 0.1f..5f
-//                                    )
-                                }
-                            }
-                        }
-
-                        TvScreenTab.ADD_ITEM -> {
-                            Column(
-                                modifier = Modifier.padding(horizontal = 15.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier.clickable {
-                                        selectAddDesignExtended(
-                                            if (uiState.addDesignExtended == AddDesignExtended.FOOD_ITEMS) AddDesignExtended.NONE
-                                            else AddDesignExtended.FOOD_ITEMS
-                                        )
-                                    }
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            selectAddDesignExtended(
-                                                if (uiState.addDesignExtended == AddDesignExtended.FOOD_ITEMS) AddDesignExtended.NONE
-                                                else AddDesignExtended.FOOD_ITEMS
-                                            )
-                                        },
-                                        modifier = Modifier.padding(end = 7.dp)
-                                    ) {
-                                        Icon(
-                                            if (uiState.addDesignExtended != AddDesignExtended.FOOD_ITEMS) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
-                                            contentDescription = "Expand food items",
-                                            tint = colorScheme.onBackground,
-                                        )
-                                    }
-                                    Text(
-                                        "Позиции меню",
-                                        modifier = Modifier.padding(vertical = 13.dp),
-                                        color = colorScheme.onBackground,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight(600),
-                                    )
-                                }
-                                AnimatedVisibility(uiState.addDesignExtended == AddDesignExtended.FOOD_ITEMS) {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        SearchBar(
-                                            inputStates.foodItemsSearchState,
-                                            modifier = Modifier
-                                                .padding(5.dp)
-                                                .fillMaxWidth()
-                                        )
-
-                                        LazyColumn(
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            items(uiState.foodItems) { item ->
-                                                key("foodItem_for_design_item_selection${item.id}") {
-                                                    FoodItemRowCard(
-                                                        item,
-                                                        onFoodItemClick = { id, _ ->
-                                                            addFoodItemDesignItem(
-                                                                id
-                                                            )
-                                                        },
-                                                        onFoodItemLongClick = navigateEditFoodItem,
-                                                        showSwitch = false,
-                                                        showNotInStock = false,
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                Row(
-                                    modifier = Modifier.clickable {
-                                        selectAddDesignExtended(
-                                            if (uiState.addDesignExtended == AddDesignExtended.CATEGORIES) AddDesignExtended.NONE
-                                            else AddDesignExtended.CATEGORIES
-                                        )
-                                    }
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            selectAddDesignExtended(
-                                                if (uiState.addDesignExtended == AddDesignExtended.CATEGORIES) AddDesignExtended.NONE
-                                                else AddDesignExtended.CATEGORIES
-                                            )
-                                        },
-                                        modifier = Modifier.padding(end = 7.dp)
-                                    ) {
-                                        Icon(
-                                            if (uiState.addDesignExtended != AddDesignExtended.CATEGORIES) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
-                                            contentDescription = "Expand categories list",
-                                            tint = colorScheme.onBackground,
-                                        )
-                                    }
-                                    Text(
-                                        "Категории",
-                                        modifier = Modifier.padding(vertical = 13.dp),
-                                        color = colorScheme.onBackground,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight(600),
-                                    )
-                                }
-                                AnimatedVisibility(uiState.addDesignExtended == AddDesignExtended.CATEGORIES) {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        SearchBar(
-                                            inputStates.foodItemsSearchState,
-                                            modifier = Modifier
-                                                .padding(5.dp)
-                                                .fillMaxWidth()
-                                        )
-
-                                        LazyColumn(
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            items(uiState.categories) { item ->
-                                                key("category_for_design_item_selection${item.id}") {
-                                                    CategoryElement(
-                                                        category = CategoryWithFoodItems(
-                                                            category = item,
-                                                            emptyList(),
-                                                        ),
-                                                        opened = false,
-                                                        onFoodItemClick = { _, _ -> },
-                                                        onFoodItemLongClick = { },
-                                                        showSwitch = false,
-                                                        onCategoryClick = { id ->
-                                                            addCategoryDesignItem(
-                                                                id
-                                                            )
-                                                        },
-                                                        onCategoryLongClick = navigateEditCategory,
-                                                        onCategoryToggle = { _, _ -> },
-                                                        showExpand = false,
-                                                        showNotInStock = false,
-                                                        showBG = true,
-                                                        doSpaceIfNoExpand = false,
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                Row(
-                                    modifier = Modifier.clickable {
-                                        selectAddDesignExtended(
-                                            if (uiState.addDesignExtended == AddDesignExtended.TEXT) AddDesignExtended.NONE
-                                            else AddDesignExtended.TEXT
-                                        )
-                                    }
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            selectAddDesignExtended(
-                                                if (uiState.addDesignExtended == AddDesignExtended.TEXT) AddDesignExtended.NONE
-                                                else AddDesignExtended.TEXT
-                                            )
-                                        },
-                                        modifier = Modifier.padding(end = 7.dp)
-                                    ) {
-                                        Icon(
-                                            if (uiState.addDesignExtended != AddDesignExtended.TEXT) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
-                                            contentDescription = "Expand text",
-                                            tint = colorScheme.onBackground,
-                                        )
-                                    }
-                                    Text(
-                                        "Текст",
-                                        modifier = Modifier.padding(vertical = 13.dp),
-                                        color = colorScheme.onBackground,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight(600),
-                                    )
-                                }
-                                AnimatedVisibility(uiState.addDesignExtended == AddDesignExtended.TEXT) {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        OutlinedTextField(
-                                            state = inputStates.textItemFieldState,
-                                            placeholder = {
-                                                Text(
-                                                    "Текст",
-                                                    modifier = Modifier.alpha(0.5F)
-                                                )
-                                            },
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(7.dp))
-                                                .padding(vertical = 5.dp),
-                                        )
-                                        Button(
-                                            onClick = addTextDesignItem,
-                                            shape = MaterialTheme.shapes.medium
-                                        ) {
-                                            Text(
-                                                text = "Добавить",
-                                            )
-                                        }
-                                    }
-                                }
-                                Row(
-                                    modifier = Modifier.clickable {
-                                        selectAddDesignExtended(
-                                            if (uiState.addDesignExtended == AddDesignExtended.IMAGE) AddDesignExtended.NONE
-                                            else AddDesignExtended.IMAGE
-                                        )
-                                    }
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            selectAddDesignExtended(
-                                                if (uiState.addDesignExtended == AddDesignExtended.IMAGE) AddDesignExtended.NONE
-                                                else AddDesignExtended.IMAGE
-                                            )
-                                        },
-                                        modifier = Modifier.padding(end = 7.dp)
-                                    ) {
-                                        Icon(
-                                            if (uiState.addDesignExtended != AddDesignExtended.IMAGE) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
-                                            contentDescription = "Expand image",
-                                            tint = colorScheme.onBackground,
-                                        )
-                                    }
-                                    Text(
-                                        "Изображение",
-                                        modifier = Modifier.padding(vertical = 13.dp),
-                                        color = colorScheme.onBackground,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight(600),
-                                    )
-                                }
-                                AnimatedVisibility(uiState.addDesignExtended == AddDesignExtended.IMAGE) {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Button(onClick = {
-                                            pickMedia.launch(
-                                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                            )
-                                        }) {
-                                            Text("Выбрать из галереи")
-                                        }
-                                        if (uiState.uploadedImagUri != null) {
-                                            AsyncImage(
-                                                model = uiState.uploadedImagUri,
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .padding(bottom = 10.dp)
-                                                    .size(100.dp)
-                                                    .clip(
-                                                        RoundedCornerShape(7.dp)
-                                                    ),
-                                            )
-                                            Button(
-                                                onClick = addImageDesignItem,
-                                                shape = MaterialTheme.shapes.medium
-                                            ) {
-                                                Text(
-                                                    text = "Добавить",
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        TvScreenTab.SCREEN -> {
-                            Column(
-                                modifier = Modifier.padding(horizontal = 30.dp, vertical = 15.dp)
-                            ) {
-                                Text(
-                                    "Название экрана",
-                                    color = colorScheme.onBackground,
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight(600),
-                                )
-                                OutlinedTextField(
-                                    state = inputStates.screenNameFieldState,
-                                    placeholder = { Text("Название", modifier = Modifier.alpha(0.5F)) },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(7.dp))
-                                        .padding(vertical = 15.dp)
-                                        .onFocusChanged {
-                                            setScreen(uiState.screen.tvScreen.copy(name = inputStates.screenNameFieldState.text.toString()))
-                                            editScreen()
-                                        }
-                                )
-                            }
-                        }
-                    }
+            ) { tab ->
+                when (tab) {
+                    TvScreenTab.SELECTED_ITEM -> SelectedItemTabContent(uiState, inputStates)
+                    TvScreenTab.ADD_ITEM -> AddItemTabContent(
+                        uiState = uiState,
+                        inputStates = inputStates,
+                        onAddFoodItem = addFoodItemDesignItem,
+                        onAddCategory = addCategoryDesignItem,
+                        onAddText = addTextDesignItem,
+                        onAddImage = addImageDesignItem,
+                        onHeaderClick = selectAddDesignExtended,
+                        onGalleryClick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                        navigateEditFoodItem = navigateEditFoodItem,
+                        navigateEditCategory = navigateEditCategory
+                    )
+                    TvScreenTab.SCREEN -> ScreenTabContent(uiState, inputStates, setScreen, editScreen)
+                }
             }
         }
     }
@@ -741,6 +447,7 @@ fun TvScreenScreenContentPreview() {
                 inputStates = InputStates(),
                 navigateEditFoodItem = { },
                 navigateEditCategory = { },
+                onNavigateVisualConfigurationScreen = { },
                 setUploadedImageUri = { },
             )
         }

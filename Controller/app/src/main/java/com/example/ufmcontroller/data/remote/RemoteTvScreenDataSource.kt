@@ -20,6 +20,7 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,6 +39,9 @@ class RemoteTvScreenDataSource @Inject constructor(
                 path("/api/input_code_for_tv_auth")
             }
             setBody(code)
+        }
+        if (response.status == HttpStatusCode.BadRequest) {
+            throw Exception("Неверный код")
         }
         return response.body<TVScreenDTO>().toEntity()
     }

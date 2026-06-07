@@ -182,7 +182,8 @@ fun AddTvScreenScreenContent(
                         text = uiState.step.message,
                         style = MaterialTheme.typography.labelLarge,
                         color = colorScheme.error,
-                        modifier = Modifier.padding(top = 10.dp)
+                        modifier = Modifier.padding(top = 10.dp),
+                        textAlign = TextAlign.Center,
                     )
                 }
                 Button(

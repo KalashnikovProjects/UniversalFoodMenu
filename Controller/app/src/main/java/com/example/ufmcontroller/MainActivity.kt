@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
                                 .padding(
                                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                                    bottom = paddingValues.calculateBottomPadding(),
                                 )
                         ) {
                             AppNavGraph(
@@ -86,6 +87,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mainViewModel.startEventsService()
+        mainViewModel.stopEventsService()
     }
 }
