@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
@@ -33,8 +35,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ufmcontroller.R
 import com.example.ufmcontroller.domain.entity.Category
@@ -54,6 +59,7 @@ fun HomeScreen(
     viewModel: HomeViewModel= hiltViewModel<HomeViewModel>(),
     navigateEditCategory: (Int) -> Unit,
     navigateEditFoodItem: (Int) -> Unit,
+    onEditMenu: () -> Unit,
     onToggleDrawer: () -> Unit,
 ) {
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
@@ -66,6 +72,7 @@ fun HomeScreen(
         onCategoryVisibilitySwitch = {id -> viewModel.switchCategoryVisibility(id) },
         navigateEditCategory = navigateEditCategory,
         onCategoryToggle = viewModel::toggleCategory,
+        onEditMenu=onEditMenu,
         onToggleDrawer = onToggleDrawer,
     )
 }
@@ -79,28 +86,67 @@ fun HomeScreenContent(
     onCategoryVisibilitySwitch: (Int) -> Unit,
     navigateEditCategory: (Int) -> Unit,
     onCategoryToggle: (Int, Boolean) -> Unit,
+    onEditMenu: () -> Unit,
     onToggleDrawer: () -> Unit,
 ) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        DefaultAppTop(
-            onButton = onToggleDrawer,
-            title = {
-                SearchBar(searchState, Modifier
-                    .fillMaxWidth())
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            DefaultAppTop(
+                onButton = onToggleDrawer,
+                title = {
+                    SearchBar(searchState, Modifier
+                        .fillMaxWidth())
+                }
+            )
+            if (uiState.items.noCategoryFoodItems.isNotEmpty() ||
+                uiState.items.categories.isNotEmpty()) {
+                CategorizedFoodItemsElement(
+                    uiState.items,
+                    opened = uiState.openedIds,
+                    onCategoryClick = onCategoryVisibilitySwitch,
+                    onCategoryLongClick = navigateEditCategory,
+                    onFoodItemClick = toggleFoodItem,
+                    onFoodItemLongClick = navigateEditFoodItem,
+                    onCategoryToggle = onCategoryToggle,
+                    showSwitch = true
+                )
             }
-        )
-        CategorizedFoodItemsElement(
-            uiState.items,
-            opened = uiState.openedIds,
-            onCategoryClick = onCategoryVisibilitySwitch,
-            onCategoryLongClick = navigateEditCategory,
-            onFoodItemClick = toggleFoodItem,
-            onFoodItemLongClick = navigateEditFoodItem,
-            onCategoryToggle = onCategoryToggle,
-            showSwitch = true
-        )
+        }
+        if (uiState.items.noCategoryFoodItems.isEmpty() &&
+            uiState.items.categories.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.width(300.dp)
+                ) {
+                    Text(
+                        "Ваше меню пока пустое. Нажмите, чтобы его заполнить.",
+                        color=colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight(600),
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Button(
+                        onClick = onEditMenu,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text(
+                            text = "Редактировать меню",
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -194,6 +240,39 @@ fun HomeScreenPreview() {
                 onCategoryVisibilitySwitch = {  },
                 navigateEditCategory = {  },
                 onCategoryToggle = { _, _ -> },
+                onEditMenu = {},
+                onToggleDrawer = { },
+            )
+        }
+    }
+}
+
+
+@Preview(name = "Light Mode", showSystemUi = true, showBackground = true)
+@Preview(name = "Dark Mode", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun HomeScreenEmptyPreview() {
+    val searchState by remember { mutableStateOf(TextFieldState("")) }
+    UFMControllerTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize().background(colorScheme.background)
+        ) {
+            HomeScreenContent(
+                uiState = HomeUiState(
+                    items = FoodItemsCategorized(
+                        emptyList(),
+                        emptyList(),
+                    ),
+                    openedIds = setOf(14, -1),
+                ),
+                searchState = searchState,
+                navigateEditFoodItem = {},
+                toggleFoodItem = { _, _ -> },
+                onCategoryVisibilitySwitch = {  },
+                navigateEditCategory = {  },
+                onCategoryToggle = { _, _ -> },
+                onEditMenu = {},
                 onToggleDrawer = { },
             )
         }

@@ -104,7 +104,10 @@ fun EditFoodItemScreenContent(
             )
         }
         ExtendedFloatingActionButton(
-            onClick = onCommit,
+            onClick = {
+                onCommit()
+                onBack()
+                      },
             icon = { Icon(Icons.Filled.Check, "OK") },
             text = { Text(text = "Сохранить") },
             modifier = Modifier
@@ -123,7 +126,7 @@ fun EditFoodItemScreenContent(
                     TextButton(
                         onClick = {
                             onDelete()
-                            setOpenedDeleteConfirmationDialog(false)
+                            onBack()
                         }
                     ) {
                         Text("Да")

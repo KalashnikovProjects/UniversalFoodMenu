@@ -10,10 +10,10 @@ class EditCategoryUseCase  @Inject constructor(
 ) {
     suspend operator fun invoke(id: Int,
                                 category: Category,
-                                foodItems: List<FoodItem> = emptyList(),
+                                foodItemsIds: List<Int> = emptyList(),
     ) {
         categoryRepository.editCategory(id, category)
-        categoryRepository.setCategoryFoodRelations(id, foodItems.map { it.id })
+        categoryRepository.setCategoryFoodRelations(id, foodItemsIds)
     }
 }
 

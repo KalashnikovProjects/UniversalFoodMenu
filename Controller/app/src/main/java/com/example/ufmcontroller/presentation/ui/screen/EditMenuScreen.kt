@@ -143,48 +143,67 @@ fun EditMenuScreenContent(
                         .padding(horizontal = 25.dp, vertical = 3.dp))
                     HorizontalDivider(Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 25.dp))
                     if (tab == EditMenuTab.FOOD) {
-                        LazyColumn(
-                            modifier=Modifier.padding(horizontal = 20.dp)
-                        ) {
-                            items(uiState.foodItems) {
-                                    item ->
-                                key("food_element_edit_list${item.id}") {
-                                    FoodItemRowCard(
-                                        item = item,
-                                        onFoodItemClick = { id, _ -> onNavigateToEditFoodItem(id) },
-                                        onFoodItemLongClick = onNavigateToEditFoodItem,
-                                        showSwitch = false,
-                                        showNotInStock = false,
-                                    )
+                        if (uiState.foodItems.isNotEmpty()) {
+                            LazyColumn(
+                                modifier=Modifier.padding(horizontal = 20.dp)
+                            ) {
+                                items(uiState.foodItems) {
+                                        item ->
+                                    key("food_element_edit_list${item.id}") {
+                                        FoodItemRowCard(
+                                            item = item,
+                                            onFoodItemClick = { id, _ -> onNavigateToEditFoodItem(id) },
+                                            onFoodItemLongClick = onNavigateToEditFoodItem,
+                                            showSwitch = false,
+                                            showNotInStock = false,
+                                        )
+                                    }
                                 }
                             }
+                        } else {
+                            Text(
+                                "Нету элементов меню",
+                                color=colorScheme.onBackground,
+                                fontSize = 17.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
                         }
                     } else {
-                        LazyColumn(
-                            modifier=Modifier.padding(horizontal = 20.dp)
-                        ) {
-                            items(uiState.categories) {
-                                    item ->
-                                key("food_element_edit_list${item.id}") {
-                                    CategoryElement(
-                                        category = CategoryWithFoodItems(
-                                            category = item,
-                                            emptyList(),
-                                        ),
-                                        opened = false,
-                                        onFoodItemClick = { _, _ -> },
-                                        onFoodItemLongClick = { },
-                                        showSwitch = false,
-                                        onCategoryClick = onNavigateToEditCategory,
-                                        onCategoryLongClick = onNavigateToEditCategory,
-                                        onCategoryToggle = { _, _ -> },
-                                        showExpand = false,
-                                        showNotInStock = false,
-                                        showBG = true,
-                                        doSpaceIfNoExpand = false,
-                                    )
+                        if (uiState.categories.isNotEmpty()) {
+                            LazyColumn(
+                                modifier = Modifier.padding(horizontal = 20.dp)
+                            ) {
+                                items(uiState.categories) { item ->
+                                    key("food_element_edit_list${item.id}") {
+                                        CategoryElement(
+                                            category = CategoryWithFoodItems(
+                                                category = item,
+                                                emptyList(),
+                                            ),
+                                            opened = false,
+                                            onFoodItemClick = { _, _ -> },
+                                            onFoodItemLongClick = { },
+                                            showSwitch = false,
+                                            onCategoryClick = onNavigateToEditCategory,
+                                            onCategoryLongClick = onNavigateToEditCategory,
+                                            onCategoryToggle = { _, _ -> },
+                                            showExpand = false,
+                                            showNotInStock = false,
+                                            showBG = true,
+                                            doSpaceIfNoExpand = false,
+                                        )
+                                    }
                                 }
                             }
+                        } else {
+                            Text(
+                                "Нету категорий",
+                                color=colorScheme.onBackground,
+                                fontSize = 17.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
@@ -272,6 +291,42 @@ fun EditMenuScreenContentPreview() {
                                 inStock = false,
                             ),
                         )
+                    )
+                )
+            }
+            EditMenuScreenContent(
+                uiState,
+                rememberTextFieldState("Поиск 1"),
+                rememberTextFieldState("Поиск 2"),
+                {},
+                { },
+                { },
+                { },
+                selectTab = { tab ->
+                    uiState = uiState.copy(editMenuTab = tab)
+                },
+                { },
+            )
+        }
+    }
+}
+
+@Preview(group = "light", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(group = "dark", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun EditMenuScreenContentEmptyPreview() {
+    UFMControllerTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorScheme.background)
+        ) {
+            var uiState by remember {
+                mutableStateOf(
+                    EditMenuUiState(
+                        editMenuTab = EditMenuTab.CATEGORIES,
+                        foodItems = emptyList(),
+                        categories = emptyList()
                     )
                 )
             }

@@ -110,10 +110,15 @@ fun EditCategoryScreenContent(
             )
         }
         ExtendedFloatingActionButton(
-            onClick = onCommit,
+            onClick = {
+                onCommit()
+                onBack()
+                      },
             icon = { Icon(Icons.Filled.Check, "OK") },
             text = { Text(text = "Сохранить") },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(30.dp)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(30.dp)
         )
         if (uiState.openedDeleteConfirmationDialog) {
             AlertDialog(
@@ -127,7 +132,7 @@ fun EditCategoryScreenContent(
                     TextButton(
                         onClick = {
                             onDelete()
-                            setOpenedDeleteConfirmationDialog(false)
+                            onBack()
                         }
                     ) {
                         Text("Да")

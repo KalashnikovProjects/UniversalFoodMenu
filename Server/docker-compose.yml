@@ -1,7 +1,7 @@
 services:
   ufm-server:
     volumes:
-      - ufm-static:/var/lib/postgresql/data
+      - ufm-static:/static
     build: .
     ports:
       - "8096:8080"

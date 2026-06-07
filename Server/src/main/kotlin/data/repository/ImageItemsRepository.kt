@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
+import com.kalashnikovprojects.ufmserver.data.tables.Categories
 import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
 import com.kalashnikovprojects.ufmserver.models.ImageItem
 import com.kalashnikovprojects.ufmserver.models.NoIdImageItem
@@ -35,6 +36,7 @@ class ImageItemsRepository(val database: R2dbcDatabase) : Repository {
         ImageItems
             .selectAll()
             .where { ImageItems.user_id eq userId.toUInt() and (ImageItems.user_id eq userId.toUInt()) }
+            .orderBy(ImageItems.id)
             .map { row ->
                 rowToImageItem(row)
             }.toList()

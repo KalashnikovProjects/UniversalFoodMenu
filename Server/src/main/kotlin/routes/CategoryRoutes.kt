@@ -30,6 +30,7 @@ fun Route.categoryRoutes() {
     val foodItemsCategoriesRepository by inject<FoodItemsCategoriesRepository>()
 
     val fileStorageAdapter by inject<FileStorageAdapter>()
+    val appJson by inject<Json>()
 
     val eventBus by inject<EventBus>()
 
@@ -110,7 +111,7 @@ fun Route.categoryRoutes() {
                 when (part) {
                     is PartData.FormItem -> {
                         if (part.name == "categoryData") {
-                            requestPayload = Json.decodeFromString<NoIdCategory>(part.value)
+                            requestPayload = appJson.decodeFromString<NoIdCategory>(part.value)
                         }
                     }
                     is PartData.FileItem -> {
@@ -125,7 +126,7 @@ fun Route.categoryRoutes() {
             }
 
             if (requestPayload == null) {
-                call.respond(HttpStatusCode.BadRequest, "Missing food item data")
+                call.respond(HttpStatusCode.BadRequest, "Missing category data")
                 return@post
             }
 
@@ -139,7 +140,7 @@ fun Route.categoryRoutes() {
             eventBus.getFlow(userId).emit(Events.AddCategoryEvent(
                 element = requestPayload.toCategory(createdId)
             ))
-            call.respond(HttpStatusCode.Created, createdId)
+            call.respond(HttpStatusCode.Created, requestPayload.toCategory(createdId))
         }
 
         put("/categories/{id}") {
@@ -162,7 +163,7 @@ fun Route.categoryRoutes() {
                 when (part) {
                     is PartData.FormItem -> {
                         if (part.name == "categoryData") {
-                            requestPayload = Json.decodeFromString<NoIdCategory>(part.value)
+                            requestPayload = appJson.decodeFromString<NoIdCategory>(part.value)
                         }
                     }
                     is PartData.FileItem -> {
@@ -201,7 +202,7 @@ fun Route.categoryRoutes() {
             }
         }
 
-        post("/categoriess/{id}/toggle") {
+        post("/categories/{id}/toggle") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
 

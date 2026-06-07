@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -15,16 +16,21 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -87,12 +93,44 @@ fun VisualConfigurationScreenContent(
             ) {
                 items(uiState.screens) {
                         item ->
-                    TvScreenCard(
-                        screenWithDesignItems=item,
-                        onNavigateToScreen=onNavigateToScreen,
-                        clickable = true,
-                        fontSize = 8.sp,
+                    key(
+                        "tv_screen_card${item.tvScreen.id}"
+                    ) {
+                        TvScreenCard(
+                            screenWithDesignItems=item,
+                            onNavigateToScreen=onNavigateToScreen,
+                            clickable = true,
+                            fontSize = 8.sp,
+                        )
+                    }
+                }
+            }
+        }
+        if (uiState.screens.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.width(300.dp)
+                ) {
+                    Text(
+                        "Не привязано ни одного экрана. Нажмите, чтобы добавить первый.",
+                        color=colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight(600),
+                        modifier = Modifier.padding(8.dp)
                     )
+                    Button(
+                        onClick = onAddScreen,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text(
+                            text = "Добавить экран",
+                        )
+                    }
                 }
             }
         }
@@ -248,6 +286,29 @@ fun VisualConfigurationScreenPreview() {
                 designItems = emptyList()
             ),
         )
+    )
+    UFMControllerTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize().background(colorScheme.background)
+        ) {
+            VisualConfigurationScreenContent(
+                uiState,
+                onNavigateToScreen = {},
+                onAddScreen = {},
+                onToggleDrawer = {},
+            )
+        }
+    }
+}
+
+
+@Preview(group = "light", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(group = "dark", showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun VisualConfigurationScreenEmptyPreview() {
+    val uiState = VisualConfigurationScreenUiState(
+        screens = emptyList()
     )
     UFMControllerTheme {
         Box(

@@ -1,5 +1,6 @@
 package com.example.ufmcontroller.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel

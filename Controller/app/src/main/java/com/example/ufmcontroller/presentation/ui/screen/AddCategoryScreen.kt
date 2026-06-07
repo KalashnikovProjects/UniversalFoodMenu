@@ -73,10 +73,15 @@ fun AddCategoryScreenContent(
             )
         }
         ExtendedFloatingActionButton(
-            onClick = onCommit,
+            onClick = {
+                onCommit()
+                onBack()
+                      },
             icon = { Icon(Icons.Filled.Check, "OK") },
             text = { Text(text = "Создать") },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(30.dp)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(30.dp)
         )
     }
 }

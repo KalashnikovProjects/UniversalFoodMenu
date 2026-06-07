@@ -12,9 +12,9 @@ class EditFoodItemUseCase @Inject constructor(
     ) {
     suspend operator fun invoke(id: Int,
                                 foodItem: FoodItem,
-                                categories: List<Category> = emptyList(),
+                                categoriesIds: List<Int> = emptyList(),
                                 ) {
         foodRepository.editFoodItem(id, foodItem)
-        categoryRepository.updateFoodRelationsForCategories(foodItem.id, categories.map { it.id })
+        categoryRepository.updateFoodRelationsForCategories(foodItem.id, categoriesIds)
     }
 }

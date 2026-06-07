@@ -1,5 +1,6 @@
 package com.example.ufmcontroller.presentation.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ fun FoodItemRowCard(item: FoodItem,
                     onFoodItemLongClick: (Int) -> Unit = {_ -> },
                     showSwitch: Boolean = false,
                     showNotInStock: Boolean = true,
+                    isCheckedUp: Boolean= item.inStock,
 ) {
 
     Card(
@@ -42,7 +44,7 @@ fun FoodItemRowCard(item: FoodItem,
             .padding(horizontal = 3.dp, vertical = 4.dp)
             .combinedClickable(
                 onClick = {
-                    onFoodItemClick(item.id, !item.inStock)
+                    onFoodItemClick(item.id, !isCheckedUp)
                 },
                 onLongClick = {
                     onFoodItemLongClick(item.id)
@@ -60,7 +62,7 @@ fun FoodItemRowCard(item: FoodItem,
                     model = item.imageUri,
                     contentDescription = null,
                     modifier = Modifier.size(40.dp).padding(horizontal = 5.dp),
-                    alpha=if (item.inStock || !showNotInStock) 1F else 0.3F
+                    alpha=if (isCheckedUp || !showNotInStock) 1F else 0.3F
                 )
             }
             Row(modifier = Modifier
@@ -70,7 +72,7 @@ fun FoodItemRowCard(item: FoodItem,
                 Text(
                     text = item.name,
                     fontSize = 22.sp,
-                    textDecoration = if (!item.inStock && showNotInStock) TextDecoration.LineThrough else
+                    textDecoration = if (!isCheckedUp && showNotInStock) TextDecoration.LineThrough else
                         TextDecoration.None,
                     color = colorScheme.onSurface,
                     modifier = Modifier.weight(1f).padding(vertical = 7.dp)
@@ -87,9 +89,9 @@ fun FoodItemRowCard(item: FoodItem,
                 )
             }
             if (showSwitch) {
-                Checkbox(checked = item.inStock, onCheckedChange = {
+                Checkbox(checked = isCheckedUp, onCheckedChange = {
                         value ->
-                        onFoodItemClick(item.id, !item.inStock)
+                        onFoodItemClick(item.id, !isCheckedUp)
                     },
                     modifier = Modifier.scale(0.8F)
                 )

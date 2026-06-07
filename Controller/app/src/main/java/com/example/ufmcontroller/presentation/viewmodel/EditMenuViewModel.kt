@@ -40,7 +40,7 @@ class EditMenuViewModel @Inject constructor(
     val foodSearchState: TextFieldState = TextFieldState("")
     val categoriesSearchState: TextFieldState = TextFieldState("")
 
-    private val foodSearchQueryFlow = snapshotFlow { categoriesSearchState.text }
+    private val foodSearchQueryFlow = snapshotFlow { foodSearchState.text }
     private val categoriesQueryFlow = snapshotFlow { categoriesSearchState.text }
 
     private val filteredFoodItemsFlow = combine(

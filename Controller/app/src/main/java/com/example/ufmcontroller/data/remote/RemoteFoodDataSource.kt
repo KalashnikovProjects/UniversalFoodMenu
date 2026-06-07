@@ -3,6 +3,7 @@ package com.example.ufmcontroller.data.remote
 import android.content.Context
 import androidx.core.net.toUri
 import com.example.ufmcontroller.data.local.UserPreferencesDataSource
+import com.example.ufmcontroller.data.model.FoodItemDTO
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -68,7 +69,7 @@ class RemoteFoodDataSource @Inject constructor(
                 )
             )
         }
-        return response.body()
+        return response.body<FoodItemDTO>().toEntity()
     }
 
     suspend fun toggleFoodItem(id: Int, boolean: Boolean) {
@@ -102,7 +103,7 @@ class RemoteFoodDataSource @Inject constructor(
 
         client.put {
             url {
-                path("/api/food-items")
+                path("/api/food-items/$id")
             }
             setBody(
                 MultiPartFormDataContent(

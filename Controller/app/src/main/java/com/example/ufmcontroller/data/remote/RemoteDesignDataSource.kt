@@ -3,7 +3,10 @@ package com.example.ufmcontroller.data.remote
 import android.content.Context
 import androidx.core.net.toUri
 import com.example.ufmcontroller.data.local.UserPreferencesDataSource
+import com.example.ufmcontroller.data.model.DesignItemDTO
+import com.example.ufmcontroller.data.model.ImageItemDTO
 import com.example.ufmcontroller.data.model.TextItemDTO
+import com.example.ufmcontroller.data.model.toEntity
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.DesignItem
 import com.example.ufmcontroller.domain.entity.DesignItemWithScreenId
@@ -42,7 +45,7 @@ class RemoteDesignDataSource @Inject constructor(
                 path("/api/screens/${designItem.screenId}/design-items")
             }
             setBody(designItem.toDTO())
-        }.body()
+        }.body<DesignItemDTO>().toEntity()
     }
 
     suspend fun addDesignItemWithImage(designItem: DesignItemWithScreenId): DesignItem {
@@ -76,8 +79,8 @@ class RemoteDesignDataSource @Inject constructor(
                 )
             )
         }
-        val resp: ImageItem = response.body()
-        return addDesignItem(designItem.copy(element = resp))
+        val resp: ImageItemDTO = response.body()
+        return addDesignItem(designItem.copy(element = resp.toEntity()))
     }
 
     suspend fun addDesignItemWithText(designItem: DesignItemWithScreenId): DesignItem {

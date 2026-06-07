@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -67,18 +68,19 @@ class AddCategoryViewModel @Inject constructor(
 
     fun upload() {
         viewModelScope.launch {
-            uploadCategoryUseCase(
-                Category(
-                    0,
-                    categoryFieldsStates.name.text.toString(),
-                    categoryFieldsStates.imageUri.value,
-                    categoryFieldsStates.price.text.toString().toFloat(),
-                    inStock = true,
-                ),
-                foodItems = uiState.value.foodItems.filter {
-                    categoryFieldsStates.selectedFoodItems.value.contains(it.id)
-                },
-            )
+            val priceText = categoryFieldsStates.price.text.toString()
+            if (categoryFieldsStates.name.text.toString().isNotEmpty()) {
+                uploadCategoryUseCase(
+                    Category(
+                        0,
+                        categoryFieldsStates.name.text.toString(),
+                        categoryFieldsStates.imageUri.value,
+                        if (!priceText.isEmpty()) priceText.toFloat() else null,
+                        inStock = true,
+                    ),
+                    foodItemsIds = categoryFieldsStates.selectedFoodItems.value.toList(),
+                )
+            }
         }
 
     }

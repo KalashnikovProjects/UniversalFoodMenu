@@ -15,6 +15,7 @@ import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
 import com.kalashnikovprojects.ufmserver.data.repository.ImageItemsRepository
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
 import com.kalashnikovprojects.ufmserver.data.repository.TextItemsRepository
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
 
@@ -23,6 +24,13 @@ fun getAppModule(
     dbConfig: DbConfig,
     jwtConfig: JwtConfig,
 ) = module {
+    single {
+        Json {
+            encodeDefaults = true
+            classDiscriminator = "type"
+            ignoreUnknownKeys = true
+        }
+    }
     single {
         jwtConfig
     }

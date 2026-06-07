@@ -40,12 +40,12 @@ fun Route.eventsWebsocketRoutes() {
             if (screenId != null) {
                 val screen = screensRepository.getById(userId, screenId)
                 if (screen == null) {
-                    sendSerialized(Events.LogoutScreenEvent(
+                    sendSerialized<Events>(Events.LogoutScreenEvent(
                         id = screenId,
                     ))
                     return@webSocket
                 }
-                sendSerialized(Events.ReloadScreen(
+                sendSerialized<Events>(Events.ReloadScreen(
                     screenId = screenId,
                     screen = screen,
                 ))
@@ -58,15 +58,15 @@ fun Route.eventsWebsocketRoutes() {
                     categories,
                     noCategoryFoodItems
                 )
-                sendSerialized(Events.ReloadCategorizedFoodItems(response))
+                sendSerialized<Events>(Events.ReloadCategorizedFoodItems(response))
 
-                sendSerialized(Events.ReloadDesignItemsByScreenId(
+                sendSerialized<Events>(Events.ReloadDesignItemsByScreenId(
                     screenId = screenId,
                     items = designItemsRepository.getAllByScreenIdUserId(screenId, userId)
                 ))
             } else {
                 val screensDeferred = async {
-                    sendSerialized(Events.ReloadScreens(items = screensRepository.getAllByUserId(userId)))
+                    sendSerialized<Events>(Events.ReloadScreens(items = screensRepository.getAllByUserId(userId)))
                 }
                 val secondDeferred = async {
                     val categories = categoriesRepository.getAllByUserId(userId).map {
@@ -78,14 +78,14 @@ fun Route.eventsWebsocketRoutes() {
                         categories,
                         noCategoryFoodItems
                     )
-                    sendSerialized(Events.ReloadCategorizedFoodItems(response))
+                    sendSerialized<Events>(Events.ReloadCategorizedFoodItems(response))
                 }
                 awaitAll(screensDeferred, secondDeferred)
-                sendSerialized(Events.ReloadDesignItemsWithScreenId(items = designItemsRepository.getAllByUserId(userId)))
+                sendSerialized<Events>(Events.ReloadDesignItemsWithScreenId(items = designItemsRepository.getAllByUserId(userId)))
             }
 
             eventBus.getFlow(userId).collect { event ->
-                sendSerialized(event)
+                sendSerialized<Events>(event)
             }
         }
     }

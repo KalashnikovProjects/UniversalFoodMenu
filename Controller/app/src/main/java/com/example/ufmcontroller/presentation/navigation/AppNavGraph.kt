@@ -1,5 +1,6 @@
 package com.example.ufmcontroller.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
@@ -21,9 +22,11 @@ import com.example.ufmcontroller.presentation.ui.screen.TvScreenScreen
 import com.example.ufmcontroller.presentation.ui.screen.VisualConfigurationScreen
 
 @Composable
-fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, onToggleDrawer: () -> Unit) {
+fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, onToggleDrawer: () -> Unit) {
     LaunchedEffect(Unit) {
-        mainViewModel.logoutEvent.collect {
+        Log.d("UFM", "mainViewModel.logoutEvent in AppNavGraph")
+        mainViewModel.uiLogoutEvent.collect {
+            Log.d("UFM", "navigate logout")
             val currentRoute = navController.currentBackStackEntry?.destination?.route
             if (currentRoute != LoginRoute::class.qualifiedName) {
                 navController.navigate(LoginRoute) {
@@ -36,13 +39,16 @@ fun AppNavGraph(mainViewModel: MainViewModel,navController: NavHostController, o
     NavHost(navController = navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
             HomeScreen(
+                navigateEditFoodItem={
+                    id ->
+                    navController.navigate(EditItemRoute(id))
+                },
                 navigateEditCategory={
                     id ->
                     navController.navigate(EditCategoryRoute(id))
                 },
-                navigateEditFoodItem={
-                    id ->
-                    navController.navigate(EditItemRoute(id))
+                onEditMenu = {
+                    navController.navigate(MenuEditRoute)
                 },
                 onToggleDrawer=onToggleDrawer,
             )

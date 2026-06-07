@@ -21,7 +21,9 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -31,6 +33,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -40,6 +45,12 @@ object NetworkModule {
     @Singleton
     fun provideKtorClient(dataStore: UserPreferencesDataSource): HttpClient {
         return HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    prettyPrint = true
+                })
+            }
             install(WebSockets)
             install(Auth) {
                 bearer {
@@ -50,7 +61,7 @@ object NetworkModule {
                     loadTokens {
                         Log.d("UFM", "load_tokens")
 
-                        val token = dataStore.authToken.value
+                        val token = dataStore.authToken.firstOrNull()
 
                         if (!token.isNullOrBlank()) {
                             BearerTokens(accessToken = token, refreshToken = "")
@@ -62,7 +73,7 @@ object NetworkModule {
                 }
             }
             install(Logging) {
-                logger = Logger.DEFAULT
+                logger = Logger.ANDROID
                 level = LogLevel.BODY // TODO: HEADERS
 //                sanitizeHeader { header ->
 //                    header.equals(HttpHeaders.Authorization, ignoreCase = true)

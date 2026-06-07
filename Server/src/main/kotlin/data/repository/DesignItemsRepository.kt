@@ -61,6 +61,7 @@ class DesignItemsRepository(val database: R2dbcDatabase) : Repository {
             .where {
                 DesignItems.user_id eq userId.toUInt()
             }
+            .orderBy(DesignItems.id)
             .map { row ->
                 rowToDesignItemWithScreenId(row)
             }.toList()
@@ -76,6 +77,7 @@ class DesignItemsRepository(val database: R2dbcDatabase) : Repository {
             .where {
                 (DesignItems.user_id eq userId.toUInt()) and (DesignItems.screen_id eq screenId.toUInt())
             }
+            .orderBy(DesignItems.id)
             .map { row ->
                 rowToDesignItem(row)
             }.toList()

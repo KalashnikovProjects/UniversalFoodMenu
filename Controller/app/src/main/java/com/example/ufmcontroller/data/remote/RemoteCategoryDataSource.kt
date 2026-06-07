@@ -23,6 +23,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
+import com.example.ufmcontroller.data.model.CategoryDTO
 import com.example.ufmcontroller.domain.entity.toDTO
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import kotlinx.serialization.encodeToString
@@ -56,8 +57,8 @@ class RemoteCategoryDataSource @Inject constructor(
             setBody(
                 MultiPartFormDataContent(
                     formData {
-                        val jsonString = Json.encodeToString(category)
-                        append("categoryItemData", jsonString, Headers.build {
+                        val jsonString = Json.encodeToString(category.toDTO())
+                        append("categoryData", jsonString, Headers.build {
                             append(HttpHeaders.ContentType, "application/json")
                         })
 
@@ -71,7 +72,7 @@ class RemoteCategoryDataSource @Inject constructor(
                 )
             )
         }
-        return response.body()
+        return response.body<CategoryDTO>().toEntity().category
     }
 
     suspend fun editCategory(
@@ -96,13 +97,13 @@ class RemoteCategoryDataSource @Inject constructor(
 
         client.put {
             url {
-                path("/api/categories")
+                path("/api/categories/$id")
             }
             setBody(
                 MultiPartFormDataContent(
                     formData {
                         val jsonString = Json.encodeToString(category.toDTO())
-                        append("categoryItemData", jsonString, Headers.build {
+                        append("categoryData", jsonString, Headers.build {
                             append(HttpHeaders.ContentType, "application/json")
                         })
 
@@ -139,7 +140,7 @@ class RemoteCategoryDataSource @Inject constructor(
         categoryId: Int,
         foodIds: List<Int>
     ) {
-        client.post {
+        client.put {
             url {
                 path("/api/categories/$categoryId/food-items")
             }
@@ -151,7 +152,7 @@ class RemoteCategoryDataSource @Inject constructor(
         foodId: Int,
         categoryIds: List<Int>
     ) {
-        client.post {
+        client.put {
             url {
                 path("/api/food-items/$foodId/categories")
             }

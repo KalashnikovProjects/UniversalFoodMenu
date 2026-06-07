@@ -114,19 +114,19 @@ class EditFoodItemViewModel @AssistedInject constructor(
 
     fun edit() {
         viewModelScope.launch {
-            editFoodItemUseCase(
-                id,
-                FoodItem(
+            if (foodItemFieldsStates.price.text.toString().isNotEmpty() && foodItemFieldsStates.name.text.toString().isNotEmpty()) {
+                editFoodItemUseCase(
                     id,
-                    foodItemFieldsStates.name.text.toString(),
-                    foodItemFieldsStates.price.text.toString().toFloat(),
-                    foodItemFieldsStates.imageUri.value,
-                    inStock = true,
-                ),
-                categories = uiState.value.categories.filter {
-                    foodItemFieldsStates.selectedCategories.value.contains(it.id)
-                },
-            )
+                    FoodItem(
+                        id,
+                        foodItemFieldsStates.name.text.toString(),
+                        foodItemFieldsStates.price.text.toString().toFloat(),
+                        foodItemFieldsStates.imageUri.value,
+                        inStock = true,
+                    ),
+                    categoriesIds = foodItemFieldsStates.selectedCategories.value.toList(),
+                )
+            }
         }
     }
 

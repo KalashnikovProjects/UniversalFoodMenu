@@ -77,6 +77,7 @@ class FoodItemsCategoriesRepository(val database: R2dbcDatabase) : Repository {
     suspend fun getCategoriesForFoodItem(userId: Int, foodItemId: Int): List<Category> = suspendTransaction(database) {
         (FoodItemsCategories innerJoin Categories).selectAll()
             .where { (FoodItemsCategories.food_item_id eq foodItemId.toUInt()) and (Categories.user_id eq userId.toUInt()) }
+            .orderBy(Categories.id)
             .map { row ->
                 rowToCategoryItem(row)
             }.toList()
@@ -85,6 +86,7 @@ class FoodItemsCategoriesRepository(val database: R2dbcDatabase) : Repository {
     suspend fun getFoodItemsForCategory(userId: Int, categoryId: Int): List<FoodItem> = suspendTransaction(database) {
         (FoodItemsCategories innerJoin FoodItems).selectAll()
             .where { (FoodItemsCategories.category_id eq categoryId.toUInt()) and (FoodItems.user_id eq userId.toUInt()) }
+            .orderBy(FoodItems.id)
             .map { row ->
                 rowToFoodItem(row)
             }.toList()
@@ -94,6 +96,7 @@ class FoodItemsCategoriesRepository(val database: R2dbcDatabase) : Repository {
         (FoodItems leftJoin FoodItemsCategories)
             .selectAll()
             .where { (FoodItems.user_id eq userId.toUInt()) and (FoodItemsCategories.food_item_id.isNull()) }
+            .orderBy(FoodItems.id)
             .map { row ->
                 rowToFoodItem(row)
             }.toList()

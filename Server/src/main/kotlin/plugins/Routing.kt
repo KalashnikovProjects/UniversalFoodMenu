@@ -4,6 +4,7 @@ import com.kalashnikovprojects.ufmserver.routes.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
+import java.io.File
 
 fun Application.configureRouting() {
     routing {
@@ -20,6 +21,6 @@ fun Application.configureRouting() {
             designItemsRoutes()
             screensRoutes()
         }
-        staticResources("/static", "static")
+        staticFiles(remotePath = "/static", dir = File("static"))
     }
 }

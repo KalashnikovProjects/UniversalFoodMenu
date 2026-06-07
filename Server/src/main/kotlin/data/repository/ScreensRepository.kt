@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
+import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
 import com.kalashnikovprojects.ufmserver.data.tables.Screens
 import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
 import com.kalashnikovprojects.ufmserver.models.TVScreen
@@ -39,6 +40,7 @@ class ScreensRepository(val database: R2dbcDatabase) : Repository {
             Screens
                 .selectAll()
                 .where { Screens.user_id eq userId.toUInt() and (Screens.user_id eq userId.toUInt()) }
+                .orderBy(Screens.id)
                 .map { row ->
                     rowToTVScreen(row)
                 }.toList()

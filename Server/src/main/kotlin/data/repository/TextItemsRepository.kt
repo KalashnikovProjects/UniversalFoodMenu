@@ -36,6 +36,7 @@ class TextItemsRepository(val database: R2dbcDatabase) : Repository {
         TextItems
             .selectAll()
             .where { TextItems.user_id eq userId.toUInt() }
+            .orderBy(TextItems.id)
             .map { row ->
                 rowToTextItem(row)
             }.toList()

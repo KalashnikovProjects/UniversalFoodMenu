@@ -28,6 +28,7 @@ fun Application.configureSecurity() {
             )
 
             validate { credential ->
+                println(credential.payload.toString())
                 val userId = credential.payload.getClaim("id").asInt()
                 val screenId = credential.payload.getClaim("screen_id").asInt()
 

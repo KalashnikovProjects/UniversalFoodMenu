@@ -45,7 +45,6 @@ class AndroidEventsServiceController @Inject constructor(
 
         val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         val isTv = uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
-        Log.d("!!!!TR", "evoga")
         if (isTv) {
             context.startService(intent)
         } else {

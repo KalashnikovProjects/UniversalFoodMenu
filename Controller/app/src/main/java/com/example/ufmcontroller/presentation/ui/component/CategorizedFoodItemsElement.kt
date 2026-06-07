@@ -29,6 +29,7 @@ fun CategorizedFoodItemsElement(categorized: FoodItemsCategorized,
                                 showSwitch: Boolean=false,
                                 showNotInStock: Boolean = true,
                                 ) {
+
     LazyColumn {
         items(categorized.categories) {
                 item ->
@@ -42,35 +43,39 @@ fun CategorizedFoodItemsElement(categorized: FoodItemsCategorized,
                     onFoodItemLongClick = onFoodItemLongClick,
                     onCategoryToggle = onCategoryToggle,
                     showSwitch = showSwitch,
-                    showNotInStock=showNotInStock
+                    showNotInStock=showNotInStock,
+                    showBG = true
                 )
             }
         }
+        if (categorized.noCategoryFoodItems.isNotEmpty()) {
+            item(key = "no_category_element") {
+                Spacer(modifier = Modifier.size(5.dp))
+                CategoryElement(
+                    category = CategoryWithFoodItems(
+                        Category(
+                            id = -1,
+                            name = "Вне категорий",
+                            imageUri = null,
+                            price = null,
+                            inStock = null,
+                        ),
+                        categorized.noCategoryFoodItems
+                    ),
+                    opened = true,
+                    onCategoryClick = { },
+                    onCategoryLongClick = { },
+                    onFoodItemClick = onFoodItemClick,
+                    onFoodItemLongClick = onFoodItemLongClick,
+                    onCategoryToggle = { _, _ ->  },
+                    showSwitch = false,
+                    showChildSwitch=showSwitch,
+                    showExpand = false,
+                    showHead = categorized.categories.isNotEmpty(),
+                    showNotInStock=showNotInStock
+                )
+            }
+
+        }
     }
-    if (categorized.noCategoryFoodItems.isNotEmpty()) {
-        Spacer(modifier = Modifier.size(5.dp))
-    }
-    CategoryElement(
-        category = CategoryWithFoodItems(
-            Category(
-                id = -1,
-                name = "Вне категорий",
-                imageUri = null,
-                price = null,
-                inStock = null,
-            ),
-            categorized.noCategoryFoodItems
-        ),
-        opened = true,
-        onCategoryClick = { },
-        onCategoryLongClick = { },
-        onFoodItemClick = onFoodItemClick,
-        onFoodItemLongClick = onCategoryLongClick,
-        onCategoryToggle = { _, _ ->  },
-        showSwitch = false,
-        showChildSwitch=showSwitch,
-        showExpand = false,
-        showHead = categorized.categories.isNotEmpty(),
-        showNotInStock=showNotInStock
-    )
 }

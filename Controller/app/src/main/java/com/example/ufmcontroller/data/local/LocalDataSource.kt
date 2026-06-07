@@ -144,6 +144,9 @@ class LocalDataSource @Inject constructor(
 
     fun deleteFoodItem(id: Int) {
         _foodItemsRaw.update { it - id }
+        _relationsRaw.update {
+            it.filter { pair -> pair.second != id }
+        }
     }
 
     fun updateCategory(id: Int, category: Category) {
@@ -158,6 +161,9 @@ class LocalDataSource @Inject constructor(
 
     fun deleteCategory(id: Int) {
         _categoriesRaw.update { it - id }
+        _relationsRaw.update {
+            it.filter { pair -> pair.first != id }
+        }
     }
 
     fun setFoodCategories(foodId: Int, categoryIds: List<Int>) {

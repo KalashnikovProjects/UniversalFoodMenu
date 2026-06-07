@@ -28,6 +28,7 @@ fun Route.foodItemsRoutes() {
     val foodItemsCategoriesRepository by inject<FoodItemsCategoriesRepository>()
 
     val fileStorageAdapter by inject<FileStorageAdapter>()
+    val appJson by inject<Json>()
 
     val eventBus by inject<EventBus>()
 
@@ -108,7 +109,7 @@ fun Route.foodItemsRoutes() {
                 when (part) {
                     is PartData.FormItem -> {
                         if (part.name == "foodItemData") {
-                            requestPayload = Json.decodeFromString<NoIdFoodItem>(part.value)
+                            requestPayload = appJson.decodeFromString<NoIdFoodItem>(part.value)
                         }
                     }
                     is PartData.FileItem -> {
@@ -159,7 +160,7 @@ fun Route.foodItemsRoutes() {
                 when (part) {
                     is PartData.FormItem -> {
                         if (part.name == "foodItemData") {
-                            requestPayload = Json.decodeFromString<NoIdFoodItem>(part.value)
+                            requestPayload = appJson.decodeFromString<NoIdFoodItem>(part.value)
                         }
                     }
                     is PartData.FileItem -> {

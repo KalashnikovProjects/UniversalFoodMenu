@@ -77,7 +77,7 @@ class LoginViewModel @Inject constructor(
 
     fun selectTab(tab: LoginTab) {
         _uiState.value = _uiState.value.copy(
-            currentTab = LoginTab.LOGIN,
+            currentTab = tab,
         )
     }
 

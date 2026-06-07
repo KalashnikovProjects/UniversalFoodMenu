@@ -82,7 +82,7 @@ fun CategoryFields(
     }
     val selectedImageUri by categoryFieldsStates.imageUri.collectAsStateWithLifecycle()
     val isExtendedFoodItemsSelection by categoryFieldsStates.isExtendedFoodItemsSelection.collectAsStateWithLifecycle()
-    val selectedCategories by categoryFieldsStates.selectedFoodItems.collectAsStateWithLifecycle()
+    val selectedFoodItems by categoryFieldsStates.selectedFoodItems.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -113,18 +113,26 @@ fun CategoryFields(
             )
             Row(modifier = Modifier.fillMaxWidth()) {
                 TextField(
-                    state=categoryFieldsStates.price,
-                    placeholder = { Text("Не установлена",
-                        modifier = Modifier.alpha(0.5F))
-                    },
+                    state = categoryFieldsStates.price,
+                    placeholder = { Text("Цена", modifier = Modifier.alpha(0.5F)) },
                     modifier = Modifier
-                        .weight(1F)
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(7.dp)),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                     ),
-                    inputTransformation = InputTransformation.maxLength(6).then {
-                        if (!asCharSequence().all { it.isDigit() }) {
+                    inputTransformation = InputTransformation.maxLength(9).then {
+                        val currentText = asCharSequence().toString()
+                        if (currentText.contains(',')) {
+                            val normalized = currentText.replace(',', '.')
+                            replace(0, length, normalized)
+                        }
+
+                        val updatedText = asCharSequence().toString()
+
+                        val priceRegex = Regex("^\\d*\\.?\\d{0,2}$")
+
+                        if (!updatedText.matches(priceRegex)) {
                             revertAllChanges()
                         }
                     },
@@ -235,7 +243,8 @@ fun CategoryFields(
                             key("food_items_for_selection${item.id}") {
                                 FoodItemRowCard(
                                     item,
-                                    onFoodItemClick = onFoodItemToggle,
+                                    isCheckedUp = selectedFoodItems.contains(item.id),
+                                    onFoodItemClick = { id, _ -> onFoodItemToggle(id, false) },
                                     onFoodItemLongClick = navigateEditFoodItem,
                                     showSwitch = true,
                                     showNotInStock = false,

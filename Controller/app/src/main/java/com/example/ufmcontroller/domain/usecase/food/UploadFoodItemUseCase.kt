@@ -12,10 +12,10 @@ class UploadFoodItemUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         foodItem: FoodItem,
-        categories: List<Category> = emptyList(),
+        categoriesIds: List<Int> = emptyList(),
     ): FoodItem {
         val foodItem = foodRepository.addFoodItem(foodItem)
-        categoryRepository.updateFoodRelationsForCategories(foodItem.id, categories.map { it.id })
+        categoryRepository.updateFoodRelationsForCategories(foodItem.id, categoriesIds)
         return foodItem
     }
 }

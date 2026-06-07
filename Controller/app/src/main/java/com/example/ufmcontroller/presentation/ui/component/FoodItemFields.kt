@@ -117,16 +117,26 @@ fun FoodItemFields(
                 fontWeight = FontWeight(600),
             )
             TextField(
-                state=foodItemFieldsStates.price,
+                state = foodItemFieldsStates.price,
                 placeholder = { Text("Цена", modifier = Modifier.alpha(0.5F)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(7.dp)),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
+                    keyboardType = KeyboardType.Decimal,
                 ),
-                inputTransformation = InputTransformation.maxLength(6).then {
-                    if (!asCharSequence().all { it.isDigit() }) {
+                inputTransformation = InputTransformation.maxLength(9).then {
+                    val currentText = asCharSequence().toString()
+                    if (currentText.contains(',')) {
+                        val normalized = currentText.replace(',', '.')
+                        replace(0, length, normalized)
+                    }
+
+                    val updatedText = asCharSequence().toString()
+
+                    val priceRegex = Regex("^\\d*\\.?\\d{0,2}$")
+
+                    if (!updatedText.matches(priceRegex)) {
                         revertAllChanges()
                     }
                 },

@@ -39,6 +39,7 @@ class CategoriesRepository(val database: R2dbcDatabase) : Repository {
         Categories
             .selectAll()
             .where { Categories.user_id eq userId.toUInt() }
+            .orderBy(Categories.id)
             .map { row ->
                 rowToCategoryItem(row)
             }.toList()

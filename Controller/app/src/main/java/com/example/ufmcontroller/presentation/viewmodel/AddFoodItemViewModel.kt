@@ -64,18 +64,18 @@ class AddFoodItemViewModel @Inject constructor(
 
     fun upload() {
         viewModelScope.launch {
-            uploadFoodItemUseCase(
-                FoodItem(
-                    0,
-                    foodItemFieldsStates.name.text.toString(),
-                    foodItemFieldsStates.price.text.toString().toFloat(),
-                    foodItemFieldsStates.imageUri.value,
-                    inStock = true,
-                ),
-                categories = uiState.value.categories.filter {
-                    foodItemFieldsStates.selectedCategories.value.contains(it.id)
-                },
-            )
+            if (foodItemFieldsStates.price.text.toString().isNotEmpty() && foodItemFieldsStates.name.text.toString().isNotEmpty()) {
+                uploadFoodItemUseCase(
+                    FoodItem(
+                        0,
+                        foodItemFieldsStates.name.text.toString(),
+                        foodItemFieldsStates.price.text.toString().toFloat(),
+                        foodItemFieldsStates.imageUri.value,
+                        inStock = true,
+                    ),
+                    categoriesIds = foodItemFieldsStates.selectedCategories.value.toList(),
+                )
+            }
         }
 
     }

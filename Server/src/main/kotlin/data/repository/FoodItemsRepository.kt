@@ -1,5 +1,6 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
+import com.kalashnikovprojects.ufmserver.data.tables.Categories
 import com.kalashnikovprojects.ufmserver.data.tables.FoodItems
 import com.kalashnikovprojects.ufmserver.models.FoodItem
 import com.kalashnikovprojects.ufmserver.models.NoIdFoodItem
@@ -39,6 +40,7 @@ class FoodItemsRepository(val database: R2dbcDatabase) : Repository {
         FoodItems
             .selectAll()
             .where { FoodItems.user_id eq userId.toUInt() }
+            .orderBy(FoodItems.id)
             .map { row ->
                 rowToFoodItem(row)
             }.toList()

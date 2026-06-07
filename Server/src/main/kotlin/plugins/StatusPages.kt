@@ -6,7 +6,7 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respondText
 import kotlinx.io.files.FileNotFoundException
-
+import io.ktor.server.application.log
 
 fun Application.configureStatusPages() {
     install(StatusPages) {
@@ -18,6 +18,7 @@ fun Application.configureStatusPages() {
             if(cause is FileNotFoundException) {
                 call.respondText(text = "404: $cause" , status = HttpStatusCode.NotFound)
             } else {
+                call.application.log.error("500 INTERNAL SERVER ERROR: ${cause.stackTraceToString()}")
                 call.respondText(text = "500: $cause" , status = HttpStatusCode.InternalServerError)
             }
         }

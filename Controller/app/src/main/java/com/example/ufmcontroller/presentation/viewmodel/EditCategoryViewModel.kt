@@ -108,7 +108,7 @@ class EditCategoryViewModel @AssistedInject constructor(
                 replace(0, length, category.name)
             }
             categoryFieldsStates.price.edit {
-                replace(0, length, category.price.toString())
+                replace(0, length, if (category.price != null) category.price.toString() else "")
             }
             categoryFieldsStates.imageUri.value = category.imageUri
             foodItems = getFoodItemsByCategoryIdUseCase(id).first()
@@ -121,19 +121,19 @@ class EditCategoryViewModel @AssistedInject constructor(
     fun edit() {
         viewModelScope.launch {
             val priceText = categoryFieldsStates.price.text.toString()
-            editCategoryUseCase(
-                id,
-                Category(
+            if (categoryFieldsStates.name.text.toString().isNotEmpty()) {
+                editCategoryUseCase(
                     id,
-                    categoryFieldsStates.name.text.toString(),
-                    categoryFieldsStates.imageUri.value,
-                    if (priceText.isEmpty()) null else priceText.toFloat(),
-                    inStock = null,
-                ),
-                foodItems = uiState.value.foodItems.filter {
-                    categoryFieldsStates.selectedFoodItems.value.contains(it.id)
-                },
-            )
+                    Category(
+                        id,
+                        categoryFieldsStates.name.text.toString(),
+                        categoryFieldsStates.imageUri.value,
+                        if (priceText.isEmpty()) null else priceText.toFloat(),
+                        inStock = null,
+                    ),
+                    foodItemsIds = categoryFieldsStates.selectedFoodItems.value.toList(),
+                )
+            }
         }
     }
 

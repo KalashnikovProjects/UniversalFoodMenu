@@ -3,6 +3,8 @@ package com.example.ufmcontroller.data.remote
 import android.content.Context
 import androidx.core.net.toUri
 import com.example.ufmcontroller.data.local.UserPreferencesDataSource
+import com.example.ufmcontroller.data.model.TVScreenDTO
+import com.example.ufmcontroller.data.model.toEntity
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.TVScreen
@@ -37,7 +39,7 @@ class RemoteTvScreenDataSource @Inject constructor(
             }
             setBody(code)
         }
-        return response.body()
+        return response.body<TVScreenDTO>().toEntity()
     }
 
     suspend fun editScreen(
