@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,13 @@ fun FoodItemDisplay(
     }
     val isPreview = LocalInspectionMode.current
 
-    val textColor = Color(style.textColorHex?.toLong(16) ?: 0xFFFFFFFF)
+    val textColor = if (!style.textColorHex.isNullOrBlank()) {
+        val hex = style.textColorHex.removePrefix("#")
+        val cleanHex = if (hex.length == 6) "FF$hex" else hex
+        Color(cleanHex.toLong(16))
+    } else {
+        colorScheme.onBackground
+    }
     val imageUrl = if (isPreview && foodItem.imageUri != null) android.R.drawable.ic_menu_report_image else foodItem.imageUri
     val imageScale = style.imageScale ?: 1.0F
     val imageAlpha = if (

@@ -28,10 +28,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: заменить хост на настоящий ufm.taprams.ru
+            buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
         }
         getByName("debug") {
-            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: когда засуну в докер, сделать порт 8086
+            buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
         }
     }
     compileOptions {
@@ -48,6 +48,9 @@ android {
 }
 
 dependencies {
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.2.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:color:1.2.0")
+
     implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
     implementation(libs.androidx.appcompat)

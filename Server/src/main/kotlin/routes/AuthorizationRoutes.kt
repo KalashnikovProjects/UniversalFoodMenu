@@ -45,7 +45,7 @@ fun Route.authorizationRoutes() {
         val request = call.receive<UserRawPassword>()
         val user = userRepository.getByUsername(request.username)
         if (user == null ||
-            hashingAdapter.checkPassword(request.rawPassword, user.hashedPassword)) {
+            !hashingAdapter.checkPassword(request.rawPassword, user.hashedPassword)) {
             call.respond(HttpStatusCode.Unauthorized)
             return@post
         }

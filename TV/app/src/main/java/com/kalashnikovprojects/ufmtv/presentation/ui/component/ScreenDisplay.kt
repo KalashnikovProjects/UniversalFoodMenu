@@ -1,19 +1,28 @@
 package com.kalashnikovprojects.ufmtv.presentation.ui.component
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices.TV_1080p
 import androidx.compose.ui.tooling.preview.Devices.TV_720p
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.tv.material3.Text
 import com.kalashnikovprojects.ufmtv.domain.entity.Category
 import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
@@ -26,6 +35,7 @@ import com.kalashnikovprojects.ufmtv.domain.entity.ScreenTheme
 import com.kalashnikovprojects.ufmtv.domain.entity.Style
 import com.kalashnikovprojects.ufmtv.domain.entity.TextItem
 import com.kalashnikovprojects.ufmtv.domain.entity.withDefaultStyle
+import com.kalashnikovprojects.ufmtv.presentation.theme.UFMControllerTheme
 import com.kalashnikovprojects.ufmtv.presentation.theme.backgroundDark
 import com.kalashnikovprojects.ufmtv.presentation.theme.backgroundLight
 
@@ -36,53 +46,77 @@ fun ScreenDisplay(
     designItems: List<DesignItem>,
     basicScale: Float = 1F,
 ) {
-    val themeBackgroundColor = if (screenStyle.screenTheme == ScreenTheme.WHITE)
-        backgroundLight
-    else backgroundDark
+    Log.d("upd", designItems.toString())
+
+    val isDark = when (screenStyle.screenTheme) {
+        null -> isSystemInDarkTheme()
+        ScreenTheme.WHITE -> false
+        ScreenTheme.BLACK -> true
+    }
+    val themeBackgroundColor = if (isDark)
+        backgroundDark
+    else backgroundLight
     val backgroundColor = if (screenStyle.backgroundColorHex != null)
         Color(screenStyle.backgroundColorHex.toLong(16))
     else themeBackgroundColor
 
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize().background(backgroundColor),
-    ) {
-        val containerWidth = constraints.maxWidth
-        val containerHeight = constraints.maxHeight
+    UFMControllerTheme (darkTheme = isDark) {
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize().background(backgroundColor),
+        ) {
+            val containerWidth = constraints.maxWidth
+            val containerHeight = constraints.maxHeight
 
-        designItems.forEach { (id, element, style) ->
-            key(id) {
-                val finalStyle = if (screenStyle.defaultStyle != null)
-                    style.withDefaultStyle(screenStyle.defaultStyle)
-                else style
+            designItems.forEach { (id, element, style) ->
+                key(id) {
+                    val finalStyle = if (screenStyle.defaultStyle != null)
+                        style.withDefaultStyle(screenStyle.defaultStyle)
+                    else style
 
-                val currentScale = (style.scale ?: screenStyle.defaultStyle?.scale ?: 0.5F) * basicScale
+                    val currentScale = (style.scale ?: screenStyle.defaultStyle?.scale ?: 0.5F) * basicScale
 
-                val targetXFraction = style.x ?: 0.5f
-                val targetYFraction = style.y ?: 0.5f
+                    val targetXFraction = style.x ?: 0.5f
+                    val targetYFraction = style.y ?: 0.5f
 
-                Box(
-                    modifier = Modifier
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints)
-                            val itemWidth = placeable.width
-                            val itemHeight = placeable.height
-                            val rawX = (containerWidth * targetXFraction).toInt()
-                            val rawY = (containerHeight * targetYFraction).toInt()
-                            val topLeftX = rawX - ((itemWidth - (itemWidth * currentScale)) / 2).toInt()
-                            val topLeftY = rawY - ((itemHeight - (itemHeight * currentScale)) / 2).toInt()
+                    Box(
+                        modifier = Modifier
+                            .layout { measurable, constraints ->
+                                val placeable = measurable.measure(constraints)
+                                val itemWidth = placeable.width
+                                val itemHeight = placeable.height
+                                val rawX = (containerWidth * targetXFraction).toInt()
+                                val rawY = (containerHeight * targetYFraction).toInt()
+                                val topLeftX = rawX - ((itemWidth - (itemWidth * currentScale)) / 2).toInt()
+                                val topLeftY = rawY - ((itemHeight - (itemHeight * currentScale)) / 2).toInt()
 
-                            layout(itemWidth, itemHeight) {
-                                placeable.place(topLeftX, topLeftY)
+                                layout(itemWidth, itemHeight) {
+                                    placeable.place(topLeftX, topLeftY)
+                                }
                             }
+                            .scale(currentScale)
+                    ) {
+                        when (element) {
+                            is FoodItem -> FoodItemDisplay(element, finalStyle)
+                            is CategoryWithFoodItems -> CategoryDisplay(element, finalStyle, screenStyle.defaultStyle ?: Style())
+                            is ImageItem -> ImageItemDisplay(element, finalStyle)
+                            is TextItem -> TextItemDisplay(element, finalStyle)
                         }
-                        .scale(currentScale)
-                ) {
-                    when (element) {
-                        is FoodItem -> FoodItemDisplay(element, finalStyle)
-                        is CategoryWithFoodItems -> CategoryDisplay(element, finalStyle, screenStyle.defaultStyle ?: Style())
-                        is ImageItem -> ImageItemDisplay(element, finalStyle)
-                        is TextItem -> TextItemDisplay(element, finalStyle)
                     }
+                }
+            }
+            if (designItems.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center) {
+                    Text("Добавьте элементы для отображения в настройках экрана на телефоне",
+                        fontSize = 23.sp.scaled(),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.W500,
+                        modifier = Modifier.width(550.dp.scaled()),
+                        lineHeight = 23.sp.scaled(),
+                        color=if (screenStyle.screenTheme == ScreenTheme.WHITE)
+                            Color.White
+                        else Color.Black
+                    )
                 }
             }
         }

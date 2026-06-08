@@ -147,11 +147,15 @@ class AndroidEventsServiceController @Inject constructor(
                         is EventsDTO.ReloadScreen -> {
                             localDataSource.updateCurrentScreen(event.screen.toEntity())
                         }
+                        is EventsDTO.DeleteTextEvent -> {
+                            localDataSource.deleteTextItem(event.id)
+                        }
+                        is EventsDTO.DeleteImageEvent -> {
+                            localDataSource.deleteImageItem(event.id)
+                        }
                         is EventsDTO.ReloadScreens,
                         is EventsDTO.AddScreenEvent,
                         is EventsDTO.ReloadDesignItemsWithScreenId,
-                        is EventsDTO.DeleteTextEvent,
-                        is EventsDTO.DeleteImageEvent,
                         is EventsDTO.AddTextEvent,
                         is EventsDTO.AddImageEvent -> {}
                     }

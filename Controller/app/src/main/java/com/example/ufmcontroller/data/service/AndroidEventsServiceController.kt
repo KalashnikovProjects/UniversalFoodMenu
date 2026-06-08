@@ -17,7 +17,6 @@ import com.example.ufmcontroller.services.EventsForegroundService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -134,9 +133,13 @@ class AndroidEventsServiceController @Inject constructor(
 
                             dataSource.reloadAllCategorizedItems(categories, foodItems, relations)
                         }
+                        is EventsDTO.DeleteTextEvent -> {
+                            dataSource.deleteTextItem(event.id)
+                        }
+                        is EventsDTO.DeleteImageEvent -> {
+                            dataSource.deleteImageItem(event.id)
+                        }
                         is EventsDTO.ReloadDesignItemsByScreenId,
-                        is EventsDTO.DeleteTextEvent,
-                        is EventsDTO.DeleteImageEvent,
                         is EventsDTO.ReloadScreen,
                         is EventsDTO.AddTextEvent,
                         is EventsDTO.AddImageEvent -> {}

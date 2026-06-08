@@ -2,69 +2,43 @@ package com.example.ufmcontroller.presentation.ui.screen
 
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SecondaryTabRow
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
 import com.example.ufmcontroller.domain.entity.DesignItem
@@ -80,24 +54,16 @@ import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.entity.TextItem
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
 import com.example.ufmcontroller.presentation.ui.component.AddItemTabContent
-import com.example.ufmcontroller.presentation.ui.component.CategoryElement
 import com.example.ufmcontroller.presentation.ui.component.DefaultAppTop
-import com.example.ufmcontroller.presentation.ui.component.FoodItemRowCard
 import com.example.ufmcontroller.presentation.ui.component.ScreenTabContent
-import com.example.ufmcontroller.presentation.ui.component.SearchBar
 import com.example.ufmcontroller.presentation.ui.component.SelectedItemTabContent
 import com.example.ufmcontroller.presentation.ui.component.TvScreenCard
 import com.example.ufmcontroller.presentation.viewmodel.AddDesignExtended
-import com.example.ufmcontroller.presentation.viewmodel.EditCategoryUiState
-import com.example.ufmcontroller.presentation.viewmodel.EditMenuTab
 import com.example.ufmcontroller.presentation.viewmodel.InputStates
 import com.example.ufmcontroller.presentation.viewmodel.OpenedDeleteConfirmationDialog
 import com.example.ufmcontroller.presentation.viewmodel.TvScreenTab
 import com.example.ufmcontroller.presentation.viewmodel.TvScreenUiState
 import com.example.ufmcontroller.presentation.viewmodel.TvScreenViewModel
-import com.example.ufmcontroller.presentation.viewmodel.VisualConfigurationScreenUiState
-import com.example.ufmcontroller.presentation.viewmodel.VisualConfigurationViewModel
-import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.CategoryFieldsStates
 
 
 @Composable
@@ -122,9 +88,9 @@ fun TvScreenScreen(
         viewModel::selectTab,
         viewModel::selectAddDesignExtended,
         viewModel::selectElement,
-        viewModel::setScreen,
-        viewModel::editScreen,
+        viewModel::editCurrentScreen,
         viewModel::deleteScreen,
+        viewModel::moveElement,
         viewModel::editCurrentDesignItem,
         viewModel::deleteCurrentDesignItem,
         addImageDesignItem=viewModel::addImageDesignItem,
@@ -147,9 +113,9 @@ fun TvScreenScreenContent(
     selectTab: (TvScreenTab) -> Unit,
     selectAddDesignExtended: (AddDesignExtended) -> Unit,
     selectElement: (Int?) -> Unit,
-    setScreen: (TVScreen) -> Unit,
-    editScreen: () -> Unit,
+    editCurrentScreen: () -> Unit,
     deleteScreen: () -> Unit,
+    onItemMoved: ((id: Int, newX: Float, newY: Float) -> Unit) = { _, _, _ -> },
     editCurrentDesignItem: () -> Unit,
     deleteCurrentDesignItem: () -> Unit,
     addImageDesignItem: () -> Unit,
@@ -185,13 +151,13 @@ fun TvScreenScreenContent(
                         onClick = {
                             if (uiState.openedDeleteConfirmationDialog == OpenedDeleteConfirmationDialog.DELETE_DESIGN_ITEM) {
                                 deleteCurrentDesignItem()
+                                selectElement(null)
                                 setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
                             } else {
                                 deleteScreen()
                                 setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
                                 onNavigateVisualConfigurationScreen()
                             }
-                            setOpenedDeleteConfirmationDialog(OpenedDeleteConfirmationDialog.NONE)
                         }
                     ) { Text("Да") }
                 },
@@ -229,8 +195,11 @@ fun TvScreenScreenContent(
                 clickable = false,
                 modifier = Modifier.padding(5.dp),
                 interactive = true,
+                onSelectItem = {
+                    selectElement(it)
+                },
                 selected = uiState.selectedId,
-                onItemMoved = { _, _, _ -> }
+                onItemMoved = onItemMoved,
             )
 
             SecondaryTabRow(
@@ -268,7 +237,7 @@ fun TvScreenScreenContent(
                 label = "TvScreenTabTransition"
             ) { tab ->
                 when (tab) {
-                    TvScreenTab.SELECTED_ITEM -> SelectedItemTabContent(uiState, inputStates)
+                    TvScreenTab.SELECTED_ITEM -> SelectedItemTabContent(uiState, inputStates, setOpenedDeleteConfirmationDialog, editCurrentDesignItem)
                     TvScreenTab.ADD_ITEM -> AddItemTabContent(
                         uiState = uiState,
                         inputStates = inputStates,
@@ -281,7 +250,7 @@ fun TvScreenScreenContent(
                         navigateEditFoodItem = navigateEditFoodItem,
                         navigateEditCategory = navigateEditCategory
                     )
-                    TvScreenTab.SCREEN -> ScreenTabContent(uiState, inputStates, setScreen, editScreen)
+                    TvScreenTab.SCREEN -> ScreenTabContent(inputStates, editCurrentScreen)
                 }
             }
         }
@@ -434,8 +403,7 @@ fun TvScreenScreenContentPreview() {
                     extended.value = it
                 },
                 selectElement = { },
-                setScreen = { },
-                editScreen = { },
+                editCurrentScreen = { },
                 deleteScreen = { },
                 editCurrentDesignItem = { },
                 deleteCurrentDesignItem = { },

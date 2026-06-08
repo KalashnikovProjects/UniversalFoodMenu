@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +29,7 @@ import coil3.compose.AsyncImage
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
 import com.example.ufmcontroller.domain.entity.FoodItem
+import com.example.ufmcontroller.domain.entity.FoodItemDisplayTypeStyle
 import com.example.ufmcontroller.domain.entity.NotInStockStyle
 import com.example.ufmcontroller.domain.entity.Style
 import com.example.ufmcontroller.domain.entity.withDefaultStyle
@@ -42,7 +45,13 @@ fun CategoryDisplay(
     val isPreview = LocalInspectionMode.current
 
     val category = categoryWithFoodItems.category
-    val textColor = Color(style.textColorHex?.toLong(16) ?: 0xFFFFFFFF)
+    val textColor = if (!style.textColorHex.isNullOrBlank()) {
+        val hex = style.textColorHex.removePrefix("#")
+        val cleanHex = if (hex.length == 6) "FF$hex" else hex
+        Color(cleanHex.toLong(16))
+    } else {
+        colorScheme.onBackground
+    }
     val imageUrl = if (isPreview && category.imageUri != null) R.drawable.ic_menu_report_image else category.imageUri
     val imageScale = style.imageScale ?: 1.0F
     val imageAlpha = if (
@@ -81,7 +90,9 @@ fun CategoryDisplay(
                 append("   Нет\u00A0в\u00A0наличии")
             }
         } else buildAnnotatedString { append(category.name) }
-    Column {
+    Column(
+        modifier = Modifier.wrapContentSize()
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier=Modifier
@@ -127,13 +138,15 @@ fun CategoryDisplay(
             modifier = Modifier.padding(start=10.dp)
         ) {
             val elementStyle = if (style.categoryItemStyle != null)
-                defaultStyle.withDefaultStyle(style.categoryItemStyle)
+                style.categoryItemStyle.withDefaultStyle(defaultStyle)
             else defaultStyle
 
             categoryWithFoodItems.foodItems.forEach {
                 FoodItemDisplay(
-                    if (category.inStock != null) it.copy(inStock = category.inStock) else it,
-                    elementStyle
+                    it.copy(inStock = it.inStock && category.inStock != false),
+                    elementStyle.copy(
+                        foodItemDisplayTypeStyle = FoodItemDisplayTypeStyle.Row
+                    )
                 )
             }
         }

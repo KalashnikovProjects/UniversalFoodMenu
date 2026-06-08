@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import coil3.compose.AsyncImage
 import com.kalashnikovprojects.ufmtv.domain.entity.Category
 import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
 import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
+import com.kalashnikovprojects.ufmtv.domain.entity.FoodItemDisplayTypeStyle
 import com.kalashnikovprojects.ufmtv.domain.entity.NotInStockStyle
 import com.kalashnikovprojects.ufmtv.domain.entity.Style
 import com.kalashnikovprojects.ufmtv.domain.entity.withDefaultStyle
@@ -41,7 +43,13 @@ fun CategoryDisplay(
     val isPreview = LocalInspectionMode.current
 
     val category = categoryWithFoodItems.category
-    val textColor = Color(style.textColorHex?.toLong(16) ?: 0xFFFFFFFF)
+    val textColor = if (!style.textColorHex.isNullOrBlank()) {
+        val hex = style.textColorHex.removePrefix("#")
+        val cleanHex = if (hex.length == 6) "FF$hex" else hex
+        Color(cleanHex.toLong(16))
+    } else {
+        colorScheme.onBackground
+    }
     val imageUrl = if (isPreview && category.imageUri != null) android.R.drawable.ic_menu_report_image else category.imageUri
     val imageScale = style.imageScale ?: 1.0F
     val imageAlpha = if (
@@ -126,13 +134,16 @@ fun CategoryDisplay(
             modifier = Modifier.padding(start=10.dp)
         ) {
             val elementStyle = if (style.categoryItemStyle != null)
-                defaultStyle.withDefaultStyle(style.categoryItemStyle)
+                style.categoryItemStyle.withDefaultStyle(defaultStyle)
             else defaultStyle
 
             categoryWithFoodItems.foodItems.forEach {
                 FoodItemDisplay(
-                    if (category.inStock != null) it.copy(inStock = category.inStock) else it,
-                    elementStyle)
+                    it.copy(inStock = it.inStock && category.inStock != false),
+                    elementStyle.copy(
+                        foodItemDisplayTypeStyle = FoodItemDisplayTypeStyle.Row
+                    )
+                )
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.example.ufmcontroller.di
 
 import android.content.Context
-import android.util.Log
 import com.example.ufmcontroller.BuildConfig
 import com.example.ufmcontroller.data.local.UserPreferencesDataSource
 import com.example.ufmcontroller.data.remote.EventsWebSocketService
@@ -18,22 +17,20 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.request.HttpRequestPipeline
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
@@ -52,29 +49,9 @@ object NetworkModule {
                 })
             }
             install(WebSockets)
-            install(Auth) {
-                bearer {
-                    sendWithoutRequest { request ->
-                        !request.attributes.contains(NoTokenRequest)
-                    }
-
-                    loadTokens {
-                        Log.d("UFM", "load_tokens")
-
-                        val token = dataStore.authToken.firstOrNull()
-
-                        if (!token.isNullOrBlank()) {
-                            BearerTokens(accessToken = token, refreshToken = "")
-                        } else {
-                            null
-                        }
-                    }
-                    refreshTokens { null }
-                }
-            }
             install(Logging) {
                 logger = Logger.ANDROID
-                level = LogLevel.BODY // TODO: HEADERS
+                level = LogLevel.HEADERS
 //                sanitizeHeader { header ->
 //                    header.equals(HttpHeaders.Authorization, ignoreCase = true)
 //                }
@@ -82,9 +59,19 @@ object NetworkModule {
 
             defaultRequest {
                 url {
-                    url("http://${BuildConfig.SERVER_HOST}/") // TODO: URLProtocol.HTTPS
+                    url("https://${BuildConfig.SERVER_HOST}/")
                 }
                 contentType(ContentType.Application.Json)
+            }
+        }.also {
+            it.requestPipeline.intercept(HttpRequestPipeline.State) {
+                if (context.attributes.contains(NoTokenRequest)) return@intercept
+
+                val token = dataStore.authToken.firstOrNull()
+
+                if (!token.isNullOrBlank()) {
+                    context.header(HttpHeaders.Authorization, "Bearer $token")
+                }
             }
         }
     }
@@ -97,31 +84,31 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRemoteFoodDataSource(client: HttpClient, @ApplicationContext context: Context): RemoteFoodDataSource {
-        return RemoteFoodDataSource(client, context)
+    fun provideRemoteFoodDataSource(client: HttpClient, @ApplicationContext context: Context, scope: CoroutineScope): RemoteFoodDataSource {
+        return RemoteFoodDataSource(client, context, scope)
     }
 
     @Provides
     @Singleton
-    fun provideRemoteCategoryDataSource(client: HttpClient, @ApplicationContext context: Context): RemoteCategoryDataSource {
-        return RemoteCategoryDataSource(client, context)
+    fun provideRemoteCategoryDataSource(client: HttpClient, @ApplicationContext context: Context, scope: CoroutineScope): RemoteCategoryDataSource {
+        return RemoteCategoryDataSource(client, context, scope)
     }
 
     @Provides
     @Singleton
-    fun provideRemoteDesignDataSource(client: HttpClient, @ApplicationContext context: Context): RemoteDesignDataSource {
-        return RemoteDesignDataSource(client, context)
+    fun provideRemoteDesignDataSource(client: HttpClient, @ApplicationContext context: Context, scope: CoroutineScope): RemoteDesignDataSource {
+        return RemoteDesignDataSource(client, context, scope)
     }
 
     @Provides
     @Singleton
-    fun provideRemoteTvScreenyDataSource(client: HttpClient): RemoteTvScreenDataSource {
-        return RemoteTvScreenDataSource(client)
+    fun provideRemoteTvScreenyDataSource(client: HttpClient, scope: CoroutineScope): RemoteTvScreenDataSource {
+        return RemoteTvScreenDataSource(client,scope)
     }
 
     @Provides
     @Singleton
-    fun provideRemoteLoginDataSource(client: HttpClient): RemoteLoginDataSource {
-        return RemoteLoginDataSource(client)
+    fun provideRemoteLoginDataSource(client: HttpClient, scope: CoroutineScope): RemoteLoginDataSource {
+        return RemoteLoginDataSource(client,scope)
     }
 }

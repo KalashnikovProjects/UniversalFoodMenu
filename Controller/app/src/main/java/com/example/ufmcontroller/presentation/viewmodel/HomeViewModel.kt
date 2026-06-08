@@ -1,6 +1,5 @@
 package com.example.ufmcontroller.presentation.viewmodel
 
-import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
@@ -26,6 +25,7 @@ data class HomeUiState(
         emptyList()
     ),
     val openedIds: Set<Int>,
+    val searchTextIsEmpty: Boolean=true,
 )
 
 @HiltViewModel
@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(
     private val itemsFlow = getCategorizedFoodItemsUseCase()
     private val openedIdsFlow = MutableStateFlow(emptySet<Int>())
     val searchState: TextFieldState = TextFieldState("")
-    private val searchQueryFlow = snapshotFlow { searchState.text }
+    val searchQueryFlow = snapshotFlow { searchState.text }
 
     private val filteredItemsFlow = combine(
         itemsFlow,
@@ -48,19 +48,24 @@ class HomeViewModel @Inject constructor(
             items
         } else {
             FoodItemsCategorized(
-                categories = items.categories.map { category ->
+                categories = items.categories.mapNotNull { category ->
                     if (category.category.name.contains(query, ignoreCase = true)) {
                         category
                     } else {
-                        CategoryWithFoodItems(
-                            category.category,
-                            category.foodItems.filter {
-                                it.name.contains(
-                                    query,
-                                    ignoreCase = true
-                                )
-                            }
-                        )
+                        val foodItems = category.foodItems.filter {
+                            it.name.contains(
+                                query,
+                                ignoreCase = true
+                            )
+                        }
+                        if (foodItems.isNotEmpty()) {
+                            CategoryWithFoodItems(
+                                category.category,
+                                foodItems,
+                            )
+                        } else {
+                            null
+                        }
                     }
                 },
                 noCategoryFoodItems = items.noCategoryFoodItems.filter {
@@ -76,10 +81,12 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = combine(
         filteredItemsFlow,
         openedIdsFlow,
-        ) { items, openedIds ->
+        searchQueryFlow,
+        ) { items, openedIds, s ->
         HomeUiState(
             items = items,
             openedIds=openedIds,
+            searchTextIsEmpty = s.isEmpty(),
         )
     }.stateIn(
         scope = viewModelScope,

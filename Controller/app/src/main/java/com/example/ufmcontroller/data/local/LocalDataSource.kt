@@ -6,6 +6,7 @@ import com.example.ufmcontroller.domain.entity.DesignItem
 import com.example.ufmcontroller.domain.entity.DesignItemWithScreenId
 import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
+import com.example.ufmcontroller.domain.entity.ImageItem
 import com.example.ufmcontroller.domain.entity.TVScreen
 import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.entity.TextItem
@@ -18,12 +19,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.Int
-import kotlin.Pair
-import kotlin.collections.filter
-import kotlin.collections.map
-import kotlin.collections.mapNotNull
-import kotlin.text.category
 
 @Singleton
 class LocalDataSource @Inject constructor(
@@ -110,6 +105,11 @@ class LocalDataSource @Inject constructor(
         return designItems.map { f -> f.find { it.id == id }!! }
     }
 
+
+    fun getDesignItemsByScreenId(screenId: Int): Flow<List<DesignItem>> {
+        return designItemsWithScreenId.map { f -> f.filter { it.screenId == screenId }.map { it.toDesignItem() } }
+    }
+
     fun getScreenWithDesignItems(id: Int): Flow<TVScreenWithDesignItems> {
         return screensWithDesignItems.map { f -> f.find { it.tvScreen.id == id }
             ?: TVScreenWithDesignItems(defaultTVScreen(), emptyList()) }
@@ -150,6 +150,30 @@ class LocalDataSource @Inject constructor(
         _relationsRaw.update {
             it.filter { pair -> pair.second != id }
         }
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is FoodItem && elem.id == id)
+            }
+        }
+    }
+
+    fun deleteTextItem(id: Int) {
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is TextItem && elem.id == id)
+            }
+        }
+    }
+
+    fun deleteImageItem(id: Int) {
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is ImageItem && elem.id == id)
+            }
+        }
     }
 
     fun updateCategory(id: Int, category: Category) {
@@ -166,6 +190,14 @@ class LocalDataSource @Inject constructor(
         _categoriesRaw.update { it - id }
         _relationsRaw.update {
             it.filter { pair -> pair.first != id }
+        }
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is CategoryWithFoodItems && elem.category.id == id ||
+                        elem is Category && elem.id == id
+                        )
+            }
         }
     }
 

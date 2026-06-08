@@ -38,8 +38,8 @@ class GetRepositoryImpl @Inject constructor(
         return dataSource.getDesignItem(id)
     }
 
-    override fun getDesignItems(): Flow<List<DesignItem>> {
-        return dataSource.designItems
+    override fun getDesignItemsByScreenId(screenId: Int): Flow<List<DesignItem>> {
+        return dataSource.getDesignItemsByScreenId(screenId)
     }
 
     override fun getFoodItem(id: Int): Flow<FoodItem> {

@@ -6,9 +6,7 @@ import com.example.ufmcontroller.data.local.UserPreferencesDataSource
 import com.example.ufmcontroller.data.model.EventsDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSocketException
-import io.ktor.client.plugins.websocket.webSocket
-import io.ktor.client.request.header
-import io.ktor.http.HttpHeaders
+import io.ktor.client.plugins.websocket.wss
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +14,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -52,15 +49,8 @@ class EventsWebSocketService @Inject constructor(
 
             while (isActive) {
                 try {
-                    val currentToken = userPreferencesDataSource.authToken.firstOrNull()
-
-                    client.webSocket(
-                        path = "/api/ws/updates",
-                        request = {
-                            if (!currentToken.isNullOrBlank()) {
-                                header(HttpHeaders.Authorization, "Bearer $currentToken")
-                            }
-                        }) {
+                    client.wss(
+                        path = "/api/ws/updates") {
                         for (frame in incoming) {
                             if (frame is Frame.Text) {
                                 val text = frame.readText()

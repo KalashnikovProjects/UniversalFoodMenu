@@ -6,7 +6,7 @@ import com.kalashnikovprojects.ufmtv.data.model.LoginEventsDTO
 import com.kalashnikovprojects.ufmtv.domain.entity.LoginEvents
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.plugins.websocket.wss
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
@@ -53,7 +53,7 @@ class LoginWebSocketService @Inject constructor(
                     val width = metrics.widthPixels
                     val height = metrics.heightPixels
 
-                    client.webSocket(
+                    client.wss(
                         path = "/api/ws/tv_auth",
                         request = {
                             attributes.put(NoTokenRequest, true)

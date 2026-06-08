@@ -1,5 +1,7 @@
 package com.example.ufmcontroller.domain.entity
 
+import com.example.ufmcontroller.data.model.TVScreenDTO
+
 data class TVScreen(
     val id: Int=0,
     val name: String,
@@ -16,10 +18,10 @@ fun defaultTVScreen() = TVScreen(
     style= ScreenStyle(),
 )
 
-fun TVScreen.toDTO() = TVScreen(
+fun TVScreen.toDTO() = TVScreenDTO(
     id = id,
     name = name,
     width = width,
     height = height,
-    style = style
+    style = style.toDTO()
 )

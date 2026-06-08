@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 
 @Composable
 fun TvScreenCard(
@@ -62,6 +63,7 @@ fun TvScreenCard(
     fontSize: TextUnit = 14.sp,
     interactive: Boolean = false,
     selected: Int? = null,
+    onSelectItem: (Int?) -> Unit = {},
     onItemMoved: ((id: Int, newX: Float, newY: Float) -> Unit) = { _, _, _ -> }
 ) {
     val screenWidth = screenWithDesignItems.tvScreen.width.toFloat()
@@ -86,26 +88,34 @@ fun TvScreenCard(
                 }
             )
     ) {
+        val density = LocalDensity.current
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(ratio)
-                .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
+                .padding(top = 4.dp, start = 4.dp, end = 4.dp, bottom = 4.dp)
                 .clip(RoundedCornerShape(5.dp))
-                .pointerInput(Unit) {
-                    detectTransformGestures { centroid, pan, zoom, _ ->
-                        val oldScale = scale
-                        scale = (scale * zoom).coerceIn(1f, 5f)
+                .then(
+                    if (interactive) {
+                        Modifier.pointerInput(Unit) {
+                            detectTransformGestures { centroid, pan, zoom, _ ->
+                                val oldScale = scale
+                                scale = (scale * zoom).coerceIn(1f, 10f)
 
-                        offset = if (scale > 1f) {
-                            (offset + pan) * (scale / oldScale) + centroid * (1f - scale / oldScale)
-                        } else {
-                            Offset.Zero
+                                offset = if (scale > 1f) {
+                                    (offset + pan) * (scale / oldScale) + centroid * (1f - scale / oldScale)
+                                } else {
+                                    Offset.Zero
+                                }
+                            }
                         }
+                    } else {
+                        Modifier
                     }
-                },
+                ),
         ) {
-            val scaleFactor = maxWidth.value / screenWidth
+            val maxWidthPx = with(density) { maxWidth.toPx() }
+            val scaleFactor = maxWidthPx / screenWidth
 
             Box(
                 modifier = Modifier
@@ -122,6 +132,7 @@ fun TvScreenCard(
                     designItems = screenWithDesignItems.designItems,
                     basicScale = scaleFactor,
                     interactive=interactive,
+                    onSelectItem=onSelectItem,
                     selected=selected,
                     onItemMoved=onItemMoved
                 )

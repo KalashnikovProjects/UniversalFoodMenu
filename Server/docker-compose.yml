@@ -1,5 +1,6 @@
 services:
   ufm-server:
+    hostname: ufm-server
     volumes:
       - ufm-static:/static
     build: .
@@ -7,20 +8,21 @@ services:
       - "8096:8080"
     environment:
       SERVER_HOST:
-        localhost:8096
+        https://ufm.taprams.ru
       POSTGRES_HOST:
         ufm-db:5432
     env_file:
-      - stack.env  # POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
+      - stack.env  # JWT_SCERET, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
     depends_on:
       ufm-db:
         condition: service_healthy
     restart: unless-stopped
 
   ufm-db:
-    image: postgres
+    image: postgres:16
+    hostname: ufm-db
     volumes:
-      - postgres_volume:/var/lib/postgresql/data
+      - ufm-postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ufm_db
     env_file:
@@ -36,5 +38,5 @@ services:
       start_period: 10s
 
 volumes:
-  postgres_volume:
+  ufm-postgres:
   ufm-static:

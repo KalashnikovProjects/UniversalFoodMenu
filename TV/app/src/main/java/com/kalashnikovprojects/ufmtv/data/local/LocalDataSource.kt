@@ -4,6 +4,7 @@ import com.kalashnikovprojects.ufmtv.domain.entity.Category
 import com.kalashnikovprojects.ufmtv.domain.entity.CategoryWithFoodItems
 import com.kalashnikovprojects.ufmtv.domain.entity.DesignItem
 import com.kalashnikovprojects.ufmtv.domain.entity.FoodItem
+import com.kalashnikovprojects.ufmtv.domain.entity.ImageItem
 import com.kalashnikovprojects.ufmtv.domain.entity.ScreenStyle
 import com.kalashnikovprojects.ufmtv.domain.entity.TVScreen
 import com.kalashnikovprojects.ufmtv.domain.entity.TextItem
@@ -81,6 +82,30 @@ class LocalDataSource @Inject constructor(
         _relationsRaw.update {
             it.filter { pair -> pair.second != id }
         }
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is FoodItem && elem.id == id)
+            }
+        }
+    }
+
+    fun deleteTextItem(id: Int) {
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is TextItem && elem.id == id)
+            }
+        }
+    }
+
+    fun deleteImageItem(id: Int) {
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is ImageItem && elem.id == id)
+            }
+        }
     }
 
     fun updateCategory(id: Int, category: Category) {
@@ -97,6 +122,12 @@ class LocalDataSource @Inject constructor(
         _categoriesRaw.update { it - id }
         _relationsRaw.update {
             it.filter { pair -> pair.first != id }
+        }
+        _designItemsRaw.update {
+            it.filter { d ->
+                val elem = d.value.element
+                !(elem is ImageItem && elem.id == id)
+            }
         }
     }
 

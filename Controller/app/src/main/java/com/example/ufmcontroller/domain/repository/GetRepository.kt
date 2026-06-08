@@ -16,7 +16,7 @@ interface GetRepository {
     fun getCategoriesByFoodId(foodId: Int): Flow<List<Category>>
 
     fun getDesignItem(id: Int): Flow<DesignItem>
-    fun getDesignItems(): Flow<List<DesignItem>>
+    fun getDesignItemsByScreenId(screenId: Int): Flow<List<DesignItem>>
 
     fun getFoodItem(id: Int): Flow<FoodItem>
     fun getFoodItemsByCategoryId(categoryId: Int): Flow<List<FoodItem>>

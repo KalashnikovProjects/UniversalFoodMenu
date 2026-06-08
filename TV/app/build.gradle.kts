@@ -27,10 +27,14 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: заменить хост на настоящий ufm.taprams.ru
+            buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
         }
         getByName("debug") {
-            buildConfigField("String", "SERVER_HOST", "\"10.0.2.2:8080\"") // TODO: когда засуну в докер, сделать порт 8086
+            buildConfigField(
+                "String",
+                "SERVER_HOST",
+                "\"kalashnik.taprams.ru\""
+            )
         }
     }
     compileOptions {
@@ -54,8 +58,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation("io.coil-kt.coil3:coil-compose:3.0.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
 
     implementation("io.ktor:ktor-client-android:3.0.0")
     implementation("io.ktor:ktor-client-content-negotiation:3.0.0")

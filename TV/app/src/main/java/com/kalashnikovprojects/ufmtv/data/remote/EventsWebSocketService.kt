@@ -6,7 +6,7 @@ import com.kalashnikovprojects.ufmtv.data.local.UserPreferencesDataSource
 import com.kalashnikovprojects.ufmtv.data.model.EventsDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSocketException
-import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.plugins.websocket.wss
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 import io.ktor.websocket.Frame
@@ -59,7 +59,7 @@ class EventsWebSocketService @Inject constructor(
                 try {
                     val currentToken = userPreferencesDataSource.authToken.firstOrNull()
 
-                    client.webSocket(
+                    client.wss(
                         path = "/api/ws/updates",
                         request = {
                             if (!currentToken.isNullOrBlank()) {
