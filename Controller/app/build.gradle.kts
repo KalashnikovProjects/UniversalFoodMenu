@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +13,24 @@ plugins {
 android {
     namespace = "com.example.ufmcontroller"
     compileSdk = 36
+
+    signingConfigs {
+        create("release") {
+            val properties = Properties()
+            val propertiesFile = rootProject.file("local.properties")
+            if (propertiesFile.exists()) {
+                properties.load(FileInputStream(propertiesFile))
+            }
+
+            storeFile = properties.getProperty("keystore.path")?.let { file(it) }
+            storePassword = properties.getProperty("keystore.password")
+            keyAlias = properties.getProperty("key.alias")
+            keyPassword = properties.getProperty("key.password")
+
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+    }
 
     defaultConfig {
         applicationId = "com.example.ufmcontroller"
@@ -29,6 +50,8 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
+
+            signingConfig = signingConfigs.getByName("release")
         }
         getByName("debug") {
             buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
@@ -68,7 +91,6 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:3.0.0")
     implementation("io.ktor:ktor-client-cio:3.0.0")
     implementation("io.ktor:ktor-client-auth:3.0.0")
-    implementation("io.ktor:ktor-client-logging:3.0.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")

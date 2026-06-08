@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,13 +14,30 @@ android {
     namespace = "com.kalashnikovprojects.ufmtv"
     compileSdk = 36
 
+    signingConfigs {
+        create("release") {
+            val properties = Properties()
+            val propertiesFile = rootProject.file("local.properties")
+            if (propertiesFile.exists()) {
+                properties.load(FileInputStream(propertiesFile))
+            }
+
+            storeFile = properties.getProperty("keystore.path")?.let { file(it) }
+            storePassword = properties.getProperty("keystore.password")
+            keyAlias = properties.getProperty("key.alias")
+            keyPassword = properties.getProperty("key.password")
+
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+    }
+
     defaultConfig {
         applicationId = "com.kalashnikovprojects.ufmtv"
         minSdk = 23
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
     }
 
     buildTypes {
@@ -28,6 +48,8 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
+
+            signingConfig = signingConfigs.getByName("release")
         }
         getByName("debug") {
             buildConfigField(
