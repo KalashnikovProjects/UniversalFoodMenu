@@ -42,7 +42,7 @@ fun AboutAppScreen(
                 append("Telegram: ")
                 withLink(
                     LinkAnnotation.Url(
-                        "https://github.com/KalashnikovProjects",
+                        "https://t.me/Kalashn11k",
                         TextLinkStyles(style = SpanStyle(color = Color(0xFF7BB07B), fontWeight=FontWeight.Bold))
                     )
                 ) {
