@@ -4,10 +4,7 @@ import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.DesignItemsRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
-import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
-import com.kalashnikovprojects.ufmserver.data.repository.ImageItemsRepository
 import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
-import com.kalashnikovprojects.ufmserver.data.repository.TextItemsRepository
 import com.kalashnikovprojects.ufmserver.models.Events
 import com.kalashnikovprojects.ufmserver.models.FoodItemsCategorized
 import com.kalashnikovprojects.ufmserver.models.toCategoryWithFoodItems
@@ -17,8 +14,6 @@ import io.ktor.server.auth.principal
 import io.ktor.server.routing.Route
 import io.ktor.server.websocket.sendSerialized
 import io.ktor.server.websocket.webSocket
-import io.ktor.websocket.CloseReason
-import io.ktor.websocket.close
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import org.koin.ktor.ext.inject

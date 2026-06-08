@@ -3,8 +3,6 @@ package com.example.ufmcontroller.presentation.viewmodel
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ufmcontroller.domain.usecase.login.SengLoginUseCase
-import com.example.ufmcontroller.domain.usecase.login.SengRegisterUseCase
 import com.example.ufmcontroller.domain.usecase.screen.InputCodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

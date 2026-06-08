@@ -1,8 +1,6 @@
 package com.example.ufmcontroller.domain.repository
 
 import com.example.ufmcontroller.domain.entity.FoodItem
-import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
-import kotlinx.coroutines.flow.Flow
 
 interface FoodRepository {
     suspend fun addFoodItem(foodItem: FoodItem): FoodItem

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
-import com.example.ufmcontroller.domain.entity.FoodItemsCategorized
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesUseCase
 import com.example.ufmcontroller.domain.usecase.food.GetFoodItemsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

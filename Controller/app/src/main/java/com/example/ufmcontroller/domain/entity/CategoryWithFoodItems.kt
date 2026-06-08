@@ -2,7 +2,6 @@ package com.example.ufmcontroller.domain.entity
 
 import com.example.ufmcontroller.data.model.CategoryWithFoodItemsDTO
 import com.example.ufmcontroller.data.model.DesignableDTO
-import com.example.ufmcontroller.data.model.toDTO
 
 data class CategoryWithFoodItems(
     val category: Category,

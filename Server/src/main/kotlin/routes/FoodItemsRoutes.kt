@@ -4,7 +4,6 @@ import com.kalashnikovprojects.ufmserver.adapters.eventbus.EventBus
 import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsRepository
-import com.kalashnikovprojects.ufmserver.models.Category
 import com.kalashnikovprojects.ufmserver.models.Events
 import com.kalashnikovprojects.ufmserver.models.NoIdFoodItem
 import com.kalashnikovprojects.ufmserver.models.toFoodItem

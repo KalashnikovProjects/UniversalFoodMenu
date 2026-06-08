@@ -1,9 +1,6 @@
 package com.example.ufmcontroller.data.model
 
-import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.CategoryWithFoodItems
-import com.example.ufmcontroller.domain.entity.Designable
-import com.example.ufmcontroller.domain.entity.FoodItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

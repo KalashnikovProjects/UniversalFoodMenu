@@ -7,7 +7,6 @@ import com.example.ufmcontroller.domain.usecase.service.StartServiceUseCase
 import com.example.ufmcontroller.domain.usecase.service.StopServiceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,7 +1,6 @@
 package com.example.ufmcontroller.domain.entity
 
 import com.example.ufmcontroller.data.model.CategoryDTO
-import com.example.ufmcontroller.data.model.DesignableDTO
 
 data class Category(
     val id: Int=0,

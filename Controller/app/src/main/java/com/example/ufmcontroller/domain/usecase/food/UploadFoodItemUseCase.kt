@@ -1,6 +1,5 @@
 package com.example.ufmcontroller.domain.usecase.food
 
-import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.repository.CategoryRepository
 import com.example.ufmcontroller.domain.repository.FoodRepository

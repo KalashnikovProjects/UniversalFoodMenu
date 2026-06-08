@@ -2,7 +2,6 @@ package com.example.ufmcontroller.domain.usecase.screen
 
 import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
 import com.example.ufmcontroller.domain.repository.GetRepository
-import com.example.ufmcontroller.domain.repository.TvScreenRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

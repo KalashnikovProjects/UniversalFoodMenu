@@ -5,9 +5,7 @@ import com.kalashnikovprojects.ufmserver.adapters.filestorage.FileStorageAdapter
 import com.kalashnikovprojects.ufmserver.data.repository.CategoriesRepository
 import com.kalashnikovprojects.ufmserver.data.repository.FoodItemsCategoriesRepository
 import com.kalashnikovprojects.ufmserver.models.Events
-import com.kalashnikovprojects.ufmserver.models.FoodItem
 import com.kalashnikovprojects.ufmserver.models.NoIdCategory
-import com.kalashnikovprojects.ufmserver.models.NoIdFoodItem
 import com.kalashnikovprojects.ufmserver.models.toCategory
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData

@@ -1,8 +1,6 @@
 package com.example.ufmcontroller.domain.repository
 
 import com.example.ufmcontroller.domain.entity.TVScreen
-import com.example.ufmcontroller.domain.entity.TVScreenWithDesignItems
-import kotlinx.coroutines.flow.Flow
 
 interface TvScreenRepository {
     suspend fun inputCodeForTvAuth(code: String): TVScreen

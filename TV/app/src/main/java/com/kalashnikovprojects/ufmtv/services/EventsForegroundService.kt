@@ -3,7 +3,6 @@ package com.kalashnikovprojects.ufmtv.services
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.content.res.Configuration
@@ -15,7 +14,10 @@ import androidx.core.app.NotificationCompat
 import com.kalashnikovprojects.ufmtv.R
 import com.kalashnikovprojects.ufmtv.data.remote.EventsWebSocketService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,6 +1,5 @@
 package com.example.ufmcontroller.data.repository
 
-import com.example.ufmcontroller.data.remote.RemoteCategoryDataSource
 import com.example.ufmcontroller.data.remote.RemoteFoodDataSource
 import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.repository.FoodRepository

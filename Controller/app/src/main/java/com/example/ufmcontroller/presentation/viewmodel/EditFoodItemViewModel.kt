@@ -8,11 +8,9 @@ import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.domain.entity.defaultFoodItem
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesByFoodIdUseCase
 import com.example.ufmcontroller.domain.usecase.category.GetCategoriesUseCase
-import com.example.ufmcontroller.domain.usecase.category.UpdateFoodRelationsForCategoriesUseCase
 import com.example.ufmcontroller.domain.usecase.food.DeleteFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.EditFoodItemUseCase
 import com.example.ufmcontroller.domain.usecase.food.GetFoodItemUseCase
-import com.example.ufmcontroller.domain.usecase.food.UploadFoodItemUseCase
 import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.FoodItemFieldsStates
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -23,11 +21,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 
 data class EditFoodItemUiState(

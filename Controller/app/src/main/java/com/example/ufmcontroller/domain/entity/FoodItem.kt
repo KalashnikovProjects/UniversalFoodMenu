@@ -1,6 +1,5 @@
 package com.example.ufmcontroller.domain.entity
 
-import com.example.ufmcontroller.data.model.DesignableDTO
 import com.example.ufmcontroller.data.model.FoodItemDTO
 
 data class FoodItem(

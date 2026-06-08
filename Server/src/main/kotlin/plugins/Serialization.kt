@@ -1,6 +1,5 @@
 package com.kalashnikovprojects.ufmserver.plugins
 
-import com.kalashnikovprojects.ufmserver.data.repository.ScreensRepository
 import io.ktor.server.application.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation

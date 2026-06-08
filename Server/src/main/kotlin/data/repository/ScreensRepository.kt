@@ -1,6 +1,5 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
-import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
 import com.kalashnikovprojects.ufmserver.data.tables.Screens
 import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
 import com.kalashnikovprojects.ufmserver.models.TVScreen

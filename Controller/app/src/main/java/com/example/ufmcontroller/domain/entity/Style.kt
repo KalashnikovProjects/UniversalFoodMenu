@@ -1,7 +1,6 @@
 package com.example.ufmcontroller.domain.entity
 
 import com.example.ufmcontroller.data.model.StyleDTO
-import com.example.ufmcontroller.data.model.toEntity
 
 data class Style(
     val x: Float?=null,

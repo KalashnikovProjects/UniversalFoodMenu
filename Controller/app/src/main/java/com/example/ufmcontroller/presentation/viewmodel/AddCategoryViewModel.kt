@@ -5,23 +5,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufmcontroller.domain.entity.Category
 import com.example.ufmcontroller.domain.entity.FoodItem
-import com.example.ufmcontroller.domain.usecase.category.GetCategoriesUseCase
-import com.example.ufmcontroller.domain.usecase.category.UpdateFoodRelationsForCategoriesUseCase
 import com.example.ufmcontroller.domain.usecase.category.UploadCategoryUseCase
 import com.example.ufmcontroller.domain.usecase.food.GetFoodItemsUseCase
-import com.example.ufmcontroller.domain.usecase.food.UploadFoodItemUseCase
 import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.CategoryFieldsStates
-import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.FoodItemFieldsStates
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 
 data class AddCategoryUiState(

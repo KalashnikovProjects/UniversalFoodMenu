@@ -1,6 +1,5 @@
 package com.example.ufmcontroller.domain.entity
 
-import com.example.ufmcontroller.data.model.DesignItemDTO
 import com.example.ufmcontroller.data.model.DesignItemWithScreenIdDTO
 
 data class DesignItemWithScreenId(

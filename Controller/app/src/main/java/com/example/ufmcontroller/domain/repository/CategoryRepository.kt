@@ -1,7 +1,6 @@
 package com.example.ufmcontroller.domain.repository
 
 import com.example.ufmcontroller.domain.entity.Category
-import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
     suspend fun addCategory(category: Category): Category

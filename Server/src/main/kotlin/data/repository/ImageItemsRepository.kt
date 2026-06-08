@@ -1,6 +1,5 @@
 package com.kalashnikovprojects.ufmserver.data.repository
 
-import com.kalashnikovprojects.ufmserver.data.tables.Categories
 import com.kalashnikovprojects.ufmserver.data.tables.ImageItems
 import com.kalashnikovprojects.ufmserver.models.ImageItem
 import com.kalashnikovprojects.ufmserver.models.NoIdImageItem

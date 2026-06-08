@@ -1,7 +1,6 @@
 package com.example.ufmcontroller.domain.usecase.screen
 
 import com.example.ufmcontroller.domain.repository.GetRepository
-import com.example.ufmcontroller.domain.repository.TvScreenRepository
 import javax.inject.Inject
 
 class GetScreenWithDesignItemsUseCase @Inject constructor(

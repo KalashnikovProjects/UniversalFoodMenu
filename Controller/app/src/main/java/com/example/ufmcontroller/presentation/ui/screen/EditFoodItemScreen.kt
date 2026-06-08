@@ -8,14 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
@@ -37,9 +33,6 @@ import com.example.ufmcontroller.presentation.ui.component.DefaultAppTop
 import com.example.ufmcontroller.presentation.ui.component.FoodItemFields
 import com.example.ufmcontroller.presentation.viewmodel.EditFoodItemUiState
 import com.example.ufmcontroller.presentation.viewmodel.EditFoodItemViewModel
-import com.example.ufmcontroller.presentation.viewmodel.EditMenuTab
-import com.example.ufmcontroller.presentation.viewmodel.OpenedDeleteConfirmationDialog
-import com.example.ufmcontroller.presentation.viewmodel.TvScreenViewModel
 import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.FoodItemFieldsStates
 
 @Composable

@@ -53,7 +53,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.ufmcontroller.domain.entity.FoodItem
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
-import com.example.ufmcontroller.presentation.viewmodel.AddDesignExtended
 import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.CategoryFieldsStates
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update

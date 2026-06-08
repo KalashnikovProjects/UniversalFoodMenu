@@ -8,7 +8,6 @@ import com.kalashnikovprojects.ufmserver.models.LoginEvents
 import com.kalashnikovprojects.ufmserver.models.NoIdTVScreen
 import com.kalashnikovprojects.ufmserver.models.TVScreen
 import com.kalashnikovprojects.ufmserver.models.toTVScreen
-import com.kalashnikovprojects.ufmserver.models.toTextItem
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -21,7 +20,6 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.websocket.sendSerialized
 import io.ktor.server.websocket.webSocket
-import io.ktor.websocket.send
 import kotlinx.coroutines.CompletableDeferred
 import org.koin.ktor.ext.inject
 import java.util.concurrent.ConcurrentHashMap

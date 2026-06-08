@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
@@ -33,18 +31,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ufmcontroller.presentation.theme.UFMControllerTheme
 import com.example.ufmcontroller.presentation.ui.component.CategoryFields
 import com.example.ufmcontroller.presentation.ui.component.DefaultAppTop
-import com.example.ufmcontroller.presentation.ui.component.FoodItemFields
-import com.example.ufmcontroller.presentation.viewmodel.AddCategoryUiState
-import com.example.ufmcontroller.presentation.viewmodel.AddCategoryViewModel
-import com.example.ufmcontroller.presentation.viewmodel.AddFoodItemUiState
-import com.example.ufmcontroller.presentation.viewmodel.AddFoodItemViewModel
 import com.example.ufmcontroller.presentation.viewmodel.EditCategoryUiState
 import com.example.ufmcontroller.presentation.viewmodel.EditCategoryViewModel
-import com.example.ufmcontroller.presentation.viewmodel.EditFoodItemViewModel
-import com.example.ufmcontroller.presentation.viewmodel.EditMenuTab
-import com.example.ufmcontroller.presentation.viewmodel.OpenedDeleteConfirmationDialog
 import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.CategoryFieldsStates
-import com.example.ufmcontroller.presentation.viewmodel.fieldsstates.FoodItemFieldsStates
 
 @Composable
 fun EditCategoryScreen(
