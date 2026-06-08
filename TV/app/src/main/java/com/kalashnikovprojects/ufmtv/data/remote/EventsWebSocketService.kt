@@ -31,7 +31,7 @@ class EventsWebSocketService @Inject constructor(
 ) {
     val logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    private val _events = MutableSharedFlow<EventsDTO>()
+    private val _events = MutableSharedFlow<EventsDTO>(extraBufferCapacity = 2)
     val events = _events.asSharedFlow()
 
     private var connectionJob: Job? = null

@@ -126,7 +126,7 @@ class LocalDataSource @Inject constructor(
         _designItemsRaw.update {
             it.filter { d ->
                 val elem = d.value.element
-                !(elem is ImageItem && elem.id == id)
+                !(elem is CategoryWithFoodItems && elem.category.id == id)
             }
         }
     }

@@ -27,7 +27,9 @@ class RemoteLoginDataSource @Inject constructor(
             if (resp.status == HttpStatusCode.Unauthorized) {
                 throw Exception("Неверный логин или пароль")
             }
-
+            if (resp.status != HttpStatusCode.OK) {
+                throw Exception("Ошибка при регистрации")
+            }
             resp.body<String>()
         }
         return deferred.await()
@@ -43,7 +45,9 @@ class RemoteLoginDataSource @Inject constructor(
             if (resp.status == HttpStatusCode.Conflict) {
                 throw Exception("Имя пользователя уже занято")
             }
-
+            if (resp.status != HttpStatusCode.Created) {
+                throw Exception("Ошибка при регистрации")
+            }
             resp.body<String>()
         }
         return deferred.await()

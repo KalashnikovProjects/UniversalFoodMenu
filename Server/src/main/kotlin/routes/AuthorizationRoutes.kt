@@ -19,26 +19,14 @@ fun Route.authorizationRoutes() {
     post("/register") {
         val request = call.receive<UserRawPassword>()
         val passwordHash = hashingAdapter.hashPassword(request.rawPassword)
-        try {
-            val id = userRepository.create(
-                NoIdUserHashedPassword(request.username, passwordHash)
-            )
-            val token = jwtAdapter.generateJwtToken(id, request.username)
-            call.respondText(
-                token,
-                status=HttpStatusCode.Created
-            )
-        } catch (_: IllegalArgumentException) {
-            call.respond(
-                HttpStatusCode.Conflict,
-                "User with username '${request.username}' already exists"
-            )
-        } catch (_: Exception) {
-            call.respond(
-                HttpStatusCode.InternalServerError,
-                "Unknown error"
-            )
-        }
+        val id = userRepository.create(
+            NoIdUserHashedPassword(request.username, passwordHash)
+        )
+        val token = jwtAdapter.generateJwtToken(id, request.username)
+        call.respondText(
+            token,
+            status=HttpStatusCode.Created
+        )
     }
 
     post("/login") {
