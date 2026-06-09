@@ -47,7 +47,9 @@ class MainActivity : ComponentActivity() {
                 AppNavigationDrawer(
                     navigate={
                         route ->
-                        navController.navigate(route)
+                        navController.navigate(route) {
+                            launchSingleTop = true
+                        }
                         scope.launch {
                             drawerState.close()
                         }

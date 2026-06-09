@@ -30,7 +30,9 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             val currentRoute = navController.currentBackStackEntry?.destination?.route
             if (currentRoute != LoginRoute::class.qualifiedName) {
                 navController.navigate(LoginRoute) {
-                    popUpTo(0) { inclusive = true }
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
                     launchSingleTop = true
                 }
             }
@@ -41,14 +43,20 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             HomeScreen(
                 navigateEditFoodItem={
                     id ->
-                    navController.navigate(EditItemRoute(id))
+                    navController.navigate(EditItemRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 navigateEditCategory={
                     id ->
-                    navController.navigate(EditCategoryRoute(id))
+                    navController.navigate(EditCategoryRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 onEditMenu = {
-                    navController.navigate(MenuEditRoute)
+                    navController.navigate(MenuEditRoute) {
+                        launchSingleTop = true
+                    }
                 },
                 onToggleDrawer=onToggleDrawer,
             )
@@ -57,17 +65,25 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             EditMenuScreen(
                 onNavigateToEditFoodItem = {
                         id ->
-                    navController.navigate(EditItemRoute(id))
+                    navController.navigate(EditItemRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 onNavigateToEditCategory = {
                         id ->
-                    navController.navigate(EditCategoryRoute(id))
+                    navController.navigate(EditCategoryRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 onNavigateToAddFoodItem = {
-                    navController.navigate(AddItemRoute)
+                    navController.navigate(AddItemRoute) {
+                        launchSingleTop = true
+                    }
                 },
                 onNavigateToAddCategoryItem = {
-                    navController.navigate(AddCategoryRoute)
+                    navController.navigate(AddCategoryRoute) {
+                        launchSingleTop = true
+                    }
                 },
                 onToggleDrawer = onToggleDrawer,
             )
@@ -91,7 +107,9 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onBack = { navController.popBackStack() },
                 navigateEditFoodItem = {
                         id ->
-                    navController.navigate(EditItemRoute(id))
+                    navController.navigate(EditItemRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
             )
         }
@@ -104,7 +122,9 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onBack = { navController.popBackStack() },
                 navigateEditFoodItem = {
                         id ->
-                    navController.navigate(EditItemRoute(id))
+                    navController.navigate(EditItemRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
             )
         }
@@ -116,14 +136,20 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 screenId = route.id,
                 navigateEditFoodItem =  {
                         id ->
-                    navController.navigate(EditItemRoute(id))
+                    navController.navigate(EditItemRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 navigateEditCategory = {
                         id ->
-                    navController.navigate(EditCategoryRoute(id))
+                    navController.navigate(EditCategoryRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 onNavigateVisualConfigurationScreen = {
-                    navController.navigate(VisualConfigurationRoute)
+                    navController.navigate(VisualConfigurationRoute) {
+                        launchSingleTop = true
+                    }
                 },
                 onBack = { navController.popBackStack() },
             )
@@ -132,18 +158,29 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             VisualConfigurationScreen (
                 onNavigateToScreen = {
                     id ->
-                    navController.navigate(TvScreenRoute(id))
+                    navController.navigate(TvScreenRoute(id)) {
+                        launchSingleTop = true
+                    }
                 },
                 onAddScreen = {
-                    navController.navigate(AddTvScreenRoute)
+                    navController.navigate(AddTvScreenRoute) {
+                        launchSingleTop = true
+                    }
                 },
                 onToggleDrawer=onToggleDrawer,
             )
         }
         composable<AddTvScreenRoute> {
             AddTvScreenScreen(
-                onNavigateAfterLogin = { navController.navigate(TvScreenRoute(it)) },
-                onBack = { navController.popBackStack() },
+                onNavigateAfterLogin = {
+                    navController.navigate(TvScreenRoute(it)) {
+                        popUpTo(AddTvScreenRoute) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    } },
+                onBack = {
+                    navController.popBackStack() },
             )
         }
         composable<SettingsRoute> {
@@ -151,7 +188,12 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onLogout = {
                     mainViewModel.stopEventsService()
 
-                    navController.navigate(LoginRoute)
+                    navController.navigate(LoginRoute) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 },
                 onToggleDrawer=onToggleDrawer,
             )
@@ -166,7 +208,12 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onSuccessfulLogin = {
                     mainViewModel.startEventsService()
 
-                    navController.navigate(HomeRoute)
+                    navController.navigate(HomeRoute) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
