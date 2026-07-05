@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -21,6 +22,13 @@ import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
 import com.example.ufmcontroller.presentation.ui.screen.TvScreenScreen
 import com.example.ufmcontroller.presentation.ui.screen.VisualConfigurationScreen
 
+fun NavHostController.navigateSafe(route: Any, builder: NavOptionsBuilder.() -> Unit = {}) {
+    val currentLifecycleState = currentBackStackEntry?.lifecycle?.currentState
+    if (currentLifecycleState?.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED) == true) {
+        navigate(route, builder)
+    }
+}
+
 @Composable
 fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, onToggleDrawer: () -> Unit) {
     LaunchedEffect(Unit) {
@@ -29,7 +37,7 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             Log.d("UFM", "navigate logout")
             val currentRoute = navController.currentBackStackEntry?.destination?.route
             if (currentRoute != LoginRoute::class.qualifiedName) {
-                navController.navigate(LoginRoute) {
+                navController.navigateSafe(LoginRoute) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }
@@ -43,18 +51,18 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             HomeScreen(
                 navigateEditFoodItem={
                     id ->
-                    navController.navigate(EditItemRoute(id)) {
+                    navController.navigateSafe(EditItemRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 navigateEditCategory={
                     id ->
-                    navController.navigate(EditCategoryRoute(id)) {
+                    navController.navigateSafe(EditCategoryRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 onEditMenu = {
-                    navController.navigate(MenuEditRoute) {
+                    navController.navigateSafe(MenuEditRoute) {
                         launchSingleTop = true
                     }
                 },
@@ -65,23 +73,23 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             EditMenuScreen(
                 onNavigateToEditFoodItem = {
                         id ->
-                    navController.navigate(EditItemRoute(id)) {
+                    navController.navigateSafe(EditItemRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 onNavigateToEditCategory = {
                         id ->
-                    navController.navigate(EditCategoryRoute(id)) {
+                    navController.navigateSafe(EditCategoryRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 onNavigateToAddFoodItem = {
-                    navController.navigate(AddItemRoute) {
+                    navController.navigateSafe(AddItemRoute) {
                         launchSingleTop = true
                     }
                 },
                 onNavigateToAddCategoryItem = {
-                    navController.navigate(AddCategoryRoute) {
+                    navController.navigateSafe(AddCategoryRoute) {
                         launchSingleTop = true
                     }
                 },
@@ -107,7 +115,7 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onBack = { navController.popBackStack() },
                 navigateEditFoodItem = {
                         id ->
-                    navController.navigate(EditItemRoute(id)) {
+                    navController.navigateSafe(EditItemRoute(id)) {
                         launchSingleTop = true
                     }
                 },
@@ -122,7 +130,7 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onBack = { navController.popBackStack() },
                 navigateEditFoodItem = {
                         id ->
-                    navController.navigate(EditItemRoute(id)) {
+                    navController.navigateSafe(EditItemRoute(id)) {
                         launchSingleTop = true
                     }
                 },
@@ -136,18 +144,18 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 screenId = route.id,
                 navigateEditFoodItem =  {
                         id ->
-                    navController.navigate(EditItemRoute(id)) {
+                    navController.navigateSafe(EditItemRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 navigateEditCategory = {
                         id ->
-                    navController.navigate(EditCategoryRoute(id)) {
+                    navController.navigateSafe(EditCategoryRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 onNavigateVisualConfigurationScreen = {
-                    navController.navigate(VisualConfigurationRoute) {
+                    navController.navigateSafe(VisualConfigurationRoute) {
                         launchSingleTop = true
                     }
                 },
@@ -158,12 +166,12 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
             VisualConfigurationScreen (
                 onNavigateToScreen = {
                     id ->
-                    navController.navigate(TvScreenRoute(id)) {
+                    navController.navigateSafe(TvScreenRoute(id)) {
                         launchSingleTop = true
                     }
                 },
                 onAddScreen = {
-                    navController.navigate(AddTvScreenRoute) {
+                    navController.navigateSafe(AddTvScreenRoute) {
                         launchSingleTop = true
                     }
                 },
@@ -173,7 +181,7 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
         composable<AddTvScreenRoute> {
             AddTvScreenScreen(
                 onNavigateAfterLogin = {
-                    navController.navigate(TvScreenRoute(it)) {
+                    navController.navigateSafe(TvScreenRoute(it)) {
                         popUpTo(AddTvScreenRoute) {
                             inclusive = true
                         }
@@ -188,7 +196,7 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onLogout = {
                     mainViewModel.stopEventsService()
 
-                    navController.navigate(LoginRoute) {
+                    navController.navigateSafe(LoginRoute) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -208,7 +216,7 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
                 onSuccessfulLogin = {
                     mainViewModel.startEventsService()
 
-                    navController.navigate(HomeRoute) {
+                    navController.navigateSafe(HomeRoute) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
