@@ -47,7 +47,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "SERVER_HOST", "\"kalashnik.taprams.ru\"")
+            buildConfigField("String", "SERVER_HOST", "\"ufm.taprams.ru\"")
 
             signingConfig = signingConfigs.getByName("release")
         }
@@ -55,7 +55,7 @@ android {
             buildConfigField(
                 "String",
                 "SERVER_HOST",
-                "\"kalashnik.taprams.ru\""
+                "\"ufm.taprams.ru\""
             )
         }
     }
