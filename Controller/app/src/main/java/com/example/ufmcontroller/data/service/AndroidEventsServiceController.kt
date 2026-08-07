@@ -139,6 +139,9 @@ class AndroidEventsServiceController @Inject constructor(
                         is EventsDTO.DeleteImageEvent -> {
                             dataSource.deleteImageItem(event.id)
                         }
+                        is EventsDTO.DataLoaded -> {
+                            eventsWebSocketService.dataLoaded()
+                        }
                         is EventsDTO.ReloadDesignItemsByScreenId,
                         is EventsDTO.ReloadScreen,
                         is EventsDTO.AddTextEvent,

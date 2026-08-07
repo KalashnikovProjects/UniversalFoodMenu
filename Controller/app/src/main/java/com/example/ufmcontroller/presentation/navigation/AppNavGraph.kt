@@ -16,6 +16,7 @@ import com.example.ufmcontroller.presentation.ui.screen.EditCategoryScreen
 import com.example.ufmcontroller.presentation.ui.screen.EditFoodItemScreen
 import com.example.ufmcontroller.presentation.ui.screen.EditMenuScreen
 import com.example.ufmcontroller.presentation.ui.screen.HomeScreen
+import com.example.ufmcontroller.presentation.ui.screen.LoadingScreen
 import com.example.ufmcontroller.presentation.viewmodel.MainViewModel
 import com.example.ufmcontroller.presentation.ui.screen.LoginScreen
 import com.example.ufmcontroller.presentation.ui.screen.SettingsScreen
@@ -32,21 +33,31 @@ fun NavHostController.navigateSafe(route: Any, builder: NavOptionsBuilder.() -> 
 @Composable
 fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, onToggleDrawer: () -> Unit) {
     LaunchedEffect(Unit) {
-        Log.d("UFM", "mainViewModel.logoutEvent in AppNavGraph")
         mainViewModel.uiLogoutEvent.collect {
             Log.d("UFM", "navigate logout")
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
-            if (currentRoute != LoginRoute::class.qualifiedName) {
-                navController.navigateSafe(LoginRoute) {
-                    popUpTo(navController.graph.id) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
+            navController.navigateSafe(LoginRoute) {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
                 }
+                launchSingleTop = true
             }
         }
     }
-    NavHost(navController = navController, startDestination = HomeRoute) {
+    LaunchedEffect(Unit) {
+        mainViewModel.uiLoadedEvent.collect {
+            Log.d("UFM", "navigate loaded")
+            navController.navigateSafe(HomeRoute) {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }
+    }
+    NavHost(navController = navController, startDestination = LoadingRoute) {
+        composable<LoadingRoute> {
+            LoadingScreen()
+        }
         composable<HomeRoute> {
             HomeScreen(
                 navigateEditFoodItem={
@@ -214,14 +225,13 @@ fun AppNavGraph(mainViewModel: MainViewModel, navController: NavHostController, 
         composable<LoginRoute> {
             LoginScreen(
                 onSuccessfulLogin = {
-                    mainViewModel.startEventsService()
-
-                    navController.navigateSafe(HomeRoute) {
+                    navController.navigateSafe(LoadingRoute) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
+                    mainViewModel.startEventsService()
                 }
             )
         }

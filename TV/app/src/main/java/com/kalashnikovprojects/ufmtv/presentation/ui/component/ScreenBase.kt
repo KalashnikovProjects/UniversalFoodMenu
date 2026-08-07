@@ -21,7 +21,7 @@ import androidx.tv.material3.Text
 import com.kalashnikovprojects.ufmtv.R
 
 @Composable
-fun LoginScreenBase(
+fun ScreenBase(
     content: @Composable () -> Unit,
 ) {
     Box(

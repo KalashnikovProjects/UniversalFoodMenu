@@ -1,6 +1,10 @@
 package com.example.ufmcontroller.presentation.navigation
 import kotlinx.serialization.Serializable
 
+
+@Serializable
+object LoadingRoute
+
 @Serializable
 object LoginRoute
 

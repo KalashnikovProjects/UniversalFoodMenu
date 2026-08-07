@@ -100,4 +100,8 @@ sealed interface Events {
     @SerialName("reload_screens")
     @Serializable
     data class ReloadScreens(val items: List<TVScreen>) : Events
+
+    @SerialName("data_loaded")
+    @Serializable
+    object DataLoaded : Events
 }

@@ -19,6 +19,10 @@ class MainRepositoryImpl @Inject constructor(
         return eventsWebSocketService.logoutEvent
     }
 
+    override fun getLoadedEvent(): SharedFlow<Unit> {
+        return eventsWebSocketService.loadedEvent
+    }
+
     override fun getDesignItems(): Flow<List<DesignItem>> {
         return dataSource.designItems
     }

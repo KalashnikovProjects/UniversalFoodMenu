@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.SharedFlow
 
 interface GetRepository {
     fun getLogoutEvent(): SharedFlow<Unit>
-    
+    fun getLoadedEvent(): SharedFlow<Unit>
+
     fun getCategories(): Flow<List<Category>>
     fun getCategory(id: Int): Flow<Category>
     fun getCategoriesByFoodId(foodId: Int): Flow<List<Category>>

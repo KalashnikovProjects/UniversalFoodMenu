@@ -4,6 +4,6 @@ import com.kalashnikovprojects.ufmtv.domain.repository.MainRepository
 import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
-class GetLogoutEventsUseCase @Inject constructor(private val repository: MainRepository) {
-    operator fun invoke(): SharedFlow<Unit> = repository.getLogoutEvent()
+class GetLoadedEventUseCase @Inject constructor(private val repository: MainRepository) {
+    operator fun invoke(): SharedFlow<Unit> = repository.getLoadedEvent()
 }

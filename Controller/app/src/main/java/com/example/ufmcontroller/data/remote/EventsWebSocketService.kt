@@ -28,11 +28,16 @@ class EventsWebSocketService @Inject constructor(
     private val userPreferencesDataSource: UserPreferencesDataSource,
     ) {
     val logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val loadedEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     private val _events = MutableSharedFlow<EventsDTO>()
     val events = _events.asSharedFlow()
 
     private var connectionJob: Job? = null
+
+    suspend fun dataLoaded() {
+        loadedEvent.emit(Unit)
+    }
 
     fun connect(scope: CoroutineScope) {
         if (connectionJob?.isActive == true) return

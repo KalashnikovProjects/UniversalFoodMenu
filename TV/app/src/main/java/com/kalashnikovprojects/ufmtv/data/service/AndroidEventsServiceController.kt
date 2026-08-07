@@ -50,6 +50,7 @@ class AndroidEventsServiceController @Inject constructor(
             }
         }
         if (eventsJob == null || eventsJob?.isCancelled == true) {
+            Log.d("UFM", "observeEvents")
             observeEvents()
         }
     }
@@ -153,6 +154,9 @@ class AndroidEventsServiceController @Inject constructor(
                         is EventsDTO.DeleteImageEvent -> {
                             localDataSource.deleteImageItem(event.id)
                         }
+                        is EventsDTO.DataLoaded -> {
+                            eventsWebSocketService.loaded()
+                        }
                         is EventsDTO.ReloadScreens,
                         is EventsDTO.AddScreenEvent,
                         is EventsDTO.ReloadDesignItemsWithScreenId,
@@ -166,5 +170,7 @@ class AndroidEventsServiceController @Inject constructor(
 
     override fun stopService() {
         context.stopService(intent)
+        eventsJob?.cancel()
+        eventsJob = null
     }
 }

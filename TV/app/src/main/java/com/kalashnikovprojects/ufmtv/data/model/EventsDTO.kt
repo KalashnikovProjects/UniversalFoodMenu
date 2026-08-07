@@ -101,4 +101,8 @@ sealed interface EventsDTO {
     @SerialName("reload_screens")
     @Serializable
     data class ReloadScreens(val items: List<TVScreenDTO>) : EventsDTO
+
+    @SerialName("data_loaded")
+    @Serializable
+    object DataLoaded : EventsDTO
 }

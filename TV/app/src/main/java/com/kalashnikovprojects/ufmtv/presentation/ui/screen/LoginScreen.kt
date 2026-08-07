@@ -28,8 +28,8 @@ import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.surfaceColorAtElevation
 import com.kalashnikovprojects.ufmtv.presentation.theme.UFMControllerTheme
-import com.kalashnikovprojects.ufmtv.presentation.ui.component.LoginScreenBase
-import com.kalashnikovprojects.ufmtv.presentation.ui.component.LoginScreenLoadingWithText
+import com.kalashnikovprojects.ufmtv.presentation.ui.component.ScreenBase
+import com.kalashnikovprojects.ufmtv.presentation.ui.component.ScreenLoadingWithText
 import com.kalashnikovprojects.ufmtv.presentation.ui.component.scaled
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginStep
 import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginUIState
@@ -37,7 +37,7 @@ import com.kalashnikovprojects.ufmtv.presentation.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    onNavigateMainScreen: () -> Unit,
+    onSuccess: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,7 +50,7 @@ fun LoginScreen(
     }
     LaunchedEffect(Unit) {
         viewModel.navigationEvent.collect {
-            onNavigateMainScreen()
+            onSuccess()
         }
     }
     LoginContent(
@@ -67,11 +67,11 @@ fun LoginContent(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier.fillMaxSize().background(colorScheme.background),
         ) {
-            LoginScreenLoadingWithText("Подключение к серверу..")
+            ScreenLoadingWithText("Подключение к серверу...")
         }
         }
         is LoginStep.DisplayCode -> {
-            LoginScreenBase {
+            ScreenBase {
                 Text("Чтобы добавить экран, введите в мобильном приложении во вкладке 'Настроить экраны' следующий код:",
                     fontSize = 18.sp.scaled(),
                     textAlign = TextAlign.Center,
@@ -98,10 +98,10 @@ fun LoginContent(
             }
         }
         LoginStep.Completed -> {
-            LoginScreenLoadingWithText("Загрузка контента...")
+            ScreenLoadingWithText("Загрузка контента...")
         }
         LoginStep.ReconnectBecauseError -> {
-            LoginScreenLoadingWithText("Произошла ошибка при подключении. Повторное подключение к серверу...")
+            ScreenLoadingWithText("Произошла ошибка при подключении. Повторное подключение к серверу...")
         }
     }
 }

@@ -11,22 +11,8 @@ import com.kalashnikovprojects.ufmtv.presentation.viewmodel.MainMenuViewModel
 
 @Composable
 fun MainMenuScreen(
-    onNavigateLoginScreen: () -> Unit,
     viewModel: MainMenuViewModel = hiltViewModel<MainMenuViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    DisposableEffect(Unit) {
-        viewModel.startUpdating()
-        onDispose {
-            viewModel.stopUpdating()
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.navigateLoginScreenEvent.collect { event ->
-            onNavigateLoginScreen()
-        }
-    }
     ScreenDisplay(uiState.screenStyle, uiState.designItems)
 }

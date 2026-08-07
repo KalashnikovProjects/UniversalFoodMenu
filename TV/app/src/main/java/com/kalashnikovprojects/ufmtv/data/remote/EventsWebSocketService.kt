@@ -30,6 +30,7 @@ class EventsWebSocketService @Inject constructor(
     private val userPreferencesDataSource: UserPreferencesDataSource,
 ) {
     val logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val loadedEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     private val _events = MutableSharedFlow<EventsDTO>(extraBufferCapacity = 2)
     val events = _events.asSharedFlow()
@@ -39,6 +40,10 @@ class EventsWebSocketService @Inject constructor(
     suspend fun logout() {
         logoutEvent.emit(Unit)
         disconnect()
+    }
+
+    suspend fun loaded() {
+        loadedEvent.emit(Unit)
     }
 
     fun connect(scope: CoroutineScope) {
@@ -58,7 +63,6 @@ class EventsWebSocketService @Inject constructor(
             while (isActive) {
                 try {
                     val currentToken = userPreferencesDataSource.authToken.firstOrNull()
-
                     client.wss(
                         path = "/api/ws/updates",
                         request = {

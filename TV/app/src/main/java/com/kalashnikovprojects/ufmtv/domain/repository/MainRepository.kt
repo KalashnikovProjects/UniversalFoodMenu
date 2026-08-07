@@ -10,4 +10,5 @@ interface MainRepository {
     fun getDesignItems(): Flow<List<DesignItem>>
     fun getScreenStyle(): Flow<ScreenStyle>
     fun getLogoutEvent(): SharedFlow<Unit>
+    fun getLoadedEvent(): SharedFlow<Unit>
 }

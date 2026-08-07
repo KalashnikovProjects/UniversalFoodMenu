@@ -60,6 +60,7 @@ fun Route.eventsWebsocketRoutes() {
                     screenId = screenId,
                     items = designItemsRepository.getAllByScreenIdUserId(screenId, userId)
                 ))
+                sendSerialized<Events>(Events.DataLoaded)
             } else {
                 val screensDeferred = async {
                     sendSerialized<Events>(Events.ReloadScreens(items = screensRepository.getAllByUserId(userId)))
@@ -78,6 +79,7 @@ fun Route.eventsWebsocketRoutes() {
                 }
                 awaitAll(screensDeferred, secondDeferred)
                 sendSerialized<Events>(Events.ReloadDesignItemsWithScreenId(items = designItemsRepository.getAllByUserId(userId)))
+                sendSerialized<Events>(Events.DataLoaded)
             }
 
             eventBus.getFlow(userId).collect { event ->

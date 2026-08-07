@@ -21,10 +21,10 @@ import androidx.tv.material3.Text
 import androidx.tv.material3.surfaceColorAtElevation
 
 @Composable
-fun LoginScreenLoadingWithText(
+fun ScreenLoadingWithText(
     text: String,
 ) {
-    LoginScreenBase {
+    ScreenBase {
         Text(text,
             fontSize = 18.sp.scaled(),
             textAlign = TextAlign.Center,
